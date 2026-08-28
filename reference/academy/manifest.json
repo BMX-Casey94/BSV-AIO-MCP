@@ -1,6 +1,6 @@
 {
   "generated": "2026-08-18T17:48:20.088Z",
-  "policy": "Query path reads committed academy cards only. This snapshot is refreshed by the gated fetch:academy job (CSW_ALLOW_REFRESH=1).",
+  "policy": "Query path reads committed academy cards only. This snapshot is refreshed by the gated fetch:academy job (BSV_AIO_ALLOW_REFRESH=1).",
   "pages": [
     {
       "tree": "opcodes",

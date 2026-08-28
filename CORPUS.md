@@ -1,4 +1,4 @@
-# CSW Context — Craig Wright's Bitcoin Writing, Structured for BSV-Logic Understanding
+# BSV-AIO-MCP Corpus — Craig Wright's Bitcoin Writing, Structured for BSV-Logic Understanding
 
 A complete, machine-readable corpus of Craig Wright's Bitcoin-related writing across
 two eras — his **Medium** blog (2018–2022, the BCH/BSV split, hash war, nChain patent and
@@ -24,36 +24,32 @@ where it contradicts BTC-mainstream logic.
 ## Repository layout
 
 ```
-README.md                  this file
+README.md                  product README: install, client config, tools, security model
+CORPUS.md                  this file — the corpus catalogue
 SYNTHESIS.md               thematic synthesis: ten pillars, reasoning methods, contradiction map
 CONTRADICTIONS.md          consistency audit: internal (2 lenses), external (BRC guide), cross-era
 summaries/                 201 Substack essay summaries (YAML frontmatter + fixed template)
 summaries-medium/          275 Medium essay summaries (same template)
-topics/                    both eras batched into 26 subject directories + _review/ watch-list
-canvases/                  interactive canvas presentation of the corpus
+education/                 427 distilled principle cards (49 essays dropped as non-instructive)
 data/
-  corpus_index.json        Substack master index: verdict, reason, themes, summary path, URL
-  contradictions.json      unified machine-readable consistency audit
-  contradictions/          raw audit inputs (internal tech/econ, external BRC, cross-era)
-  archive.json             raw Substack archive metadata
-  classification.json      Substack per-post IN/OUT verdicts with reasons
-  digest.md                compact digest of all Substack core theses
-  posts/raw|text/          full Substack post JSON + plain-text conversions
-data-medium/               the same for Medium: corpus_index.json, archive.json,
-                           classification.json, posts/json|text/
-scripts/                   the pipeline (fetch → triage → classify → summarise → index → topics)
-mcp/                       frozen MCP contract (start here before writing the server)
-docs/superpowers/plans/    Phase A implementation plan
-reference/                 BRC index, testnet-ops, deny list, ordinality, DeepWiki, registries
-from-zyra-bsv-app-studio/  donor snapshot — pattern library only, do not fork
+  education_index.json     theme index over the education cards
+substack-articles/
+  contradictions.json      unified machine-readable consistency audit (84 findings)
+mcp/                       the MCP tool contract and evidence-package schema
+reference/                 BRC index + bodies, academy/opcode docs, Tier 0 cards, testnet-ops,
+                           deny list, ordinality rules, DeepWiki pages, registries
+server/                    the MCP server (TypeScript source, tests, build scripts)
 ```
 
-## MCP (next build)
+The raw scrape trees, per-post indexes, triage dumps and the fetch/classify/summarise
+pipeline scripts are local working artefacts: they regenerate this corpus but are not part
+of the shipped repo (see `.gitignore`).
 
-The intelligence layer is specified in [`mcp/`](mcp/README.md) and [`MCP-DESIGN.md`](MCP-DESIGN.md).
-Phase A (knowledge plane over these snapshots) is planned in
-[`docs/superpowers/plans/2026-08-14-bsv-knowledge-mcp-phase-a.md`](docs/superpowers/plans/2026-08-14-bsv-knowledge-mcp-phase-a.md).
-The server is not implemented yet. Do not copy `from-zyra-bsv-app-studio/`.
+## The MCP server
+
+The intelligence layer over this corpus is implemented in [`server/`](server/) and specified
+in [`mcp/`](mcp/README.md) and [`MCP-DESIGN.md`](MCP-DESIGN.md). Install and client
+configuration are in the root [`README.md`](README.md); `npm run mcp` starts the server.
 
 ## Methodology
 

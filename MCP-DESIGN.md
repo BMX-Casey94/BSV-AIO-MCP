@@ -1,9 +1,8 @@
-# BSV Knowledge MCP — Design
+# BSV-AIO-MCP — Design
 
-Status: **pre-build contract frozen (2026-08-14, Zyra addenda same day)**.
-Implementation starts from `mcp/SCHEMA.md` and
-`docs/superpowers/plans/2026-08-14-bsv-knowledge-mcp-phase-a.md`.
-This document is the rationale; the contract files are law.
+Status: **implemented; shipped as `bsv-aio-mcp` 1.0.0** (contract frozen 2026-08-14;
+addenda the same day). The contract files under `mcp/` remain the specification; the
+implementation is in `server/`. This document is the rationale.
 
 ## 1. Purpose
 
@@ -15,10 +14,10 @@ It merges four knowledge assets already in this workspace:
 
 | Asset | Location | Role |
 |---|---|---|
-| Craig Wright corpus (476 summarised essays, both eras) | `summaries/`, `summaries-medium/`, `substack-articles/`, `medium-articles/` | Design rationale, first principles, the "why" |
+| Craig Wright corpus (476 summarised essays, both eras) | `summaries/`, `summaries-medium/` | Design rationale, first principles, the "why" |
 | Education distillations (427 KEEP / 49 DROP) | `education/`, `data/education_index.json` | Bullet-point principles, BTC-critique filtered out |
 | BRC LLM training guide | `reference/brc-llm-training-guide.txt` | Standards layer (BRC-100/103, BEEF, UHRP, overlays…) |
-| DeepWiki ts-stack extraction (36 pages, 264 KB) | `reference/deepwiki/ts-stack/` | Architecture map of the production TS stack |
+| DeepWiki ts-stack extraction (36 pages, ~635 KB) | `reference/deepwiki/ts-stack/` | Architecture map of the production TS stack |
 | Repo registry (149 repos, metadata) | `reference/repo_registry.json` | Routing: what each repo is for, language, activity, URL |
 | Testnet / Arcade / faucet runbook | `reference/testnet-ops.md` | Network switch, faucet API, WoC-TTN, Arcade endpoints |
 | BRC catalogue (171 standards, SHA-pinned) | `reference/brc_index.json` | Per-standard index from `bsv-blockchain/BRCs` SUMMARY.md |
@@ -26,15 +25,15 @@ It merges four knowledge assets already in this workspace:
 | MCP contract | `mcp/` | Tool schema, evidence package, loop, winner policy, tiers, golden eval |
 | Deny list / ordinality | `reference/deny-list.json`, `reference/ordinality-rules.md` | v1/LARS blocks; BRC-150 sat-continuity rules |
 
-BRC markdown bodies are snapshotted on refresh (`scripts/build_brc_index.py`), not
-live-fetched per query. New BRCs arrive on the weekly/tag job.
+BRC markdown bodies are snapshotted on refresh, not live-fetched per query. New BRCs
+arrive on the weekly/tag job.
 
 ## 2. Architecture — three planes, one server
 
 ### Plane 1 — Knowledge (the "why" and "what")
-Curated documents exposed as MCP **resources**. Prose retrieval is hybrid
-(SQLite FTS5 + local embeddings; corpus is a few MB, so no external vector DB).
-Code retrieval (Plane 2) is FTS + symbols; embeddings are a later ranker there.
+Curated documents exposed as MCP **resources**. Prose retrieval is SQLite FTS5
+(BM25) with ranking heuristics; the corpus is a few MB, so no external vector DB.
+Code retrieval (Plane 2) is FTS + symbols.
 
 - `csw://principles/{topic}` — distilled education notes by theme
 - `csw://essay/{era}/{slug}` — full essay summaries
@@ -53,15 +52,16 @@ locally, commit-pinned.
 Tools (model-invokable):
 - `get_symbol(repo, name)` — definition, signature, source excerpt
 - `find_references(repo, symbol)` — usages across the org's repos
-- `trace_dependency(from_package, to_package)` — path through the monorepo domains
 - `get_package_for_concept("BEEF")` → `@bsv/sdk` + relevant files
 - `get_conformance_vector(domain, case)` — ts/go shared test vectors as the
   cross-language source of truth
-- `repo_lookup(name_or_purpose)` — answers "which repo do I need?" from the registry
-  (149 repos with descriptions, language, last-push, URL)
 
-### Plane 3 — Synthesis (the differentiator)
-Tools that join the planes — this is what a plain doc-search MCP cannot do:
+Not in 1.0.0 (future phases): `trace_dependency`, `repo_lookup`.
+
+### Plane 3 — Synthesis (the differentiator; future phases, not in 1.0.0)
+Tools that join the planes — this is what a plain doc-search MCP cannot do. In 1.0.0
+the `investigate` tool performs this synthesis internally and returns an
+EvidencePackage; the dedicated tools below remain design goals:
 
 - `design_review(proposal)` — checks a proposed design against Craig's principles,
   relevant BRCs, and known contradictions; returns aligned/conflicting citations
@@ -130,9 +130,9 @@ request. The model is **versioned snapshots + a refresh pipeline**:
    source revision (repo commit SHA / DeepWiki "last indexed" date) recorded in a
    manifest. The MCP serves only from snapshots — deterministic, offline-capable,
    auditable.
-2. **Refresh pipeline** (scripts already in `scripts/`: `deepwiki_mcp.py`,
-   `build_repo_registry.py`, plus repo clones to come): re-run on a schedule
-   (weekly is ample for docs; on-tag for pinned repos) or on demand.
+2. **Refresh pipeline** (the gated TypeScript jobs `npm run refresh:tier0` and
+   `npm run fetch:academy`, each requiring `BSV_AIO_ALLOW_REFRESH=1`): re-run on a
+   schedule (weekly is ample for docs; on-tag for pinned repos) or on demand.
 3. **Incremental reindex**: content-hash each source file; only changed files are
    re-chunked/re-embedded. Produces a changelog ("BRC-1029 amended; go-sdk v1.2.3
    re-indexed") so downstream users know what moved.
@@ -145,9 +145,10 @@ request. The model is **versioned snapshots + a refresh pipeline**:
 
 ## 6. Security & quality constraints
 
-- Knowledge, code, and `investigate` are read-only. Actuate is a guarded separate
-  plane (`network_guard`, default `ttn`). No execution of fetched code; tool
-  arguments validated.
+- Knowledge, code, and `investigate` are read-only. There is no actuate plane in
+  1.0.0: the server never broadcasts, never creates wallets, never claims faucets;
+  live facts are declared in `needs` for the host to resolve. Tool arguments are
+  schema-validated with length caps.
 - Every response carries citations (essay slug, BRC section, repo file:line) and
   an `IndexStatus` pin. `insufficient` beats a guessed BRC number.
 - No invented content: if the corpus doesn't cover it, the tool says so and points
@@ -156,7 +157,7 @@ request. The model is **versioned snapshots + a refresh pipeline**:
   WoC free tier is 3 req/s — never a hot-path loop.
 - UK English throughout generated knowledge artefacts.
 - Do not ingest BitGenius/ShopRAG answers. Do not implement `brc_ask`.
-- Do not copy `from-zyra-bsv-app-studio/`; steal patterns only (see `mcp/`).
+- Do not import a donor knowledge-MCP or its capability seeds; patterns only (see `mcp/`).
 
 ## 7. Build phases
 
@@ -164,14 +165,13 @@ Pre-build (this pass) is **done**: schema, evidence package, investigation loop,
 winner policy, capability-graph rule, deny list, ordinality card, repo tiers,
 golden eval, refresh policy, BRC index, ShopRAG successor map.
 
-| Phase | Scope | Depends on | Golden |
+| Phase | Scope | Status | Golden |
 |---|---|---|---|
-| A | Knowledge plane over existing snapshots + real `get_index_status` + `investigate` | Pre-build | G04, G05, G09, G10 |
-| B | Code intelligence for Tier 0 + `inspect_schema` / `error_taxonomy` / vectors | A | G02 |
-| C | Tier 1 (arcade, overlays, merkle-service, x402) + BRC↔impl edges | B | G01, G03, G07, G08 |
-| D | design_review, scaffold_flow, concept_map, network_guard, actuate, `check_dependency` | C | G06, G11 |
+| A | Knowledge plane over existing snapshots + real `get_index_status` + `investigate` | **Shipped in 1.0.0** | G04, G05, G09, G10 |
+| B | Code intelligence for Tier 0 + `inspect_schema` / `error_taxonomy` / vectors | **Shipped in 1.0.0** | G02 |
+| — | Academy opcode/Script + Rúnar snapshot, BRC bodies, conformance vectors | **Shipped in 1.0.0** | — |
+| C | Tier 1 (arcade, overlays, merkle-service, x402) + BRC↔impl edges | Future | G01, G03, G07, G08 |
+| D | design_review, scaffold_flow, concept_map, network_guard, actuate, `check_dependency` | Future | G06, G11 |
 
-Existing related repos to evaluate at build time (not reinvent): `bsv-blockchain/bsv-mcp`,
-`bsv-blockchain/simple-mcp`. Pattern library only: `from-zyra-bsv-app-studio/`
-(do not fork). Phase A plan: `docs/superpowers/plans/2026-08-14-bsv-knowledge-mcp-phase-a.md`.
-Phase B plan: `docs/superpowers/plans/2026-08-14-bsv-knowledge-mcp-phase-b.md`.
+Existing related repos to evaluate rather than reinvent: `bsv-blockchain/bsv-mcp`,
+`bsv-blockchain/simple-mcp`.

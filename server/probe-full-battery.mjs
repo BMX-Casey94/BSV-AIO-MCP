@@ -1,5 +1,9 @@
 import { spawn } from "node:child_process";
 import { writeFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
 const QUESTIONS = [
   ["S1", "Which BRC governs wallet-to-application interfaces?"],
@@ -66,7 +70,7 @@ const TOOL_PROBES = [
 
 const server = spawn("node", ["dist/index.mjs"], {
   cwd: process.cwd(),
-  env: { ...process.env, CSW_ROOT: "C:/dev/csw-context" },
+  env: { ...process.env, BSV_AIO_ROOT: root },
   stdio: ["pipe", "pipe", "inherit"],
 });
 

@@ -1,13 +1,10 @@
 {
-  "name": "@csw/knowledge-mcp",
-  "version": "0.1.0",
+  "name": "bsv-aio-mcp-server",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "engines": {
     "node": ">=22.13"
-  },
-  "bin": {
-    "csw-knowledge-mcp": "./dist/index.mjs"
   },
   "scripts": {
     "build": "node build-server.mjs && node build-refresh.mjs && node build-fetch-academy.mjs",

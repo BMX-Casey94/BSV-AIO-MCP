@@ -7,7 +7,7 @@
     "reference/tier0/packages.json",
     "reference/tier0/symbols.json"
   ],
-  "policy": "Titles plus confirmed Tier 0 cards. packages come from a word-boundary match of grouping tokens of length ≥ 3 against exported symbols. api lists only exported names that exact-match a title token. Do not copy Zyra capability seeds.",
+  "policy": "Titles plus confirmed Tier 0 cards. packages come from a word-boundary match of grouping tokens of length ≥ 3 against exported symbols. api lists only exported names that exact-match a title token. Do not invent API names.",
   "count": 171,
   "capabilities": [
     {

@@ -1,7 +1,7 @@
 # Winner policy and claim status
 
-Frozen 2026-08-14. Every `investigate` / `design_review` package must apply these
-rules. The model must not invent a winner.
+Frozen 2026-08-14. Every `investigate` package must apply these rules. The model
+must not invent a winner.
 
 ## Claim status
 

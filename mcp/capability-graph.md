@@ -15,8 +15,8 @@ Build `reference/capability_graph.json` from, in order:
 3. `reference/shoprag-successor-map.json` — current package names only
 4. After Phase B: exported symbol names that match the BRC title tokens
 
-**Forbidden:** copying `from-zyra-bsv-app-studio/.../capabilities.seed.json`.
-Those rows invent APIs (`PeerPayClient`, `createPayment`, `serialiseEnvelope`).
+**Forbidden:** copying a donor project's capability seed file. Those rows invent
+APIs (`PeerPayClient`, `createPayment`, `serialiseEnvelope`).
 
 A capability row may list `api: []` until a symbol indexer confirms names.
 Unknown API is `insufficient`, not a guessed identifier.

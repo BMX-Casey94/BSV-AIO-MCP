@@ -35,8 +35,8 @@ export function createServerWithStore(config: ServerConfig): CreatedServer {
   }
 
   const server = new McpServer({
-    name: "csw-knowledge",
-    version: "0.1.0",
+    name: "bsv-aio-mcp",
+    version: "1.0.0",
   });
 
   server.tool(

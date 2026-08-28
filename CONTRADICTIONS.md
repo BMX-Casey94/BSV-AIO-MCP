@@ -1,8 +1,8 @@
 # CONTRADICTIONS.md — consistency audit of the Craig Wright corpus
 
 **Generated:** 2026-08-13
-**Machine-readable source:** [`data/contradictions.json`](data/contradictions.json) (84 findings, 25 strengths/continuities)
-**Raw audit inputs:** [`data/contradictions/internal_tech.json`](data/contradictions/internal_tech.json) · [`data/contradictions/internal_econ.json`](data/contradictions/internal_econ.json) · [`data/contradictions/external_brc.json`](data/contradictions/external_brc.json) · [`data/contradictions/cross_era_tech.json`](data/contradictions/cross_era_tech.json) · [`data/contradictions/cross_era_econ.json`](data/contradictions/cross_era_econ.json)
+**Machine-readable source:** [`substack-articles/contradictions.json`](substack-articles/contradictions.json) (84 findings, 25 strengths/continuities)
+**Raw audit inputs:** five per-lens audit files (internal technical/economic, external BRC, cross-era technical/economic), merged into the source above; the raw inputs are local pipeline artefacts and are not shipped in this repo.
 
 ## Scope and method
 
@@ -119,7 +119,7 @@ Thirty-five findings across two independent lenses. The headline result cuts bot
 
 ### The nine restated-verbatim continuities (selection)
 
-The subsidy-as-scaffolding/fee-replacement doctrine (`XE-16`, stated identically across eight years — itself flagged as a high-severity *restated* finding because the prediction timelines attached to it kept failing); the private-not-anonymous formula; no-encryption/clear-text data; miner oligopoly as designed equilibrium; the "honest"×15/Fraud Act 2006 exegesis; changed-protocol-is-not-Bitcoin; 0-conf as commercial risk management. The full list of fifteen cross-era continuities is in `data/contradictions.json` under `strengths_observed` (lenses `cross-era-tech`, `cross-era-econ`).
+The subsidy-as-scaffolding/fee-replacement doctrine (`XE-16`, stated identically across eight years — itself flagged as a high-severity *restated* finding because the prediction timelines attached to it kept failing); the private-not-anonymous formula; no-encryption/clear-text data; miner oligopoly as designed equilibrium; the "honest"×15/Fraud Act 2006 exegesis; changed-protocol-is-not-Bitcoin; 0-conf as commercial risk management. The full list of fifteen cross-era continuities is in `substack-articles/contradictions.json` under `strengths_observed` (lenses `cross-era-tech`, `cross-era-econ`).
 
 ---
 

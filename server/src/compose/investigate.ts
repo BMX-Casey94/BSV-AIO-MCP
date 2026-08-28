@@ -352,27 +352,28 @@ export function investigate(
     }
   }
   for (let i = 0; i < hits.length; i++) {
-    if (hits[i].locator === "repo://deny") {
+    const hit = hits[i];
+    if (!hit || hit.locator === "repo://deny") {
       continue; // deliberately windowed from the named entry so the successor is quoted.
     }
-    const doc = store.getById(hits[i].id);
+    const doc = store.getById(hit.id);
     if (!doc) {
       continue;
     }
-    if (hits[i].locator === "ops://ordinality") {
+    if (hit.locator === "ops://ordinality") {
       // The ordinality policy card's operative content is its Rules list; quote it, not the
       // preamble. Wider window: rules 1-2 (sat ordering, fail closed) span ~500 chars.
-      hits[i] = { ...hits[i], excerpt: sectionExcerpt(doc.body, "rules", windowTokens, 500) };
+      hits[i] = { ...hit, excerpt: sectionExcerpt(doc.body, "rules", windowTokens, 500) };
       continue;
     }
-    if (hits[i].locator === "ops://testnet" && windowTokens.includes("faucet")) {
+    if (hit.locator === "ops://testnet" && windowTokens.includes("faucet")) {
       // A faucet question is answered by the ops card's faucet section, not whichever
       // broadcaster-alias paragraph a coverage window happens to land on.
-      hits[i] = { ...hits[i], excerpt: sectionExcerpt(doc.body, "faucet", windowTokens, 400) };
+      hits[i] = { ...hit, excerpt: sectionExcerpt(doc.body, "faucet", windowTokens, 400) };
       continue;
     }
     hits[i] = {
-      ...hits[i],
+      ...hit,
       excerpt: excerptWindow(doc.body, windowTokens, preferRequirements, 280, preferDefinition),
     };
   }
@@ -394,7 +395,7 @@ export function investigate(
   // denied entry (the hop fired) or asked about the list itself, its FTS hit is noise.
   if (!denied && !/\bdeny|denied|denylist\b/i.test(question)) {
     for (let i = hits.length - 1; i >= 0; i--) {
-      if (hits[i].locator === "repo://deny") {
+      if (hits[i]?.locator === "repo://deny") {
         hits.splice(i, 1);
       }
     }
@@ -414,7 +415,8 @@ export function investigate(
 
   // A recency question ("latest", "newest", "superseded") can be answered only as of the pin:
   // say so, and never let a snapshot hit pose as verified-current at high confidence.
-  if (isRecencyQuestion(question) && classifiedAs !== "live-ops" && classifiedAs !== "actuate") {
+  // (Actuate questions returned early above; only live-ops needs excluding here.)
+  if (isRecencyQuestion(question) && classifiedAs !== "live-ops") {
     gaps.push(
       `The snapshot is pinned (fetched ${index.fetched_at}); it cannot verify what is latest or whether a successor has appeared since — live fetch is refused.`,
     );
@@ -452,8 +454,9 @@ export function investigate(
   const leadId = claims[0]?.support[0];
   if (leadId) {
     const leadIdx = hits.findIndex((hit) => hit.id === leadId);
-    if (leadIdx > 0) {
-      hits.unshift(hits.splice(leadIdx, 1)[0]);
+    const leadHit = leadIdx > 0 ? hits.splice(leadIdx, 1)[0] : undefined;
+    if (leadHit) {
+      hits.unshift(leadHit);
     }
   }
 
@@ -1171,9 +1174,9 @@ function composeClaims(
   routing: {
     explicitBrcs: number[];
     missingBrcs: number[];
-    opcodeLeadId?: string;
+    opcodeLeadId?: string | undefined;
     stubIds?: Set<string>;
-    deniedPackage?: string;
+    deniedPackage?: string | undefined;
     packageIds?: string[];
   } = {
     explicitBrcs: [],

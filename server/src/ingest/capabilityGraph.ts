@@ -159,7 +159,7 @@ export function writeCapabilityGraph(root: string): string {
       "reference/tier0/symbols.json",
     ],
     policy:
-      "Titles plus confirmed Tier 0 cards. packages come from a word-boundary match of grouping tokens of length ≥ 3 against exported symbols. api lists only exported names that exact-match a title token. Do not copy Zyra capability seeds.",
+      "Titles plus confirmed Tier 0 cards. packages come from a word-boundary match of grouping tokens of length ≥ 3 against exported symbols. api lists only exported names that exact-match a title token. Do not invent API names.",
     count: capabilities.length,
     capabilities,
   };

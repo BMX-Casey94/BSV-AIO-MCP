@@ -3,7 +3,7 @@
 Default path for non-trivial questions. A single semantic pass is not enough.
 
 ```
-classify → retrieve(hot) → inspect → follow_edge (≤4 hops) → verify → EvidencePackage
+classify → retrieve(hot) → inspect → internal hops (≤4) → verify → EvidencePackage
 ```
 
 Stop when any of: no new authority ≤ 2 hits; hop budget exhausted; user budget
@@ -20,14 +20,13 @@ See `winner-policy.md`.
 | implementation | symbols, examples, tests, capability graph | BRC that specifies them |
 | design-why | education principles + essays | contradictions overlay |
 | live-ops | `ops://testnet` | declare `needs` (do not fetch inside investigate) |
-| actuate | `network_guard` only — investigate stops here | host may call actuate |
+| actuate | refuse — investigate stops here | host may actuate outside the MCP |
 | mixed | all of the above, ranked | — |
 
 ## Retrieve
 
-- **Prose (essays, education, wiki):** FTS5 + local embeddings.
-- **Code / symbols (Phase B):** FTS + structural tools. Embeddings are a later
-  ranker, not the index of record.
+- **Prose (essays, education, wiki):** SQLite FTS5 (BM25) with ranking heuristics.
+- **Code / symbols:** FTS + structural tools. No embeddings are used.
 - Always attach education hits for *when/why* even on implementation questions —
   they compose, they do not outrank BRC/code for *how*.
 - Conceptual queries (“pay a merchant”) start at the **generated** capability

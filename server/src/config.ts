@@ -18,7 +18,7 @@ export function defaultConfig(root: string): ServerConfig {
     // The SQLite index is a rebuildable cache of the shipped snapshot. It defaults to the
     // per-user temp dir rather than the package tree: an npm/npx install must never write
     // into its own node_modules directory.
-    dbPath: process.env.CSW_DB_PATH ?? join(tmpdir(), "bsv-aio-mcp", "knowledge.sqlite"),
+    dbPath: process.env.BSV_AIO_DB_PATH ?? join(tmpdir(), "bsv-aio-mcp", "knowledge.sqlite"),
     tier0Root: tier0RootFor(root),
   };
 }

@@ -4,15 +4,15 @@ import { defaultConfig } from "./config.js";
 import { refreshTier0, type Tier0RepoPin } from "./ingest/refreshTier0.js";
 
 /**
- * Offline Tier 0 refresh entry point. Refuses to run unless CSW_ALLOW_REFRESH=1, so the
+ * Offline Tier 0 refresh entry point. Refuses to run unless BSV_AIO_ALLOW_REFRESH=1, so the
  * query path (which never imports this module) can never trigger a fetch. Run from `server/`:
  *
- *   CSW_ALLOW_REFRESH=1 npm run refresh:tier0
+ *   BSV_AIO_ALLOW_REFRESH=1 npm run refresh:tier0
  */
 async function main(): Promise<void> {
-  if (process.env.CSW_ALLOW_REFRESH !== "1") {
+  if (process.env.BSV_AIO_ALLOW_REFRESH !== "1") {
     throw new Error(
-      "Tier 0 refresh is an explicit offline job. Re-run with CSW_ALLOW_REFRESH=1. The query path serves committed cards and never fetches.",
+      "Tier 0 refresh is an explicit offline job. Re-run with BSV_AIO_ALLOW_REFRESH=1. The query path serves committed cards and never fetches.",
     );
   }
   const config = defaultConfig(resolve(process.cwd(), ".."));

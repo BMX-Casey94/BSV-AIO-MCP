@@ -183,7 +183,7 @@ describe("refreshTier0", () => {
         allowRefresh: false,
         fetch: rejectingFetch,
       }),
-    ).rejects.toThrow(/CSW_ALLOW_REFRESH/);
+    ).rejects.toThrow(/BSV_AIO_ALLOW_REFRESH/);
   });
 
   it("writes packages.json from the committed fixture tarball", async () => {

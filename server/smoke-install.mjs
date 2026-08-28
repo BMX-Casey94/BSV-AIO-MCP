@@ -1,4 +1,4 @@
-// Post-install smoke check: spawns the built server with NO CSW_ROOT and NO CSW_DB_PATH
+// Post-install smoke check: spawns the built server with NO BSV_AIO_ROOT and NO BSV_AIO_DB_PATH
 // from a foreign cwd, proving the package-root corpus default and temp-dir DB path work the
 // way an npx-installed copy would see them. Run from the repo root: node server/smoke-install.mjs
 import { spawn } from "node:child_process";
@@ -9,7 +9,7 @@ const ENTRY = join(dirname(fileURLToPath(import.meta.url)), "dist", "index.mjs")
 
 const server = spawn("node", [ENTRY], {
   stdio: ["pipe", "pipe", "inherit"],
-  env: process.env, // deliberately without CSW_ROOT / CSW_DB_PATH
+  env: process.env, // deliberately without BSV_AIO_ROOT / BSV_AIO_DB_PATH
   cwd: process.env.TEMP ?? "C:/", // foreign cwd: the server must not depend on it
 });
 

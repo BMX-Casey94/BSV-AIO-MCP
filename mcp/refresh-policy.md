@@ -17,14 +17,14 @@ non-reproducible, hit GitHub rate limits, and mix “what we audited” with
 | Hot snapshot | education, essays, contradictions, `brc_index.json`, BRC markdown, ts-stack wiki, testnet-ops, Tier 0/1 symbol indexes | Weekly, or on git tag of that repo | Local only |
 | Warm | remaining active `bsv-blockchain` repos, CHANGELOGs | Weekly | Local; mark `stale` if registry `pushed_at` > `fetched_at` |
 | Cold | full file bodies, issues/PRs, archived `bitcoin-sv/*`, LARS/CARS | On demand, TTL cache | Fetch then cache |
-| Live | Arcade / WoC / faucet health and tx status | 30–60 s cache, back-off on 429/503 | Network |
-| Actuate | faucet claim, broadcast | n/a | Network after `network_guard` |
+| Live (future) | Arcade / WoC / faucet health and tx status | 30–60 s cache, back-off on 429/503 | Declared as `needs` in 1.0.0 |
+| Actuate (future) | faucet claim, broadcast | n/a | Refused in 1.0.0 |
 
 ## BRC catalogue specifically
 
-- Built by `scripts/build_brc_index.py` from `bsv-blockchain/BRCs` `SUMMARY.md`
+- Built from `bsv-blockchain/BRCs` `SUMMARY.md` (local pipeline script)
 - Stored at `reference/brc_index.json` with the tree SHA
-- Full markdown for a BRC is snapshotted under `reference/brcs/` on refresh (Phase A)
+- Full markdown for a BRC is snapshotted under `reference/brcs/` on refresh
 - If a user asks “is there a new BRC since our snapshot?”, that is a **cold**
   GitHub compare (`revision` vs `master`), not the default path
 - **Integrity:** refuse to write if the new count is below 80% of the previous
@@ -34,9 +34,9 @@ non-reproducible, hit GitHub rate limits, and mix “what we audited” with
 - **Tier 0 cards:** the same 80% guard applies to `reference/tier0/packages.json`
   (refuse if the new package count drops below 80% of the previous, when
   previous ≥ 2). Tier 0 refresh is an explicit offline job gated behind
-  `CSW_ALLOW_REFRESH=1`; the query path never fetches. See
+  `BSV_AIO_ALLOW_REFRESH=1`; the query path never fetches. See
   `server/src/ingest/refreshTier0.ts` and the `refresh:tier0` npm script.
-- **Academy / Rúnar docs:** `reference/academy/` is a committed snapshot of the BSV Academy opcode and Script trees plus the Rúnar API pages. Refresh is the gated `fetch:academy` job (`CSW_ALLOW_REFRESH=1`). The query path never calls GitBook `?ask=`.
+- **Academy / Rúnar docs:** `reference/academy/` is a committed snapshot of the BSV Academy opcode and Script trees plus the Rúnar API pages. Refresh is the gated `fetch:academy` job (`BSV_AIO_ALLOW_REFRESH=1`). The query path never calls GitBook `?ask=`.
 - Never live-fetch `bsv.brc.dev ?ask=`. That is an untrusted nested LLM.
 
 ## Stale rule

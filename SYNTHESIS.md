@@ -4,7 +4,7 @@
 - **Medium** (`@craig_10243`), 7 June 2018 → 2022: **275 essays** (of 311 posts archived) — the BCH/BSV split, the hash war, the nChain patent programme, the Satoshi-authorship campaign and the Kleiman litigation, in real time.
 - **Substack** (`singulargrit.substack.com`), 8 June 2025 → 12 August 2026: **201 essays** (of 482 posts archived) — the same positions formalised into economic and legal theory.
 
-The out-of-scope remainders (36 Medium, 281 Substack) are indexed with classification reasons in `data-medium/corpus_index.json` and `data/corpus_index.json`.
+The out-of-scope remainders (36 Medium, 281 Substack) carry classification reasons in the local corpus indexes (pipeline artefacts, not shipped in this repo).
 
 **Purpose:** a machine- and human-readable account of how Craig thinks about Bitcoin — the models he uses, the claims he defends, and exactly where they contradict BTC-mainstream logic. Every claim below is grounded in the per-essay summaries in `summaries/` and `summaries-medium/`, each of which carries verbatim quotes and source URLs. The consistency audit (internal, external and cross-era) lives separately in `CONTRADICTIONS.md`.
 
@@ -203,5 +203,5 @@ Ten essays converge: no logical qubit has ever been built; the timescale cascade
 - **One Medium post is an attribution anomaly**: `re-moxie-on-web3` is internally Mike Hearn's essay (his Android wallet, his coining of "SPV wallet", third-person Satoshi), misfiled under Craig's account. It is summarised faithfully but excluded from evidence of Craig's positions throughout the audits.
 - **Duplicate postings exist** (Substack): *The Cult of Scarcity* appears twice (3 and 8 Dec 2025, near-identical), as do *The Cult of Digital Metallurgy…* (20 and 29 Nov 2025) and *Verification Without Enforcement* (24 Mar / 18 May 2026). All versions are summarised and cross-referenced.
 - **Theme tags** (`themes:` in each summary's frontmatter) are assigned per essay from a controlled vocabulary of 24 tags; an essay typically carries 2–4.
-- The machine-readable master indexes are **`data/corpus_index.json`** (482 Substack posts) and **`data-medium/corpus_index.json`** (311 Medium posts): verdict, reason, themes, summary path, URL. Raw post JSON lives in `data/posts/raw/` and `data-medium/posts/json/`; plain text in `data/posts/text/` and `data-medium/posts/text/`.
-- The consistency audit — two internal lenses (Substack), one external comparison (the BRC wallet-SDK guide), and the cross-era pass (Medium vs Substack) — is in **`CONTRADICTIONS.md`** with the machine-readable source in `data/contradictions.json`.
+- The machine-readable master indexes (482 Substack posts, 311 Medium posts: verdict, reason, themes, summary path, URL) and the raw post JSON/text are local pipeline artefacts, not shipped in this repo.
+- The consistency audit — two internal lenses (Substack), one external comparison (the BRC wallet-SDK guide), and the cross-era pass (Medium vs Substack) — is in **`CONTRADICTIONS.md`** with the machine-readable source in [`substack-articles/contradictions.json`](substack-articles/contradictions.json).

@@ -67,10 +67,10 @@ const TOOL_PROBES = [
 const transport = new StdioClientTransport({
   command: process.execPath,
   args: [join(serverDir, "dist", "index.mjs")],
-  env: { ...process.env, CSW_ROOT: root },
+  env: { ...process.env, BSV_AIO_ROOT: root },
   stderr: "inherit",
 });
-const client = new Client({ name: "csw-probe", version: "0.1.0" });
+const client = new Client({ name: "bsv-aio-probe", version: "1.0.0" });
 
 function text(result) {
   const first = result.content?.[0];

@@ -1,6 +1,6 @@
 {
   "generated": "2026-08-19",
-  "policy": "Query path reads committed cards only. Refresh fetches the GitHub tarball at the pinned SHA when CSW_ALLOW_REFRESH=1.",
+  "policy": "Query path reads committed cards only. Refresh fetches the GitHub tarball at the pinned SHA when BSV_AIO_ALLOW_REFRESH=1.",
   "repos": [
     {
       "repo": "bsv-blockchain/ts-sdk",

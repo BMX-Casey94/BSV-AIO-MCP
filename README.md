@@ -70,8 +70,8 @@ Then point the client at the built entry directly:
 
 | Env var | Default | Purpose |
 |---|---|---|
-| `CSW_ROOT` | the installed package root | Corpus root override (development). |
-| `CSW_DB_PATH` | `%TEMP%/bsv-aio-mcp/knowledge.sqlite` | Index cache location. |
+| `BSV_AIO_ROOT` | the installed package root | Corpus root override (development). |
+| `BSV_AIO_DB_PATH` | `%TEMP%/bsv-aio-mcp/knowledge.sqlite` | Index cache location. |
 
 ## Tools
 

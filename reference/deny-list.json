@@ -1,6 +1,6 @@
 {
   "generated": "2026-08-14",
-  "purpose": "Packages the MCP must never recommend for new work. Used by check_dependency (Phase D) and as knowledge hits (Phase A).",
+  "purpose": "Packages the MCP must never recommend for new work. Ingested as a knowledge hit and enforced by investigate: naming one as a dependency returns the denial, its reason and its successor.",
   "entries": [
     {
       "name": "bsv",

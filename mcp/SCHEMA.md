@@ -1,24 +1,21 @@
 # MCP contract — tools, resources, planes
 
-Frozen 2026-08-14 (addenda same day). Implementation must match these signatures.
+Frozen 2026-08-14 (addenda same day); shipped as `bsv-aio-mcp` 1.0.0. Sections marked
+*future* are design goals beyond 1.0.0 — the shipped tool list is the root README's.
 UK English in generated text. Winner rules live in `winner-policy.md`.
 
 ## Planes
 
-| Plane | Role | Mutates chain? |
-|---|---|---|
-| **knowledge** | Snapshot search, essays, BRCs, wiki, contradictions | No |
-| **code** | Symbols, deps, tests, examples, BRC↔impl edges | No |
-| **live-query** | Arcade / WoC / faucet *status* | No |
-| **actuate** | Faucet claim, broadcast, wallet create | Yes — `network_guard` required, default `ttn` |
+| Plane | Role | Mutates chain? | In 1.0.0? |
+|---|---|---|---|
+| **knowledge** | Snapshot search, essays, BRCs, wiki, contradictions | No | Yes |
+| **code** | Symbols, deps, tests, examples, BRC↔impl edges | No | Yes (Tier 0) |
+| **live-query** | Arcade / WoC / faucet *status* | No | No — declared as `needs` |
+| **actuate** | Faucet claim, broadcast, wallet create | Yes | No — refused by design |
 
-Knowledge, code, and `investigate` are **read-only**. They serve pinned snapshots
-only. Live-query may hit the network with cache + back-off. Actuate is a separate
-plane: it never runs unless the caller states a network and `network_guard` returns
-`allow`. Do not describe the whole server as read-only.
-
-`investigate` must not call actuate tools. If it needs a live fact it **declares**
-`needs` (see `winner-policy.md`).
+The shipped server is **read-only end to end**: it serves pinned snapshots only and
+never fetches live HTTP on the query path. If `investigate` needs a live fact it
+**declares** `needs` (see `winner-policy.md`) for the host to resolve.
 
 ## Shared types
 
@@ -110,45 +107,43 @@ See `evidence-package.schema.json`. Return type of `investigate` / `design_revie
 - `get_resource(uri) → { uri, text, hit }`
 - `list_contradictions(topic?) → finding[]`
 
-Retrieval: Plane 1 (prose) is FTS5 + local embeddings. Plane 2 (code, Phase B) is
-FTS + symbols; embeddings are a later ranker, not the index of record.
+Retrieval: Plane 1 (prose) is SQLite FTS5 (BM25) with ranking heuristics. Plane 2
+(code) is FTS + symbols. No embeddings are used.
 
 ### Code
 - `get_symbol(repo, name) → SymbolRecord`
 - `find_references(repo, symbol) → TypedHit[]`
-- `trace_dependency(from_package, to_package) → path[]`
 - `get_package_for_concept(concept) → { packages, brcs, hits }` — reads the
   generated capability graph (`capability-graph.md`)
 - `get_conformance_vector(domain, case) → vector`
-- `inspect_schema(service) → spec file` — ts-stack `specs/` (Phase B)
-- `error_taxonomy(prefix?) → ERR_* rows` — `specs/errors.md` (Phase B)
-- `repo_lookup(name_or_purpose) → registry row`
-- `follow_edge(entity, relation) → GraphPath[]`
-  relations: `implements | specified_by | tested_by | explained_by | superseded_by`
-- `check_dependency(name) → { status: allowed|denied|unknown, reason, successor? }`
-  (Phase D; deny list is already at `repo://deny`)
+- `inspect_schema(service) → spec file` — ts-stack `specs/`
+- `error_taxonomy(prefix?) → ERR_* rows` — `specs/errors.md`
+
+Future (not in 1.0.0): `trace_dependency`, `repo_lookup`, `follow_edge`,
+`check_dependency` (the deny list is already served at `repo://deny` and enforced
+by `investigate`).
 
 ### Synthesis
 - `investigate(question, context?) → EvidencePackage`
-- `design_review(proposal) → EvidencePackage`
-- `scaffold_flow(intent) → EvidencePackage & skeleton`
-- `concept_map(entity) → graph`
-- `network_guard(intent_text, current_network?) → { action: ask_switch|allow|deny|remind_main, network, reason }`
 
-Do **not** implement `brc_ask` or `build_context`. Do **not** copy Zyra's seed.
+Future (not in 1.0.0): `design_review`, `scaffold_flow`, `concept_map`,
+`network_guard`.
 
-### Live-query (read-only, cached)
+Do **not** implement `brc_ask` or `build_context`. Do **not** invent capability
+API names.
+
+### Live-query (future; read-only, cached)
 - `get_chain_info(network)` — WoC-TTN / WoC
 - `get_tx_status(network, txid)` — Arcade first, WoC fallback
 - `faucet_health()` — `GET /api/health`
 
-### Actuate (default network `ttn`)
+### Actuate (future; default network `ttn`)
 - `create_test_wallet(network)` — separate storage file
 - `faucet_claim({ address? | identityKey?, network: "ttn" })`
 - `broadcast_tx(network, raw_hex)` — Arcade `POST /tx` as **EF hex**, not BEEF
 
-Actuate tools MUST call `network_guard` internally. Mainnet actuation requires an
-explicit `network: "main"` and a second confirmation flag.
+Actuate tools, if ever added, MUST call `network_guard` internally. Mainnet
+actuation requires an explicit `network: "main"` and a second confirmation flag.
 
 ## Composition rule
 

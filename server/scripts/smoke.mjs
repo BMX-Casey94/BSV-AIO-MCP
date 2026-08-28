@@ -9,20 +9,20 @@ import { fileURLToPath } from "node:url";
  *
  *   npm run build && npm run smoke
  *
- * Set CSW_SMOKE_QUESTION to override the default investigate question.
+ * Set BSV_AIO_SMOKE_QUESTION to override the default investigate question.
  */
 const serverDir = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const root = resolve(serverDir, "..");
 const question =
-  process.env.CSW_SMOKE_QUESTION ?? "What is BEEF and which packages implement it?";
+  process.env.BSV_AIO_SMOKE_QUESTION ?? "What is BEEF and which packages implement it?";
 
 const transport = new StdioClientTransport({
   command: process.execPath,
   args: [join(serverDir, "dist", "index.mjs")],
-  env: { ...process.env, CSW_ROOT: root },
+  env: { ...process.env, BSV_AIO_ROOT: root },
   stderr: "inherit",
 });
-const client = new Client({ name: "csw-smoke", version: "0.1.0" });
+const client = new Client({ name: "bsv-aio-smoke", version: "1.0.0" });
 
 function text(result) {
   const first = result.content?.[0];

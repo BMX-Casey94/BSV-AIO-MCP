@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "csw://mcp/evidence-package",
+  "$id": "https://github.com/BMX-Casey94/BSV-AIO-MCP/blob/main/mcp/evidence-package.schema.json",
   "title": "EvidencePackage",
-  "description": "Return type of investigate / design_review. The model reasons over this; it is not chat text.",
+  "description": "Return type of investigate. The model reasons over this; it is not chat text.",
   "type": "object",
   "required": ["question", "network", "index", "claims", "hits", "gaps", "contradictions", "recommended_next", "needs"],
   "properties": {

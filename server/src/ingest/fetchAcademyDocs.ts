@@ -9,7 +9,7 @@ import { dirname, join } from "node:path";
  * skip quiz/assessment noise. The Rúnar docs site serves HTML only, so those pages come from
  * an explicit list and are fetched as markdown.
  *
- * This is a gated offline job (CSW_ALLOW_REFRESH=1), exactly like the Tier 0 refresh. The query
+ * This is a gated offline job (BSV_AIO_ALLOW_REFRESH=1), exactly like the Tier 0 refresh. The query
  * path never imports this module and never fetches; it serves the committed snapshot.
  */
 
@@ -133,7 +133,7 @@ export function writeAcademySnapshot(root: string, result: AcademyFetchResult): 
   const manifest = {
     generated: result.fetchedAt,
     policy:
-      "Query path reads committed academy cards only. This snapshot is refreshed by the gated fetch:academy job (CSW_ALLOW_REFRESH=1).",
+      "Query path reads committed academy cards only. This snapshot is refreshed by the gated fetch:academy job (BSV_AIO_ALLOW_REFRESH=1).",
     pages: result.pages.map((p) => ({ tree: p.tree, slug: p.slug, source: p.url })),
   };
   writeFileSync(join(base, "manifest.json"), JSON.stringify(manifest, null, 2) + "\n", "utf8");

@@ -53,7 +53,7 @@ type PackagesFile = {
 const CODELOAD_ORIGIN = "https://codeload.github.com";
 const GITHUB_API_ORIGIN = "https://api.github.com";
 const DEFAULT_POLICY =
-  "Query path reads committed cards only. Refresh fetches the GitHub tarball at the pinned SHA when CSW_ALLOW_REFRESH=1.";
+  "Query path reads committed cards only. Refresh fetches the GitHub tarball at the pinned SHA when BSV_AIO_ALLOW_REFRESH=1.";
 const RETENTION_FLOOR = 0.8;
 const RETENTION_APPLIES_FROM = 2;
 /** Only these manifest roles publish a package label; every other role keeps `package: null`. */
@@ -75,7 +75,7 @@ const VECTOR_MAX_BYTES = 1024 * 1024;
 export async function refreshTier0(options: RefreshTier0Options): Promise<RefreshTier0Result> {
   if (options.allowRefresh !== true) {
     throw new Error(
-      "Tier 0 refresh is an explicit offline job: run it with CSW_ALLOW_REFRESH=1. The query path serves committed cards and never fetches.",
+      "Tier 0 refresh is an explicit offline job: run it with BSV_AIO_ALLOW_REFRESH=1. The query path serves committed cards and never fetches.",
     );
   }
 
@@ -341,7 +341,7 @@ async function resolveHeadSha(repo: string, fetchImpl: typeof fetch): Promise<st
   const response = await fetchImpl(`${GITHUB_API_ORIGIN}/repos/${repo}/commits/HEAD`, {
     headers: {
       accept: "application/vnd.github+json",
-      "user-agent": "csw-knowledge-mcp-refresh",
+      "user-agent": "bsv-aio-mcp-refresh",
     },
   });
   if (!response.ok) {

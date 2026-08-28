@@ -16,6 +16,8 @@ Thumbs.db
 
 # Local scrape/pipeline residue: kept on disk for corpus regeneration,
 # never committed to the public repo or shipped to npm.
+scripts/
+docs/superpowers/
 from-zyra-bsv-app-studio/
 topics/
 medium-articles/

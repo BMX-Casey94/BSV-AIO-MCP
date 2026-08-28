@@ -2,15 +2,15 @@ import { resolve } from "node:path";
 import { fetchAcademyDocs, writeAcademySnapshot } from "./ingest/fetchAcademyDocs.js";
 
 /**
- * Offline academy/Rúnar-docs snapshot entry point. Refuses to run unless CSW_ALLOW_REFRESH=1,
+ * Offline academy/Rúnar-docs snapshot entry point. Refuses to run unless BSV_AIO_ALLOW_REFRESH=1,
  * so the query path (which never imports this module) can never trigger a fetch. Run from `server/`:
  *
- *   CSW_ALLOW_REFRESH=1 npm run fetch:academy
+ *   BSV_AIO_ALLOW_REFRESH=1 npm run fetch:academy
  */
 async function main(): Promise<void> {
-  if (process.env.CSW_ALLOW_REFRESH !== "1") {
+  if (process.env.BSV_AIO_ALLOW_REFRESH !== "1") {
     throw new Error(
-      "Academy docs fetch is an explicit offline job. Re-run with CSW_ALLOW_REFRESH=1. The query path serves committed cards and never fetches.",
+      "Academy docs fetch is an explicit offline job. Re-run with BSV_AIO_ALLOW_REFRESH=1. The query path serves committed cards and never fetches.",
     );
   }
   const root = resolve(process.cwd(), "..");
