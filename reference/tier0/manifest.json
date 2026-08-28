@@ -1,0 +1,69 @@
+{
+  "generated": "2026-08-19",
+  "policy": "Query path reads committed cards only. Refresh fetches the GitHub tarball at the pinned SHA when CSW_ALLOW_REFRESH=1.",
+  "repos": [
+    {
+      "repo": "bsv-blockchain/ts-sdk",
+      "sha": "9e3ede6b6302480005259ca36cbc73d9b6509d53",
+      "package": "@bsv/sdk",
+      "language": "ts",
+      "role": "sdk"
+    },
+    {
+      "repo": "bsv-blockchain/go-sdk",
+      "sha": "e3e82f08217de9f0642ea38cc6cd3ada3c8dffc4",
+      "package": "go-sdk",
+      "language": "go",
+      "role": "sdk"
+    },
+    {
+      "repo": "bsv-blockchain/ts-stack",
+      "sha": "8b074a06481389edfcd4be624960d7849b0da59b",
+      "package": null,
+      "language": "ts",
+      "role": "specs"
+    },
+    {
+      "repo": "bsv-blockchain/ts-templates",
+      "sha": "03a96b55e474df36e1b4121a5a882fc95ddb6b72",
+      "package": null,
+      "language": "ts",
+      "role": "templates"
+    },
+    {
+      "repo": "bsv-blockchain/wallet-toolbox",
+      "sha": "320a82b59e7cf0207698cb96b5bfe260a2f9e45a",
+      "package": "@bsv/wallet-toolbox",
+      "language": "ts",
+      "role": "wallet"
+    },
+    {
+      "repo": "bsv-blockchain/go-wallet-toolbox",
+      "sha": "27f6cde51b8e73f9cb948d62dcbaafc8df821c3f",
+      "package": "go-wallet-toolbox",
+      "language": "go",
+      "role": "wallet"
+    },
+    {
+      "repo": "bsv-blockchain/BRCs",
+      "sha": "3ae1f25a8d0dd50f72e9b27b23dd561edc085142",
+      "package": null,
+      "language": "spec",
+      "role": "standards"
+    },
+    {
+      "repo": "bsv-blockchain/universal-test-vectors",
+      "sha": "e9d32e6688ddef63259bae094c1275b63fcb157a",
+      "package": null,
+      "language": "spec",
+      "role": "vectors"
+    },
+    {
+      "repo": "icellan/runar",
+      "sha": "3e2b839490f1bc5f7165676e6c4f4472f530e01d",
+      "package": "runar",
+      "language": "ts",
+      "role": "sdk"
+    }
+  ]
+}

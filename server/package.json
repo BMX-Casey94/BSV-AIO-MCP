@@ -1,0 +1,34 @@
+{
+  "name": "@csw/knowledge-mcp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "bin": {
+    "csw-knowledge-mcp": "./dist/index.mjs"
+  },
+  "scripts": {
+    "build": "node build-server.mjs && node build-refresh.mjs && node build-fetch-academy.mjs",
+    "start": "node dist/index.mjs",
+    "build:server": "node build-server.mjs",
+    "build:refresh": "node build-refresh.mjs",
+    "build:fetch-academy": "node build-fetch-academy.mjs",
+    "refresh:tier0": "npm run build:refresh && node dist/refresh.mjs",
+    "fetch:academy": "npm run build:fetch-academy && node dist/fetch-academy.mjs",
+    "smoke": "node scripts/smoke.mjs",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.17.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.0",
+    "esbuild": "^0.28.2",
+    "typescript": "~5.6.3",
+    "vitest": "^3.2.4"
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "name": "bsv-aio-mcp",
+  "version": "1.0.0",
+  "description": "Read-only BSV knowledge MCP server: pinned-snapshot answers for BRCs, Bitcoin Script opcodes, BEEF, Runar, the Tier 0 SDKs and the Craig Wright essay corpus. Never fetches live HTTP; never actuates.",
+  "type": "module",
+  "license": "MIT",
+  "author": "BMX-Casey94",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "bin": {
+    "bsv-aio-mcp": "server/dist/index.mjs"
+  },
+  "files": [
+    "server/dist",
+    "reference",
+    "substack-articles/contradictions.json",
+    "summaries",
+    "summaries-medium",
+    "education",
+    "data/education_index.json",
+    "mcp/evidence-package.schema.json"
+  ],
+  "keywords": [
+    "bsv",
+    "bitcoin-sv",
+    "mcp",
+    "model-context-protocol",
+    "brc",
+    "beef",
+    "opcodes",
+    "runar",
+    "knowledge-base"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BMX-Casey94/BSV-AIO-MCP.git"
+  },
+  "homepage": "https://github.com/BMX-Casey94/BSV-AIO-MCP#readme",
+  "bugs": "https://github.com/BMX-Casey94/BSV-AIO-MCP/issues",
+  "workspaces": [
+    "server"
+  ],
+  "scripts": {
+    "build": "npm run build --workspace=server",
+    "test": "npm test --workspace=server",
+    "typecheck": "npm run typecheck --workspace=server",
+    "mcp": "npm start --workspace=server",
+    "smoke": "node server/smoke-install.mjs",
+    "prepack": "npm run build"
+  }
+}

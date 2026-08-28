@@ -1,0 +1,15 @@
+{
+  "domain": "brc100",
+  "case": "getHeight-simple",
+  "source": "bsv-blockchain/universal-test-vectors@e9d32e6688ddef63259bae094c1275b63fcb157a",
+  "args": {
+    "json": {},
+    "wire": "1900"
+  },
+  "result": {
+    "json": {
+      "height": 850000
+    },
+    "wire": "00fe50f80c00"
+  }
+}

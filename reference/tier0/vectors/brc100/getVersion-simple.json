@@ -1,0 +1,15 @@
+{
+  "domain": "brc100",
+  "case": "getVersion-simple",
+  "source": "bsv-blockchain/universal-test-vectors@e9d32e6688ddef63259bae094c1275b63fcb157a",
+  "args": {
+    "json": {},
+    "wire": "1c00"
+  },
+  "result": {
+    "json": {
+      "version": "1.0.0"
+    },
+    "wire": "00312e302e30"
+  }
+}

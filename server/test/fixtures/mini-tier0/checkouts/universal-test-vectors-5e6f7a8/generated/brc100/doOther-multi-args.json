@@ -1,0 +1,4 @@
+{
+  "action": "doOther",
+  "inputs": ["a", "b"]
+}

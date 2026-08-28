@@ -1,0 +1,43 @@
+{
+  "generated": "2026-08-14",
+  "purpose": "Packages the MCP must never recommend for new work. Used by check_dependency (Phase D) and as knowledge hits (Phase A).",
+  "entries": [
+    {
+      "name": "bsv",
+      "match": "name == 'bsv' OR name starts with 'bsv@' and major < 2",
+      "status": "denied",
+      "reason": "Legacy bsv v1. CVE-2025-69287 on v1 auth code. Floor is @bsv/sdk >= 2. STAS maintenance only.",
+      "successor": "@bsv/sdk"
+    },
+    {
+      "name": "run-sdk",
+      "status": "denied",
+      "reason": "Unmaintained. Do not generate new Run work on this package.",
+      "successor": null
+    },
+    {
+      "name": "js-1sat-ord",
+      "status": "denied",
+      "reason": "Deprecated 1Sat client. Use @1sat/actions plus BRC-147/150 provenance.",
+      "successor": "@1sat/actions"
+    },
+    {
+      "name": "bitcoin-sv/lars",
+      "status": "denied",
+      "reason": "LARS era. Current overlay path is overlay-services / overlay-express / overlay-topics.",
+      "successor": "bsv-blockchain/overlay-services"
+    },
+    {
+      "name": "bitcoin-sv/cars-cli",
+      "status": "denied",
+      "reason": "CARS era. Superseded by overlay-express / create-bsv-app.",
+      "successor": "bsv-blockchain/overlay-express"
+    },
+    {
+      "name": "bitcoin-sv/cars-node",
+      "status": "denied",
+      "reason": "CARS era. Superseded by overlay-services.",
+      "successor": "bsv-blockchain/overlay-services"
+    }
+  ]
+}

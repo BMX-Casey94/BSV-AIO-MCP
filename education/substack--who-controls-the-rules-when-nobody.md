@@ -1,0 +1,21 @@
+---
+title: "Who Controls the Rules When Nobody Controls All of Them?"
+era: substack
+date: 2026-03-14
+slug: who-controls-the-rules-when-nobody
+themes: [governance-decentralisation, intermediaries, security-economics]
+source_summary: summaries/who-controls-the-rules-when-nobody.md
+url: https://singulargrit.substack.com/p/who-controls-the-rules-when-nobody
+---
+
+# Who Controls the Rules When Nobody Controls All of Them? — core principles
+
+- **Most economic models assume somebody owns the rules.** Mechanism design rests on a single actor controlling the full design space; that premise fails in protocol governance, regulatory architecture and platform ecosystems, where rule-setting authority is split across participants who also compete in the downstream game the rules define.
+- **Three features define the distributed-control environment.** Distributed control (different actors set different rule dimensions), participation (rule-setters' payoffs depend on downstream investment under the rules they set) and downstream investment (a third party's sunk capital responds to the rule vector). Removing any one collapses the model to a known special case — single-principal mechanism design (Myerson, Laffont, Tirole), common agency (Bernheim–Whinston, Martimort–Stole), or no investment response at all.
+- **The leader's problem factorises.** In the two-dimensional sequential case, the leader's reduced-form objective decomposes as the choice variable times a bracket containing a share-weighted investment response ratio, a rent response ratio and a linear cost — for any strictly convex cost with non-decreasing marginal cost, any smooth displacement technology under regularity conditions, and any degree of rent alignment.
+- **A closed-form threshold separates under- from over-provision.** Below the threshold (cost parameter divided by the investment response ratio at the social optimum, adjusted for rent alignment) the leader underprovides — the Grossman–Hart / Hart–Moore hold-up logic operating through institutional rule dimensions. Above it the leader overprovides to suppress the follower's rent extraction — a top-dog strategy in the Fudenberg–Tirole taxonomy.
+- **Timing is substantive, not convenient.** Under simultaneous rule-setting, every Nash equilibrium underprovides; over-provision is a pure commitment effect requiring the leader to move before the follower responds. The result holds automatically under superquadratic costs and may fail under convex productivity.
+- **Intermediary competition can be a tragedy.** Each follower's individual rent falls as others crowd the extraction channel, but aggregate rent extraction rises, depressing downstream investment; the over-provision threshold strictly increases in the number of followers, and at baseline calibration over-provision vanishes once three or more followers compete. A competitive intermediation market eliminates over-provision entirely.
+- **Governance structure among rule-setters determines the equilibrium.** With multiple leaders, the aggregate outcome depends on a single sufficient statistic — the sum of each leader's surplus share divided by cost — but this aggregation invariance breaks under hierarchical governance: a sequential leader within the coalition restrains her choice, inducing heavy follower investment (~39 per cent more aggregate capability than flat governance at baseline).
+- **Welfare losses are dominated by gatekeeping.** The welfare gap decomposes into gatekeeping loss (follower rent extraction — approximately 83 per cent at baseline under partial surplus internalisation) and development-cost loss (leader distortion); under over-provision the composition shifts to 36 per cent excess development cost and 64 per cent residual gatekeeping. The magnitudes are calibration-specific; the qualitative pattern is structural.
+- **Builders should map who sets which rule dimension before investing.** Where rule-setting is distributed, the investment response depends on the entire governance configuration — leaders, followers, timing and surplus shares — so due diligence on a platform means identifying each rule dimension's controller and their rent exposure, not merely reading the fee schedule.

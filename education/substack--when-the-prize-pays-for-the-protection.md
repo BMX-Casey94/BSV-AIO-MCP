@@ -1,0 +1,20 @@
+---
+title: "When the Prize Pays for the Protection"
+era: substack
+date: 2026-03-19
+slug: when-the-prize-pays-for-the-protection
+themes: [security-economics, mining-consensus, monetary-economics]
+source_summary: summaries/when-the-prize-pays-for-the-protection.md
+url: https://singulargrit.substack.com/p/when-the-prize-pays-for-the-protection
+---
+
+# When the Prize Pays for the Protection — core principles
+
+- **Protection financed by the activity it protects is a fixed-point problem.** Security depends on contestant entry; entry depends on the prize; the prize is revenue from users; users participate only if the system is secure enough. Equilibrium security must be simultaneously consistent with the demand it generates, the revenue that demand produces, the entry that revenue attracts, the attack cost that entry creates and the deterrence that attack cost provides — city policing funded by property taxes, insurance pools, platform security and fee-funded mining all share the structure.
+- **The equilibrium set forms a complete lattice.** The least equilibrium is shutdown (no users, revenue, contestants or security — always an equilibrium); the greatest is a high-security state; between them sits an unstable tipping threshold. The two-stable-equilibria structure is generic, arising from the complementarity that more users make the system more worth protecting, which makes it more secure, which attracts more users.
+- **Collapse past the critical fee is discontinuous and irreversible.** As the fee rises, the high equilibrium and the unstable threshold converge, collide at a critical fee in a saddle-node bifurcation and annihilate; beyond it only shutdown survives. The recovery threshold lies strictly below the collapse threshold, so the fee must be cut further to restart than it was raised to break — the system has memory of the path that brought it there.
+- **All comparative statics share an amplification denominator.** Shocks multiply through 1/(1−Φ′), where Φ′ is the slope of the self-map at equilibrium — always greater than one at a stable equilibrium and diverging to infinity near the fold. A 10% increase in attack cost also attracts users, revenue and further entry; proximity to the tipping point determines fragility.
+- **The welfare-maximising fee is strictly below the revenue-maximising fee.** A monopolist ignores the security externality — a slightly lower fee brings more users, more security and benefit to all existing users; the gap measures the welfare cost of market power in protection-financed systems.
+- **Fee policy is a stability parameter, not a revenue dial.** Because the model needs no specific functional forms — only regularity conditions on the demand system, cost schedule and deterrence technology — any system funded by usage fees (including a post-subsidy Bitcoin) should treat fee levels as setting its distance from a fold, not as a simple price.
+- **The framework unifies observed failures.** Payment infrastructure adoption and failure display tipping dynamics; cybersecurity investment has critical trust thresholds; restoring a failed insurance pool requires premiums lower than those that caused the failure; and the documented 51% attacks on Bitcoin Gold and Ethereum Classic are instances of the shutdown equilibrium — attackers needed only to push the system past its tipping point, after which the feedback loop did the rest.
+- **Calibration illustrates, and limits are declared.** A proof-of-work calibration shows three equilibria — shutdown near zero security, an unstable threshold around 10%, a stable high equilibrium around 79% — with the amplification multiplier approximately 1.02 at the high equilibrium but diverging near the fold; assuming homogeneous costs produces an error of about 24%, amplified a further 2% by the demand-side loop. The theory does not assert any real system sits at its tipping point, and the deterrence technology is deliberately reduced-form: computational investment, legal enforcement, reputational capital or institutional design all fit.

@@ -1,0 +1,218 @@
+[
+ {
+  "page": 1,
+  "title": "Overview",
+  "file": "01-Overview.md",
+  "chars": 5757
+ },
+ {
+  "page": 2,
+  "title": "Repository Structure & Monorepo Setup",
+  "file": "02-Repository-Structure---Monorepo-Setup.md",
+  "chars": 6875
+ },
+ {
+  "page": 3,
+  "title": "CI/CD, Release & Versioning",
+  "file": "03-CI-CD--Release---Versioning.md",
+  "chars": 7014
+ },
+ {
+  "page": 4,
+  "title": "Core SDK (@bsv/sdk)",
+  "file": "04-Core-SDK---bsv-sdk.md",
+  "chars": 5661
+ },
+ {
+  "page": 5,
+  "title": "Cryptographic Primitives",
+  "file": "05-Cryptographic-Primitives.md",
+  "chars": 7817
+ },
+ {
+  "page": 6,
+  "title": "Transactions, Scripts & BEEF",
+  "file": "06-Transactions--Scripts---BEEF.md",
+  "chars": 8514
+ },
+ {
+  "page": 7,
+  "title": "Wallet Interface & Auth Layer (BRC-100 / BRC-103)",
+  "file": "07-Wallet-Interface---Auth-Layer--BRC-100---BRC-103.md",
+  "chars": 6393
+ },
+ {
+  "page": 8,
+  "title": "Script Templates & Compat Layer",
+  "file": "08-Script-Templates---Compat-Layer.md",
+  "chars": 6355
+ },
+ {
+  "page": 9,
+  "title": "Wallet Layer",
+  "file": "09-Wallet-Layer.md",
+  "chars": 6701
+ },
+ {
+  "page": 10,
+  "title": "wallet-toolbox: Storage, Signer & Wallet Manager",
+  "file": "10-wallet-toolbox--Storage--Signer---Wallet-Manager.md",
+  "chars": 8732
+ },
+ {
+  "page": 11,
+  "title": "WAB: Wallet Authentication Backend",
+  "file": "11-WAB--Wallet-Authentication-Backend.md",
+  "chars": 5801
+ },
+ {
+  "page": 12,
+  "title": "Wallet Relay & Mobile Pairing",
+  "file": "12-Wallet-Relay---Mobile-Pairing.md",
+  "chars": 8968
+ },
+ {
+  "page": 13,
+  "title": "BTMS: Token Management System",
+  "file": "13-BTMS--Token-Management-System.md",
+  "chars": 7624
+ },
+ {
+  "page": 14,
+  "title": "Overlay Services",
+  "file": "14-Overlay-Services.md",
+  "chars": 5678
+ },
+ {
+  "page": 15,
+  "title": "Overlay Services Engine & GASP Sync",
+  "file": "15-Overlay-Services-Engine---GASP-Sync.md",
+  "chars": 8010
+ },
+ {
+  "page": 16,
+  "title": "Overlay Express & Deployment",
+  "file": "16-Overlay-Express---Deployment.md",
+  "chars": 6815
+ },
+ {
+  "page": 17,
+  "title": "Canonical Topic Library (@bsv/overlay-topics)",
+  "file": "17-Canonical-Topic-Library---bsv-overlay-topics.md",
+  "chars": 11715
+ },
+ {
+  "page": 18,
+  "title": "Messaging Layer",
+  "file": "18-Messaging-Layer.md",
+  "chars": 6686
+ },
+ {
+  "page": 19,
+  "title": "MessageBox Client & Server",
+  "file": "19-MessageBox-Client---Server.md",
+  "chars": 8893
+ },
+ {
+  "page": 20,
+  "title": "AuthSocket: Authenticated WebSocket Protocol",
+  "file": "20-AuthSocket--Authenticated-WebSocket-Protocol.md",
+  "chars": 9198
+ },
+ {
+  "page": 21,
+  "title": "Middleware",
+  "file": "21-Middleware.md",
+  "chars": 6052
+ },
+ {
+  "page": 22,
+  "title": "Auth & Payment Express Middleware",
+  "file": "22-Auth---Payment-Express-Middleware.md",
+  "chars": 7052
+ },
+ {
+  "page": 23,
+  "title": "402-Pay: HTTP Micropayment Middleware (BRC-121)",
+  "file": "23-402-Pay--HTTP-Micropayment-Middleware--BRC-121.md",
+  "chars": 7879
+ },
+ {
+  "page": 24,
+  "title": "Network Layer",
+  "file": "24-Network-Layer.md",
+  "chars": 5667
+ },
+ {
+  "page": 25,
+  "title": "Chaintracks Server",
+  "file": "25-Chaintracks-Server.md",
+  "chars": 5903
+ },
+ {
+  "page": 26,
+  "title": "Teranode P2P Listener",
+  "file": "26-Teranode-P2P-Listener.md",
+  "chars": 6422
+ },
+ {
+  "page": 27,
+  "title": "Helper Packages",
+  "file": "27-Helper-Packages.md",
+  "chars": 5151
+ },
+ {
+  "page": 28,
+  "title": "@bsv/simple: High-Level Application API",
+  "file": "28-bsv-simple--High-Level-Application-API.md",
+  "chars": 6910
+ },
+ {
+  "page": 29,
+  "title": "Paymail, Wallet Helper & Utility Packages",
+  "file": "29-Paymail--Wallet-Helper---Utility-Packages.md",
+  "chars": 8435
+ },
+ {
+  "page": 30,
+  "title": "Conformance & Testing Framework",
+  "file": "30-Conformance---Testing-Framework.md",
+  "chars": 6125
+ },
+ {
+  "page": 31,
+  "title": "Conformance Vector Corpus",
+  "file": "31-Conformance-Vector-Corpus.md",
+  "chars": 10420
+ },
+ {
+  "page": 32,
+  "title": "TypeScript & Go Conformance Runners",
+  "file": "32-TypeScript---Go-Conformance-Runners.md",
+  "chars": 9252
+ },
+ {
+  "page": 33,
+  "title": "API Specifications & Code Generation",
+  "file": "33-API-Specifications---Code-Generation.md",
+  "chars": 6118
+ },
+ {
+  "page": 34,
+  "title": "Service Boundary Specifications",
+  "file": "34-Service-Boundary-Specifications.md",
+  "chars": 7667
+ },
+ {
+  "page": 35,
+  "title": "Automated Code Generation & Contract Tests",
+  "file": "35-Automated-Code-Generation---Contract-Tests.md",
+  "chars": 7335
+ },
+ {
+  "page": 36,
+  "title": "Glossary",
+  "file": "36-Glossary.md",
+  "chars": 8790
+ }
+]

@@ -1,0 +1,38 @@
+Available pages for bsv-blockchain/ts-stack:
+
+- 1 Overview
+  - 1.1 Repository Structure & Monorepo Setup
+  - 1.2 CI/CD, Release & Versioning
+- 2 Core SDK (@bsv/sdk)
+  - 2.1 Cryptographic Primitives
+  - 2.2 Transactions, Scripts & BEEF
+  - 2.3 Wallet Interface & Auth Layer (BRC-100 / BRC-103)
+  - 2.4 Script Templates & Compat Layer
+- 3 Wallet Layer
+  - 3.1 wallet-toolbox: Storage, Signer & Wallet Manager
+  - 3.2 WAB: Wallet Authentication Backend
+  - 3.3 Wallet Relay & Mobile Pairing
+  - 3.4 BTMS: Token Management System
+- 4 Overlay Services
+  - 4.1 Overlay Services Engine & GASP Sync
+  - 4.2 Overlay Express & Deployment
+  - 4.3 Canonical Topic Library (@bsv/overlay-topics)
+- 5 Messaging Layer
+  - 5.1 MessageBox Client & Server
+  - 5.2 AuthSocket: Authenticated WebSocket Protocol
+- 6 Middleware
+  - 6.1 Auth & Payment Express Middleware
+  - 6.2 402-Pay: HTTP Micropayment Middleware (BRC-121)
+- 7 Network Layer
+  - 7.1 Chaintracks Server
+  - 7.2 Teranode P2P Listener
+- 8 Helper Packages
+  - 8.1 @bsv/simple: High-Level Application API
+  - 8.2 Paymail, Wallet Helper & Utility Packages
+- 9 Conformance & Testing Framework
+  - 9.1 Conformance Vector Corpus
+  - 9.2 TypeScript & Go Conformance Runners
+- 10 API Specifications & Code Generation
+  - 10.1 Service Boundary Specifications
+  - 10.2 Automated Code Generation & Contract Tests
+- 11 Glossary

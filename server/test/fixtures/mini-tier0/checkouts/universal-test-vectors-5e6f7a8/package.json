@@ -1,0 +1,5 @@
+{
+  "name": "universal-test-vectors-fixture",
+  "private": true,
+  "description": "Tooling manifest; must never be pinned as a vector card."
+}

@@ -1,0 +1,62 @@
+{
+  "generated": "2026-08-14",
+  "policy": "Index Tier 0+1 at symbol granularity first. Warm/cold the rest. Never hot-index bitcoin-sv/*.",
+  "tiers": {
+    "0": {
+      "role": "Core protocol / wallet / standards. Failure breaks the stack.",
+      "repos": [
+        "bsv-blockchain/BRCs",
+        "bsv-blockchain/ts-sdk",
+        "bsv-blockchain/ts-stack",
+        "bsv-blockchain/ts-templates",
+        "bsv-blockchain/go-sdk",
+        "bsv-blockchain/wallet-toolbox",
+        "bsv-blockchain/go-wallet-toolbox",
+        "bsv-blockchain/universal-test-vectors"
+      ]
+    },
+    "1": {
+      "role": "Critical services consumed by many apps.",
+      "repos": [
+        "bsv-blockchain/arcade",
+        "bsv-blockchain/overlay-services",
+        "bsv-blockchain/overlay-topics",
+        "bsv-blockchain/gasp-core",
+        "bsv-blockchain/message-box-server",
+        "bsv-blockchain/message-box-client",
+        "bsv-blockchain/storage-server",
+        "bsv-blockchain/ts-p2p",
+        "bsv-blockchain/go-p2p",
+        "bsv-blockchain/merkle-service",
+        "bsv-blockchain/402-pay",
+        "bsv-blockchain/x402"
+      ]
+    },
+    "2": {
+      "role": "Important single-domain. Warm index (docs + registry), symbols on demand.",
+      "repos": [
+        "bsv-blockchain/identity-react",
+        "bsv-blockchain/uhrp-react",
+        "bsv-blockchain/uhrp-services",
+        "bsv-blockchain/btms",
+        "bsv-blockchain/wab",
+        "bsv-blockchain/simple",
+        "bsv-blockchain/overlay-express",
+        "bsv-blockchain/chaintracks-server",
+        "bsv-blockchain/py-sdk",
+        "bsv-blockchain/py-wallet-toolbox"
+      ]
+    },
+    "cold_legacy": {
+      "role": "ShopRAG-era or archived. Lookup only, labelled legacy.",
+      "repos": [
+        "bitcoin-sv/lars",
+        "bitcoin-sv/cars-cli",
+        "bitcoin-sv/cars-node",
+        "bitcoin-sv/ts-sdk",
+        "bitcoin-sv/BRCs",
+        "bitcoin-sv/wallet-toolbox"
+      ]
+    }
+  }
+}

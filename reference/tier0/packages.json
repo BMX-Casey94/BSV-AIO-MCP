@@ -1,0 +1,10 @@
+{
+  "revision": "9dae02063f58",
+  "packages": [
+    "@bsv/sdk",
+    "@bsv/wallet-toolbox",
+    "go-sdk",
+    "go-wallet-toolbox",
+    "runar"
+  ]
+}

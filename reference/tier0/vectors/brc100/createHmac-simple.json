@@ -1,0 +1,64 @@
+{
+  "domain": "brc100",
+  "case": "createHmac-simple",
+  "source": "bsv-blockchain/universal-test-vectors@e9d32e6688ddef63259bae094c1275b63fcb157a",
+  "args": {
+    "json": {
+      "protocolID": [
+        1,
+        "test-protocol"
+      ],
+      "keyID": "test-key",
+      "counterparty": "self",
+      "privileged": true,
+      "privilegedReason": "test reason",
+      "seekPermission": true,
+      "data": [
+        10,
+        20,
+        30,
+        40
+      ]
+    },
+    "wire": "0d00010d746573742d70726f746f636f6c08746573742d6b65790b010b7465737420726561736f6e040a141e2801"
+  },
+  "result": {
+    "json": {
+      "hmac": [
+        50,
+        60,
+        70,
+        80,
+        90,
+        100,
+        110,
+        120,
+        50,
+        60,
+        70,
+        80,
+        90,
+        100,
+        110,
+        120,
+        50,
+        60,
+        70,
+        80,
+        90,
+        100,
+        110,
+        120,
+        50,
+        60,
+        70,
+        80,
+        90,
+        100,
+        110,
+        120
+      ]
+    },
+    "wire": "00323c46505a646e78323c46505a646e78323c46505a646e78323c46505a646e78"
+  }
+}

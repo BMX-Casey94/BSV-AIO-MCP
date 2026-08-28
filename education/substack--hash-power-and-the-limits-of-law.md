@@ -1,0 +1,21 @@
+---
+title: "Hash Power and the Limits of Law"
+era: substack
+date: 2026-03-13
+slug: hash-power-and-the-limits-of-law
+themes: [mining-consensus, law-regulation, security-economics, networking]
+source_summary: summaries/hash-power-and-the-limits-of-law.md
+url: https://singulargrit.substack.com/p/hash-power-and-the-limits-of-law
+---
+
+# Hash Power and the Limits of Law — core principles
+
+- **Pool coordination, not hardware geography, is the legally salient locus.** A mining pool decides which transactions enter blocks and which chain to build on; China's September 2021 ban (ten PRC ministries) targeted physical mining, not pool coordination software, so operators relocated Stratum servers and redomiciled holding companies while coordination control stayed put. Hash-rate geography does not equal jurisdictional control.
+- **Concentration makes majority attacks attributable in principle.** As of March 2026: Foundry USA (a Delaware subsidiary of Digital Currency Group) exceeds 31% of global hash rate and MARA Pool adds 5.7%; on the Chinese side AntPool 15.7%, F2Pool 11.3%, ViaBTC 9.5% and SpiderPool 8.8% — a combined 52.84%, sufficient if coordinated for a majority attack, and visible through coinbase tags and corporate filings.
+- **Transnational criminal enforcement is broken at every level.** The CFAA, wire-fraud statutes and IEEPA give paper jurisdiction, but there is no US–China extradition treaty, the 2000 MLAT lets China refuse any request it deems harmful to its "sovereignty, security, or public interest", and the 2014 PLA Unit 61398 indictments were a message, not a prosecution. Third-country arrests work for individuals, not infrastructure that never leaves China.
+- **The civil channel fails too.** Hague Service takes six months to two years; Article 36 of China's Data Security Law prohibits providing domestically stored data to foreign judicial bodies without approval; China does not recognise US civil judgments. The blockchain shows *that* a reorg happened but not coordination — legal attribution needs server logs, internal communications and financial flows, all behind Article 36 and opaque Cayman/VIE structures.
+- **The protocol interior is permissionless; the infrastructure envelope is not.** A pool depends on DNS resolution (the root zone maintained by Verisign under agreement with ICANN; .com/.net registries in Virginia), interdomain routing, fast block propagation through relay networks (Falcon, FIBRE), exchange connectivity and cloud hosting — much of it US-tied, and the dependency is directionally asymmetric: Chinese pools need the global internet more than US pools need China's.
+- **Infrastructure leverage degrades rather than arrests.** The enforcement sequence — DOJ indictments, OFAC designation under IEEPA cyber sanctions, registrar seizure of .com domains, termination by cloud, exchange and payment providers, severed relay access, and in the most contingent case coordinated BGP prefix filtering — produces degraded propagation, rising orphan risk and rational miner migration: the playbook used against Gameover Zeus, Iranian financial institutions and Russian ransomware operators.
+- **Protocol-native competition must remain lawful.** Selfish mining and fee sniping are protocol-native behaviours and must not be criminalised; the enforcement gap applies only to double-spend fraud, deliberate disruption or targeted censorship. The chokepoint lever also cuts both ways via the Great Firewall.
+- **International-law classification turns on attribution.** Under the ILC Articles, private conduct makes state action retorsion or domestic enforcement, while state direction shifts the analysis to countermeasures law and the Tallinn Manual — but classification depends on facts the framework cannot establish within the timeframe enforcement requires.
+- **Builders should price jurisdictional reach into network design.** The realistic enforcement instrument against a hostile pool is leverage over internet chokepoints — a lever that exists without an adequate accountability framework; the proposals on the table are a pre-authorised, congressionally overseen interdiction framework, multilateral treatment of mining-pool conduct via a Budapest Convention supplementary protocol, and a sector-specific US–China enforcement protocol analogous to the 2015 bilateral cyber agreement.

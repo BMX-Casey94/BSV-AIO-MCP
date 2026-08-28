@@ -1,0 +1,21 @@
+{
+  "domain": "user",
+  "case": "bob",
+  "source": "bsv-blockchain/universal-test-vectors@e9d32e6688ddef63259bae094c1275b63fcb157a",
+  "body": {
+    "private_key": "fdd506efec13e05cdff57ef13e24a60009aba0e8f2162e2cff2886460175cad8",
+    "public_key": "020edd3dad5a457e087a448ab7dcf2b23ff5206e3cbc34b8cf006680fa15d45f5e",
+    "address": "16ZKKmj3jCuJqh52Kp66QAoJKLJ4MLBmBv",
+    "xpriv": "xprv9s21ZrQH143K3c3jkTBGijY5UsiHUdd3fSzRFD21c7cFduWX4m9nPrcuVrjQ76K234TFWgKF3f97HXggriPipBdhuof6bSvLGE74zCCgJds",
+    "xpub": "xpub661MyMwAqRbcG68CrUiH5sUp2uYmt6Lu2fv23bRdAT9EWhqfcJU2wewPM5wvS5fVcRkoVQZpUVMyDaVQXPoYEkTJ6wbx2PkyFtPgvBUTq3g",
+    "xpub_id": "",
+    "paymails": [
+      {
+        "alias": "bob",
+        "domain": "example.com",
+        "paymail": "bob@example.com",
+        "public_name": "BOB"
+      }
+    ]
+  }
+}

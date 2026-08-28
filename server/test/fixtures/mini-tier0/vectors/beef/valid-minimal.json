@@ -1,0 +1,12 @@
+{
+  "domain": "beef",
+  "case": "valid-minimal",
+  "note": "Test fixture only. Not a vector from bsv-blockchain/universal-test-vectors.",
+  "input": {
+    "beef_hex": "0100beef00"
+  },
+  "expect": {
+    "accepted": false,
+    "reason": "Fixture placeholder stream: no transactions and no merkle path."
+  }
+}

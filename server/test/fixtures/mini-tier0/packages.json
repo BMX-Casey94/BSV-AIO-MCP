@@ -1,0 +1,4 @@
+{
+  "revision": "fixture",
+  "packages": ["@bsv/sdk", "go-sdk"]
+}

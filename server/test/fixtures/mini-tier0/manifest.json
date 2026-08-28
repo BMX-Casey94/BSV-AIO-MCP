@@ -1,0 +1,20 @@
+{
+  "generated": "2026-08-15",
+  "policy": "Test fixture. Packages and SHAs are set because the fixture checkouts exist in this directory.",
+  "repos": [
+    {
+      "repo": "bsv-blockchain/ts-sdk",
+      "sha": "fixture",
+      "package": "@bsv/sdk",
+      "language": "ts",
+      "role": "sdk"
+    },
+    {
+      "repo": "bsv-blockchain/go-sdk",
+      "sha": "fixture",
+      "package": "go-sdk",
+      "language": "go",
+      "role": "sdk"
+    }
+  ]
+}

@@ -1,0 +1,601 @@
+{
+  "generated": "2026-08-18T17:48:20.088Z",
+  "policy": "Query path reads committed academy cards only. This snapshot is refreshed by the gated fetch:academy job (CSW_ALLOW_REFRESH=1).",
+  "pages": [
+    {
+      "tree": "opcodes",
+      "slug": "bsv-opcodes",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "historical-opcodes-and-chronicle-restoration",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/historical-opcodes-and-chronicle-restoration.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "the-2010-restrictions-context-and-rationale",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/historical-opcodes-and-chronicle-restoration/the-2010-restrictions-context-and-rationale.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "arithmetic-operations-restored",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/historical-opcodes-and-chronicle-restoration/arithmetic-operations-restored.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "bit-shift-operations-restored",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/historical-opcodes-and-chronicle-restoration/bit-shift-operations-restored.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "specialized-arithmetic-restored",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/historical-opcodes-and-chronicle-restoration/specialized-arithmetic-restored.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "bitwise-logic-operations-restored",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/historical-opcodes-and-chronicle-restoration/bitwise-logic-operations-restored.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "string-manipulation-fully-restored",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/historical-opcodes-and-chronicle-restoration/string-manipulation-fully-restored.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "version-related-opcodes-restored",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/historical-opcodes-and-chronicle-restoration/version-related-opcodes-restored.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "practical-applications-of-version-opcodes",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/historical-opcodes-and-chronicle-restoration/practical-applications-of-version-opcodes.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "new-cryptographic-capabilities",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/historical-opcodes-and-chronicle-restoration/new-cryptographic-capabilities.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "the-reserved-opcodes",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/historical-opcodes-and-chronicle-restoration/the-reserved-opcodes.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "practical-implications-for-development",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/historical-opcodes-and-chronicle-restoration/practical-implications-for-development.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "backward-compatibility-considerations",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/historical-opcodes-and-chronicle-restoration/backward-compatibility-considerations.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "constant-value-and-pushdata-opcodes",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/constant-value-and-pushdata-opcodes.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "building-blocks-constant-value-opcodes",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/constant-value-and-pushdata-opcodes/building-blocks-constant-value-opcodes.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "pushing-arbitrary-data-pushdata-opcodes",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/constant-value-and-pushdata-opcodes/pushing-arbitrary-data-pushdata-opcodes.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "practical-examples-pay-to-public-key-hash-p2pkh",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/constant-value-and-pushdata-opcodes/practical-examples-pay-to-public-key-hash-p2pkh.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "simplified-notation-in-examples",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/constant-value-and-pushdata-opcodes/simplified-notation-in-examples.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "if-conditionals",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/if-conditionals.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "understanding-flow-control",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/if-conditionals/understanding-flow-control.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "op_if-executing-code-when-true",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/if-conditionals/op_if-executing-code-when-true.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "op_notif-executing-code-when-false",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/if-conditionals/op_notif-executing-code-when-false.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "op_else",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/if-conditionals/op_else.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "nested-and-sequential-if-conditionals",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/if-conditionals/nested-and-sequential-if-conditionals.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "op_nop-op_ver",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/op_nop-op_ver.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "op_nop",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/op_nop-op_ver/op_nop.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "op_verify-and-derivatives",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/op_nop-op_ver/op_verify-and-derivatives.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "op_equalverify",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/op_nop-op_ver/op_equalverify.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "op_numequalverify",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/op_nop-op_ver/op_numequalverify.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "op_checksigverify",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/op_nop-op_ver/op_checksigverify.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "op_checkmultisigverify",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/op_nop-op_ver/op_checkmultisigverify.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "practical-examples",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/op_nop-op_ver/practical-examples.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "chronicle-release-version-related-opcodes",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/op_nop-op_ver/chronicle-release-version-related-opcodes.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "op_return-and-data-storage",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/op_return-and-data-storage.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "what-is-op_return",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/op_return-and-data-storage/what-is-op_return.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "common-use-cases",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/op_return-and-data-storage/common-use-cases.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "implementation-best-practices",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/op_return-and-data-storage/implementation-best-practices.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "limitations-and-considerations",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/op_return-and-data-storage/limitations-and-considerations.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "stack-operations",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/stack-operations.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "understanding-the-stack-model",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/stack-operations/understanding-the-stack-model.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "stack-duplicators",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/stack-operations/stack-duplicators.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "stack-eliminators",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/stack-operations/stack-eliminators.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "stack-relocators",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/stack-operations/stack-relocators.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "the-alternate-stack",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/stack-operations/the-alternate-stack.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "combining-stack-operations",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/stack-operations/combining-stack-operations.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "data-transformation",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/data-transformation.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "splitting-and-joining-data",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/data-transformation/splitting-and-joining-data.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "data-type-transformations",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/data-transformation/data-type-transformations.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "practical-implementation-examples",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/data-transformation/practical-implementation-examples.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "stack-data-queries",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/stack-data-queries.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "what-are-stack-data-queries",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/stack-data-queries/what-are-stack-data-queries.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "understanding-op_depth",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/stack-data-queries/understanding-op_depth.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "practical-application-multi-signature-flexibility",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/stack-data-queries/practical-application-multi-signature-flexibility.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "understanding-op_size",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/stack-data-queries/understanding-op_size.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "common-use-pattern-length-validation",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/stack-data-queries/common-use-pattern-length-validation.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "practical-application-format-validation",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/stack-data-queries/practical-application-format-validation.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "combining-stack-queries",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/stack-data-queries/combining-stack-queries.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "example-token-transfer-validation",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/stack-data-queries/example-token-transfer-validation.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "best-practices-for-stack-queries",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/stack-data-queries/best-practices-for-stack-queries.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "practical-implementation-examples",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/stack-data-queries/practical-implementation-examples.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "bitwise-transform",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/bitwise-transform.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "understanding-flow-control",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/bitwise-transform/understanding-flow-control.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "op_if-executing-code-when-true",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/bitwise-transform/op_if-executing-code-when-true.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "op_notif-executing-code-when-false",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/bitwise-transform/op_notif-executing-code-when-false.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "op_else",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/bitwise-transform/op_else.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "nested-and-sequential-if-conditionals",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/bitwise-transform/nested-and-sequential-if-conditionals.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "cryptographic-functions",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/cryptographic-functions.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "hash-functions-creating-cryptographic-fingerprints",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/cryptographic-functions/hash-functions-creating-cryptographic-fingerprints.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "double-hash-operations-enhanced-security",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/cryptographic-functions/double-hash-operations-enhanced-security.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "choosing-the-right-hash-function",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/cryptographic-functions/choosing-the-right-hash-function.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "digital-signatures-proving-ownership",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/cryptographic-functions/digital-signatures-proving-ownership.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "multisignature-verification-shared-control",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/cryptographic-functions/multisignature-verification-shared-control.md"
+    },
+    {
+      "tree": "opcodes",
+      "slug": "op_codeseparator-selective-script-signing",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/bsv-opcodes/cryptographic-functions/op_codeseparator-selective-script-signing.md"
+    },
+    {
+      "tree": "script",
+      "slug": "introduction-to-bitcoin-script",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/introduction-to-bitcoin-script.md"
+    },
+    {
+      "tree": "script",
+      "slug": "chapter-1-about-bitcoin-script",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/introduction-to-bitcoin-script/chapter-1-about-bitcoin-script.md"
+    },
+    {
+      "tree": "script",
+      "slug": "introduction-to-bitcoin-script",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/introduction-to-bitcoin-script/chapter-1-about-bitcoin-script/introduction-to-bitcoin-script.md"
+    },
+    {
+      "tree": "script",
+      "slug": "02-forth-a-precursor-to-bitcoin-script",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/introduction-to-bitcoin-script/chapter-1-about-bitcoin-script/02-forth-a-precursor-to-bitcoin-script.md"
+    },
+    {
+      "tree": "script",
+      "slug": "03-from-forth-to-bitcoin-script",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/introduction-to-bitcoin-script/chapter-1-about-bitcoin-script/03-from-forth-to-bitcoin-script.md"
+    },
+    {
+      "tree": "script",
+      "slug": "04-bitcoins-transaction-protocol",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/introduction-to-bitcoin-script/chapter-1-about-bitcoin-script/04-bitcoins-transaction-protocol.md"
+    },
+    {
+      "tree": "script",
+      "slug": "05-transaction-breakdown",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/introduction-to-bitcoin-script/chapter-1-about-bitcoin-script/05-transaction-breakdown.md"
+    },
+    {
+      "tree": "script",
+      "slug": "06-nlocktime",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/introduction-to-bitcoin-script/chapter-1-about-bitcoin-script/06-nlocktime.md"
+    },
+    {
+      "tree": "script",
+      "slug": "07-the-script-evaluator",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/introduction-to-bitcoin-script/chapter-1-about-bitcoin-script/07-the-script-evaluator.md"
+    },
+    {
+      "tree": "script",
+      "slug": "chapter-2-basic-script-syntax",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/introduction-to-bitcoin-script/chapter-2-basic-script-syntax.md"
+    },
+    {
+      "tree": "script",
+      "slug": "01-introduction",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/introduction-to-bitcoin-script/chapter-2-basic-script-syntax/01-introduction.md"
+    },
+    {
+      "tree": "script",
+      "slug": "02-rules-around-data-and-scripting-grammar",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/introduction-to-bitcoin-script/chapter-2-basic-script-syntax/02-rules-around-data-and-scripting-grammar.md"
+    },
+    {
+      "tree": "script",
+      "slug": "03-the-stacks",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/introduction-to-bitcoin-script/chapter-2-basic-script-syntax/03-the-stacks.md"
+    },
+    {
+      "tree": "script",
+      "slug": "chapter-4-simple-scripts",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/introduction-to-bitcoin-script/chapter-4-simple-scripts.md"
+    },
+    {
+      "tree": "script",
+      "slug": "01-introduction",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/introduction-to-bitcoin-script/chapter-4-simple-scripts/01-introduction.md"
+    },
+    {
+      "tree": "script",
+      "slug": "01-pay-to-public-key-p2pk",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/introduction-to-bitcoin-script/chapter-4-simple-scripts/01-pay-to-public-key-p2pk.md"
+    },
+    {
+      "tree": "script",
+      "slug": "02-pay-to-hash-puzzle",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/introduction-to-bitcoin-script/chapter-4-simple-scripts/02-pay-to-hash-puzzle.md"
+    },
+    {
+      "tree": "script",
+      "slug": "03-pay-to-public-key-hash-p2pkh",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/introduction-to-bitcoin-script/chapter-4-simple-scripts/03-pay-to-public-key-hash-p2pkh.md"
+    },
+    {
+      "tree": "script",
+      "slug": "04-pay-to-multisig-p2ms",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/introduction-to-bitcoin-script/chapter-4-simple-scripts/04-pay-to-multisig-p2ms.md"
+    },
+    {
+      "tree": "script",
+      "slug": "05-pay-to-multisignature-hash-p2msh",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/introduction-to-bitcoin-script/chapter-4-simple-scripts/05-pay-to-multisignature-hash-p2msh.md"
+    },
+    {
+      "tree": "script",
+      "slug": "06-r-puzzles",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/introduction-to-bitcoin-script/chapter-4-simple-scripts/06-r-puzzles.md"
+    },
+    {
+      "tree": "script",
+      "slug": "chapter-5-op_push_tx",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/introduction-to-bitcoin-script/chapter-5-op_push_tx.md"
+    },
+    {
+      "tree": "script",
+      "slug": "01-turing-machines",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/introduction-to-bitcoin-script/chapter-5-op_push_tx/01-turing-machines.md"
+    },
+    {
+      "tree": "script",
+      "slug": "02-elliptic-curve-signatures-in-bitcoin",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/introduction-to-bitcoin-script/chapter-5-op_push_tx/02-elliptic-curve-signatures-in-bitcoin.md"
+    },
+    {
+      "tree": "script",
+      "slug": "03-op_push_tx",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/introduction-to-bitcoin-script/chapter-5-op_push_tx/03-op_push_tx.md"
+    },
+    {
+      "tree": "script",
+      "slug": "04-signing-and-checking-the-pre-image",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/introduction-to-bitcoin-script/chapter-5-op_push_tx/04-signing-and-checking-the-pre-image.md"
+    },
+    {
+      "tree": "script",
+      "slug": "05-nversion",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/introduction-to-bitcoin-script/chapter-5-op_push_tx/05-nversion.md"
+    },
+    {
+      "tree": "script",
+      "slug": "06-hashprevouts",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/introduction-to-bitcoin-script/chapter-5-op_push_tx/06-hashprevouts.md"
+    },
+    {
+      "tree": "script",
+      "slug": "07-hashsequence",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/introduction-to-bitcoin-script/chapter-5-op_push_tx/07-hashsequence.md"
+    },
+    {
+      "tree": "script",
+      "slug": "08-outpoint",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/introduction-to-bitcoin-script/chapter-5-op_push_tx/08-outpoint.md"
+    },
+    {
+      "tree": "script",
+      "slug": "09-scriptlen-and-scriptpubkey",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/introduction-to-bitcoin-script/chapter-5-op_push_tx/09-scriptlen-and-scriptpubkey.md"
+    },
+    {
+      "tree": "script",
+      "slug": "10-value",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/introduction-to-bitcoin-script/chapter-5-op_push_tx/10-value.md"
+    },
+    {
+      "tree": "script",
+      "slug": "11-nsequence",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/introduction-to-bitcoin-script/chapter-5-op_push_tx/11-nsequence.md"
+    },
+    {
+      "tree": "script",
+      "slug": "12-hashoutputs",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/introduction-to-bitcoin-script/chapter-5-op_push_tx/12-hashoutputs.md"
+    },
+    {
+      "tree": "script",
+      "slug": "13-nlocktime",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/introduction-to-bitcoin-script/chapter-5-op_push_tx/13-nlocktime.md"
+    },
+    {
+      "tree": "script",
+      "slug": "14-sighash-flags",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/introduction-to-bitcoin-script/chapter-5-op_push_tx/14-sighash-flags.md"
+    },
+    {
+      "tree": "script",
+      "slug": "chapter-6-conclusion",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/introduction-to-bitcoin-script/chapter-6-conclusion.md"
+    },
+    {
+      "tree": "script",
+      "slug": "conclusion",
+      "source": "https://hub.bsvblockchain.org/higher-learning/bsv-academy/introduction-to-bitcoin-script/chapter-6-conclusion/conclusion.md"
+    },
+    {
+      "tree": "runar",
+      "slug": "sdk-overview",
+      "source": "https://runar.build/docs/sdk/overview"
+    },
+    {
+      "tree": "runar",
+      "slug": "sdk-api",
+      "source": "https://runar.build/docs/api-reference/sdk-api"
+    },
+    {
+      "tree": "runar",
+      "slug": "compiler-api",
+      "source": "https://runar.build/docs/api-reference/compiler-api"
+    },
+    {
+      "tree": "runar",
+      "slug": "cli-reference",
+      "source": "https://runar.build/docs/api-reference/cli-reference"
+    },
+    {
+      "tree": "runar",
+      "slug": "quick-start",
+      "source": "https://runar.build/docs/getting-started/quick-start"
+    },
+    {
+      "tree": "runar",
+      "slug": "contract-basics",
+      "source": "https://runar.build/docs/writing-contracts/contract-basics"
+    },
+    {
+      "tree": "runar",
+      "slug": "contract-decorators-and-types",
+      "source": "https://runar.build/docs/api-reference/contract-decorators-and-types"
+    }
+  ]
+}

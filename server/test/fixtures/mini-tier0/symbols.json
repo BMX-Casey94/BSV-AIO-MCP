@@ -1,0 +1,14 @@
+{
+  "revision": "fixture",
+  "symbols": [
+    {
+      "name": "Beef",
+      "repo": "bsv-blockchain/ts-sdk",
+      "package": "@bsv/sdk",
+      "language": "ts",
+      "kind": "class",
+      "locator": "src/transaction/Beef.ts:1",
+      "exported": true
+    }
+  ]
+}

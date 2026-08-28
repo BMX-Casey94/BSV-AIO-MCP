@@ -1,0 +1,32 @@
+node_modules/
+dist/
+.zyra-data/
+*.sqlite
+*.sqlite-journal
+.env
+.env.*
+medium_cookies.txt
+*cookies*
+.superpowers/
+.worktrees/
+server/data/
+*.log
+.DS_Store
+Thumbs.db
+
+# Local scrape/pipeline residue: kept on disk for corpus regeneration,
+# never committed to the public repo or shipped to npm.
+from-zyra-bsv-app-studio/
+topics/
+medium-articles/
+substack-articles/*
+!substack-articles/contradictions.json
+data/education/
+data/developer_scan.json
+reference/shoprag-bsv-specs-and-docs.json
+server/probe-*.json
+medium_profile.html
+medium_stream_test.json
+page2.json
+triage_out.txt
+triage_medium_out.txt

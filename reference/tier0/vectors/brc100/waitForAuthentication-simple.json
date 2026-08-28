@@ -1,0 +1,15 @@
+{
+  "domain": "brc100",
+  "case": "waitForAuthentication-simple",
+  "source": "bsv-blockchain/universal-test-vectors@e9d32e6688ddef63259bae094c1275b63fcb157a",
+  "args": {
+    "json": {},
+    "wire": "1800"
+  },
+  "result": {
+    "json": {
+      "authenticated": true
+    },
+    "wire": "00"
+  }
+}

@@ -1,0 +1,20 @@
+---
+title: "Why Transaction Throughput Determines How Long Bitcoin’s Security Model Holds"
+era: substack
+date: 2026-03-20
+slug: why-transaction-throughput-determines
+themes: [scaling-throughput, security-economics, mining-consensus, btc-critique]
+source_summary: summaries/why-transaction-throughput-determines.md
+url: https://singulargrit.substack.com/p/why-transaction-throughput-determines
+---
+
+# Why Transaction Throughput Determines How Long Bitcoin’s Security Model Holds — core principles
+
+- **Mining samples without replacement from a finite domain.** The universal Poisson model assumes sampling with replacement, but a block template offers a 4-byte nonce plus an 8-byte coinbase extra-nonce — 2^96 inputs — so mining is actually negative hypergeometric, not negative binomial (Parra-Moyano, Reich and Schmedders, 2024, *Computational Economics*). Every economic security model inheriting the memorylessness assumption carries this expiry date.
+- **The approximation holds while samples stay under 5% of the population.** Per Devore and Berk (2012): at roughly 750 EH/s the network computes ~4.5 × 10^23 hashes per 10-minute block — 0.0006% of 2^96, so the approximation is excellent now; at Moore's-law projections, 2040 sees ~768,000 EH/s (0.6% of the domain) and 2050 sees ~78 million EH/s (59%), at which point memorylessness fails even for individual hash trials.
+- **Throughput continuously refreshes the domain.** A block template is defined by the previous-block hash, transaction set and coinbase output, so every new transaction changes the Merkle root and opens a fresh 2^96 "urn". Effective domain equals templates per block times 2^96: 4 TPS gives 2,400 templates (2^107); one billion TPS gives 600 billion (2^135); ten billion TPS gives 2^138.
+- **Throughput buys decades of model validity.** Breakdown dates for the Poisson approximation: no refresh ~2045; 4 TPS ~2061; 5,000 TPS ~2077; one million TPS ~2088; one billion TPS ~2103; ten billion TPS ~2108. Each tenfold throughput increase adds ~3.3 bits; moving from 4 TPS to ten billion TPS adds 31 bits — 47 extra years of validity. That is not a rounding error.
+- **At scale the urn is replaced faster than any miner can sample it.** At one billion TPS a miner receives ~600 billion new transactions per block (~1,000 per microsecond); even at 2050 hash rates the explored fraction of the effective domain is 9.8 × 10⁻¹³ per block. Sustained throughput above one million TPS has been demonstrated on adversarial PoW networks with UTXO architectures, with demand arising from machine-to-machine, IoT micropayments, supply-chain settlement and data-integrity workloads.
+- **Capped capacity compounds the security-budget problem.** As the subsidy halves (3.125 BTC in 2024 towards 0.05 BTC by 2048), fee revenue must fund security; a 4,000-transaction block cap forces high per-transaction fees, risking user exodus, hashrate decline and a faster approach to the Poisson threshold — three mutually reinforcing pressures. By contrast, a billion transactions at $0.0001 each yields $100,000 per block without pricing anyone out.
+- **The core economic insight survives its own formulas.** Budish's requirement that permissionless PoW make flow payments large relative to attack value stands (his one-shot Nash argument uses no Poisson machinery), but his attack-duration, attack-cost and zero-net-cost formulas treat the race as a homogeneous birth-death process and are valid only while the Poisson approximation holds; difficulty adjustment, fee accumulation, 100-block coinbase maturity and heaviest-chain selection already violate memorylessness at other levels.
+- **Throughput is a security parameter, not merely a payments feature.** The stochastic foundation's shelf life is chosen by the protocol designer: high throughput refreshes the mining domain, keeps per-transaction fees low enough to retain users, and thereby funds security through volume — scaling is a security imperative, and the mathematics leaves the design choice to the protocol.

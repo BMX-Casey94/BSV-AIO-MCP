@@ -1,0 +1,26 @@
+{
+  "generated": "2026-08-14",
+  "purpose": "Map BitGenius/ShopRAG bitcoin-sv/* sources to current bsv-blockchain successors. Do not hot-index the old org.",
+  "upstream": "reference/shoprag-bsv-specs-and-docs.json",
+  "mappings": [
+    {"shoprag": "bitcoin-sv/ts-sdk", "successor": "bsv-blockchain/ts-sdk", "status": "current", "tier": 0, "notes": "Also consumed via ts-stack as @bsv/sdk"},
+    {"shoprag": "bitcoin-sv/BRCs", "successor": "bsv-blockchain/BRCs", "status": "current", "tier": 0, "notes": "Canonical catalogue: reference/brc_index.json"},
+    {"shoprag": "bitcoin-sv/wallet-toolbox", "successor": "bsv-blockchain/wallet-toolbox", "status": "current", "tier": 0, "notes": "Go counterpart: go-wallet-toolbox"},
+    {"shoprag": "bitcoin-sv/identity-react", "successor": "bsv-blockchain/identity-react", "status": "current", "tier": 2},
+    {"shoprag": "bitcoin-sv/uhrp-react", "successor": "bsv-blockchain/uhrp-react", "status": "current", "tier": 2},
+    {"shoprag": "bitcoin-sv/storage-server", "successor": "bsv-blockchain/storage-server", "status": "current", "tier": 1},
+    {"shoprag": "bitcoin-sv/p2p", "successor": "bsv-blockchain/ts-p2p", "status": "current", "tier": 1, "also": ["bsv-blockchain/go-p2p"]},
+    {"shoprag": "bitcoin-sv/message-box-server", "successor": "bsv-blockchain/message-box-server", "status": "current", "tier": 1},
+    {"shoprag": "bitcoin-sv/lars", "successor": null, "status": "legacy", "tier": "cold", "notes": "CARS/LARS era. Current: overlay-services, overlay-express, overlay-topics, gasp-core"},
+    {"shoprag": "bitcoin-sv/cars-cli", "successor": null, "status": "legacy", "tier": "cold", "notes": "Superseded by overlay-express / create-bsv-app"},
+    {"shoprag": "bitcoin-sv/cars-node", "successor": null, "status": "legacy", "tier": "cold", "notes": "Superseded by overlay-services / overlay-express"}
+  ],
+  "not_in_shoprag_but_tier0": [
+    "bsv-blockchain/go-sdk",
+    "bsv-blockchain/go-wallet-toolbox",
+    "bsv-blockchain/arcade",
+    "bsv-blockchain/ts-templates",
+    "bsv-blockchain/overlay-services",
+    "bsv-blockchain/universal-test-vectors"
+  ]
+}

@@ -1,0 +1,2099 @@
+BSV BLOCKCHAIN WALLET CLIENT - LLM TRAINING GUIDE
+==================================================
+
+This document provides comprehensive training for Large Language Models on BSV Blockchain development using the @bsv/sdk wallet client. Each section contains technical patterns, API usage, and practical implementation skills.
+
+=====================================================================================================
+SECTION 1: CORE WALLET INITIALIZATION AND CONNECTION
+=====================================================================================================
+
+SKILL: Initialize WalletClient
+-------------------------------
+The WalletClient is the primary interface for interacting with BSV blockchain wallets.
+
+Pattern:
+```typescript
+import { WalletClient } from '@bsv/sdk'
+const wallet = new WalletClient()
+```
+
+Key Concepts:
+- WalletClient connects to the user's local wallet environment
+- No configuration required for default usage
+- Can optionally specify network ('auto', 'main', 'test') and identity
+- Example with identity: new WalletClient('auto', 'username')
+
+Use Cases:
+- All blockchain operations start with WalletClient initialization
+- Transaction creation, signing, and broadcasting
+- Key derivation and management
+- Certificate and identity operations
+
+
+=====================================================================================================
+SECTION 2: TOKEN CREATION, MANAGEMENT, AND REDEMPTION
+=====================================================================================================
+
+SKILL: Create Tokens with createAction
+---------------------------------------
+Tokens represent digital assets stored on-chain with minimal data footprint.
+
+Pattern:
+```typescript
+import { WalletClient, Script } from '@bsv/sdk'
+
+const wallet = new WalletClient()
+const response = await wallet.createAction({
+  description: 'create an event ticket',
+  outputs: [{
+    satoshis: 1,
+    lockingScript: Script.fromASM('OP_NOP').toHex(),
+    basket: 'event tickets',
+    outputDescription: 'event ticket'
+  }]
+})
+```
+
+Key Concepts:
+- createAction() creates blockchain transactions with outputs
+- satoshis: minimal value (1 sat is standard for tokens)
+- lockingScript: Bitcoin script determining spending conditions
+- basket: logical grouping/categorization within wallet
+- outputDescription: human-readable label for the output
+- Returns transaction details including txid and BEEF format
+
+Technical Details:
+- Script.fromASM() converts Bitcoin Script assembly to executable format
+- OP_NOP is a no-operation opcode (does nothing, always succeeds)
+- .toHex() serializes the script to hexadecimal format
+- Baskets organize UTXOs for easier management
+
+SKILL: List Tokens from Wallet Baskets
+---------------------------------------
+Retrieve tokens stored in specific baskets within the user's wallet.
+
+Pattern:
+```typescript
+const wallet = new WalletClient()
+const response = await wallet.listOutputs({
+  basket: 'event tickets'
+})
+```
+
+Key Concepts:
+- listOutputs() queries spendable UTXOs in the wallet
+- basket parameter filters by logical grouping
+- Returns array of outputs with outpoint references
+- Each output contains spending information
+
+Advanced Pattern with BEEF:
+```typescript
+const list = await wallet.listOutputs({
+  basket: 'event tickets',
+  include: 'entire transactions',
+  limit: 1
+})
+```
+
+Advanced Options:
+- include: 'entire transactions' - includes full transaction data in BEEF format
+- limit: number - restricts result count
+- includeCustomInstructions: true - includes custom metadata
+
+Technical Details:
+- BEEF (Background Evaluation Extended Format) is a transaction serialization format
+- Contains full transaction history for SPV validation
+- Outpoint format: "txid.vout" (transaction ID + output index)
+
+SKILL: Redeem/Spend Tokens
+---------------------------
+Spend tokens by creating inputs that reference existing outputs.
+
+Pattern:
+```typescript
+import { WalletClient, Script } from '@bsv/sdk'
+
+const wallet = new WalletClient()
+
+// First, retrieve the token
+const list = await wallet.listOutputs({
+  basket: 'event tickets',
+  include: 'entire transactions',
+  limit: 1
+})
+
+// Then spend it
+const response = await wallet.createAction({
+  description: 'redeem an event ticket',
+  inputBEEF: list.BEEF,
+  inputs: [{
+    outpoint: list.outputs[0].outpoint,
+    unlockingScript: Script.fromASM('OP_TRUE').toHex(),
+    inputDescription: 'event ticket'
+  }]
+})
+```
+
+Key Concepts:
+- inputBEEF provides transaction history for validation
+- inputs array specifies which UTXOs to spend
+- outpoint identifies the specific output to consume
+- unlockingScript satisfies the locking conditions
+- OP_TRUE is a simple unlocking script that always succeeds
+
+Transaction Lifecycle:
+1. Query outputs to find spendable tokens
+2. Retrieve full transaction data (BEEF)
+3. Create action with input referencing output
+4. Provide unlocking script matching locking script
+5. Wallet signs and broadcasts transaction
+
+Script Matching Rules:
+- Unlocking script must satisfy locking script conditions
+- OP_TRUE unlocks OP_NOP (both trivial operations)
+- P2PKH requires signature + public key
+- Custom scripts require custom unlocking logic
+
+
+=====================================================================================================
+SECTION 3: IDENTITY RESOLUTION AND KEY MANAGEMENT
+=====================================================================================================
+
+SKILL: Resolve Identity Keys by Attributes
+-------------------------------------------
+Discover public keys associated with user attributes using identity services.
+
+Pattern:
+```typescript
+import { IdentityClient } from '@bsv/sdk'
+
+const identityClient = new IdentityClient()
+const response = await identityClient.resolveByAttributes({
+  attributes: {
+    userName: 'deggen'
+  }
+})
+const identityKey = response[0]
+```
+
+Key Concepts:
+- IdentityClient queries decentralized identity resolution services
+- resolveByAttributes() searches by user-defined attributes
+- Returns array of identity records with public keys
+- Enables human-readable addressing (username instead of key)
+
+Identity System Architecture:
+- Decentralized identity attestation
+- Attributes can include: userName, email, domain, etc.
+- Multiple identity providers may return results
+- First result [0] is typically primary identity
+
+SKILL: Derive Identity Keys from Wallet
+----------------------------------------
+Generate and retrieve identity keys from the user's wallet.
+
+Pattern:
+```typescript
+const wallet = new WalletClient()
+const { publicKey } = await wallet.getPublicKey({
+  identityKey: true
+})
+```
+
+Key Concepts:
+- identityKey: true retrieves the master identity key
+- Public key is safe to share (represents user identity)
+- Private key remains protected in wallet
+- Identity keys are deterministic (same key every time)
+
+Advanced Key Derivation:
+```typescript
+const { publicKey } = await wallet.getPublicKey({
+  protocolID: brc29ProtocolID,
+  keyID: 'unique-key-identifier',
+  counterparty: 'counterpartyPublicKey',
+  forSelf: false // or true for receiving keys
+})
+```
+
+BRC-29 Protocol (Payment Key Derivation):
+- protocolID: identifies the key derivation standard
+- keyID: unique identifier for this specific key
+- counterparty: public key of the other party
+- forSelf: true when deriving for receiving, false when sending
+- Generates unique keys per transaction for privacy
+
+Key Derivation Benefits:
+- No key reuse (enhanced privacy)
+- Deterministic (can recreate keys)
+- Counterparty-specific (different keys per recipient)
+- Protocol-specific isolation
+
+
+=====================================================================================================
+SECTION 4: PAYMENT TRANSACTIONS AND ADDRESS DERIVATION
+=====================================================================================================
+
+SKILL: Generate Payment Addresses from Identity Keys
+-----------------------------------------------------
+Derive payment addresses for specific counterparties using BRC-29 protocol.
+
+Pattern:
+```typescript
+import { WalletClient, Random, Utils, Hash, PublicKey } from '@bsv/sdk'
+import { brc29ProtocolID } from '@bsv/wallet-toolbox-client'
+
+const wallet = new WalletClient()
+const bobIdentityKey = '025706528f0f6894b2ba505007267ccff1133e004452a1f6b72ac716f246216366'
+
+// Generate unique derivation parameters
+const derivationPrefix = Utils.toBase64(Random(12))
+const derivationSuffix = Utils.toBase64(Hash.sha512hmac(derivationPrefix, 'output_0'))
+
+// Derive public key for this specific payment
+const keyID = `${derivationPrefix} ${derivationSuffix}`
+const { publicKey } = await wallet.getPublicKey({
+  protocolID: brc29ProtocolID,
+  keyID,
+  counterparty: bobIdentityKey
+})
+
+const address = PublicKey.fromString(publicKey).toAddress()
+```
+
+Key Concepts:
+- BRC-29: Bitcoin Request for Comment standard for payment keys
+- derivationPrefix: random nonce unique to this payment
+- derivationSuffix: HMAC-derived from prefix for each output
+- keyID combines prefix + suffix for deterministic derivation
+- counterparty enables shared secret derivation
+
+Payment Privacy Architecture:
+- Each payment uses a unique address
+- Both parties can derive the same key independently
+- No address reuse (prevents blockchain analysis)
+- Receiver can prove ownership without revealing other payments
+
+Cryptographic Components:
+- Random(12): generates 12 random bytes
+- Utils.toBase64(): encodes binary to base64 string
+- Hash.sha512hmac(): creates HMAC-SHA512 hash
+- PublicKey.toAddress(): converts public key to Bitcoin address
+
+SKILL: Create Payment Transactions with Custom Instructions
+------------------------------------------------------------
+Send payments with metadata enabling the recipient to internalize.
+
+Pattern:
+```typescript
+import { WalletClient, PublicKey, P2PKH } from '@bsv/sdk'
+import { brc29ProtocolID } from '@bsv/wallet-toolbox-client'
+
+const wallet = new WalletClient()
+
+// Get sender's identity
+const { publicKey: senderIdentityKey } = await wallet.getPublicKey({
+  identityKey: true
+})
+
+// Payment metadata
+const paymentData = {
+  senderIdentityKey,
+  derivationPrefix: "efM69kM/9YZ9X4QV",
+  derivationSuffix: "LgdVITVQAU7LNB/xbaBRRDjDcBaoG/vGBpzLDd328EoeHVzylxNE9SpW/p/kgCbbBPbW4I4R9d/xsOARzIxuCQ=="
+}
+
+// Derive payment key
+const keyID = `${paymentData.derivationPrefix} ${paymentData.derivationSuffix}`
+const { publicKey: paymentPublicKey } = await wallet.getPublicKey({
+  protocolID: brc29ProtocolID,
+  keyID,
+  counterparty: bobIdentityKey
+})
+
+// Create P2PKH locking script
+const script = new P2PKH().lock(PublicKey.fromString(paymentPublicKey).toAddress())
+
+// Send payment with metadata
+const response = await wallet.createAction({
+  description: 'Pay Bob',
+  outputs: [{
+    satoshis: 14,
+    lockingScript: script.toHex(),
+    outputDescription: 'Payment to Bob of 14 satoshis',
+    customInstructions: JSON.stringify(paymentData)
+  }]
+})
+```
+
+Key Concepts:
+- P2PKH: Pay-to-Public-Key-Hash (standard Bitcoin script)
+- customInstructions: metadata passed to recipient
+- Payment metadata includes sender identity and derivation parameters
+- Recipient needs this data to derive the same key and claim funds
+
+Payment Flow:
+1. Sender derives unique payment key
+2. Creates P2PKH script to recipient's derived address
+3. Includes derivation metadata in customInstructions
+4. Recipient uses metadata to derive matching private key
+5. Recipient can unlock and spend the payment
+
+P2PKH Script Template:
+- lock(): creates locking script requiring signature + pubkey
+- unlock(): creates unlocking script with signature + pubkey
+- Standard Bitcoin address format
+
+SKILL: Internalize Payments (Receive Funds)
+--------------------------------------------
+Process incoming payments by deriving the corresponding private key.
+
+Pattern:
+```typescript
+import { WalletClient, Transaction, PublicKey, Utils } from '@bsv/sdk'
+import { brc29ProtocolID } from '@bsv/wallet-toolbox-client'
+
+const wallet = new WalletClient() // Recipient's wallet
+
+// Retrieve payment data (from sender via message box or P2P)
+const paymentData = {
+  senderIdentityKey: '...',
+  derivationPrefix: '...',
+  derivationSuffix: '...'
+}
+const paymentTx = '...' // BEEF transaction data
+
+// Derive the same key (recipient side)
+const keyID = `${paymentData.derivationPrefix} ${paymentData.derivationSuffix}`
+const { publicKey: paymentPublicKey } = await wallet.getPublicKey({
+  protocolID: brc29ProtocolID,
+  keyID,
+  counterparty: paymentData.senderIdentityKey,
+  forSelf: true // Important: receiving side uses forSelf: true
+})
+
+// Find the output belonging to recipient
+const transaction = Transaction.fromBEEF(paymentTx)
+const target = PublicKey.fromString(paymentPublicKey).toHash('hex')
+let recipientOutput = -1
+
+transaction.outputs.forEach((output, vout) => {
+  // P2PKH scripts have pubkey hash at chunk index 2
+  if (Utils.toHex(output.lockingScript.chunks[2].data) === target) {
+    recipientOutput = vout
+  }
+})
+
+// Internalize the payment (register UTXO in wallet)
+const response = await wallet.internalizeAction({
+  description: 'Payment from demo user',
+  tx: paymentTx,
+  outputs: [{
+    outputIndex: recipientOutput,
+    protocol: 'wallet payment',
+    paymentRemittance: {
+      derivationPrefix: paymentData.derivationPrefix,
+      derivationSuffix: paymentData.derivationSuffix,
+      senderIdentityKey: paymentData.senderIdentityKey
+    }
+  }]
+})
+```
+
+Key Concepts:
+- internalizeAction() registers external UTXOs in the wallet
+- forSelf: true on recipient side (vs false on sender side)
+- Script parsing identifies which output belongs to recipient
+- paymentRemittance stores metadata for future spending
+- Wallet now has control over this UTXO
+
+Internalization Process:
+1. Receive payment transaction and metadata
+2. Derive recipient-side private key (forSelf: true)
+3. Parse transaction to find matching output
+4. Register UTXO with wallet storage
+5. Funds become spendable from default basket
+
+Script Parsing Details:
+- P2PKH locking script format: OP_DUP OP_HASH160 <pubKeyHash> OP_EQUALVERIFY OP_CHECKSIG
+- chunks[2].data contains the public key hash
+- Compare against derived key's hash to identify output
+
+SKILL: Create and Sign Refund Transactions
+-------------------------------------------
+Construct transactions spending internalized payments with custom signatures.
+
+Pattern:
+```typescript
+import { WalletClient, PrivateKey, KeyDeriver, Transaction, P2PKH } from '@bsv/sdk'
+import { brc29ProtocolID } from '@bsv/wallet-toolbox-client'
+
+// Demonstrate low-level key derivation (normally handled internally)
+const privateKey = PrivateKey.fromWif('KzJZf4P8KmdHQcZ7KpRu3eqp75qn8wh2eotaomCStB9XGv5b7ENS')
+const keyDeriver = new KeyDeriver(privateKey)
+
+// Derive the payment private key
+const paymentPrivateKey = keyDeriver.derivePrivateKey(
+  brc29ProtocolID,
+  keyID,
+  senderIdentityKey
+)
+
+// Find the output in the payment transaction
+const transaction = Transaction.fromBEEF(paymentTx)
+const target = paymentPrivateKey.toPublicKey().toHash('hex')
+let outputIndex = -1
+
+transaction.outputs.forEach((output, vout) => {
+  if (Utils.toHex(output.lockingScript.chunks[2].data) === target) {
+    outputIndex = vout
+  }
+})
+
+const wallet = new WalletClient()
+
+// Create draft transaction
+const response = await wallet.createAction({
+  description: 'Bob sending his money back',
+  inputBEEF: paymentTx,
+  inputs: [{
+    outpoint: `${txid}.${outputIndex}`,
+    unlockingScriptLength: 108, // Standard P2PKH unlocking script length
+    inputDescription: 'refund from Bob'
+  }]
+})
+
+// Sign externally (demonstrates manual signing)
+const refundTx = Transaction.fromBEEF(response.signableTransaction.tx)
+refundTx.inputs[0].unlockingScriptTemplate = new P2PKH().unlock(paymentPrivateKey)
+await refundTx.fee()
+await refundTx.sign()
+
+// Apply signature and broadcast
+const finalResponse = await wallet.signAction({
+  reference: response.signableTransaction.reference,
+  spends: {
+    [0]: {
+      unlockingScript: refundTx.inputs[0].unlockingScript.toHex()
+    }
+  }
+})
+```
+
+Key Concepts:
+- KeyDeriver derives child keys from master key
+- derivePrivateKey() generates protocol-specific private keys
+- unlockingScriptLength: pre-declares script size (108 bytes for P2PKH)
+- signableTransaction: draft requiring external signatures
+- signAction() completes and broadcasts transaction
+
+Two-Phase Transaction Signing:
+1. createAction() with unlockingScriptLength creates draft
+2. External signing process generates signatures
+3. signAction() applies signatures and broadcasts
+
+Manual Signing Process:
+- Transaction.fromBEEF() deserializes transaction
+- unlockingScriptTemplate: defines how to sign
+- fee(): calculates and adjusts transaction fees
+- sign(): generates signatures for all inputs
+
+Advanced Use Cases:
+- Multi-party signing (coordinator creates draft, parties sign)
+- Hardware wallet integration (external signing device)
+- Complex script satisfaction (custom unlocking logic)
+
+
+=====================================================================================================
+SECTION 5: DISTRIBUTED DATA STORAGE WITH UHRP
+=====================================================================================================
+
+SKILL: Upload Files to UHRP Network
+------------------------------------
+Store files on distributed storage network with blockchain-advertised availability.
+
+Pattern:
+```typescript
+import { WalletClient, StorageUploader, Utils } from '@bsv/sdk'
+
+const wallet = new WalletClient()
+
+// Initialize uploader with storage provider
+const uploader = new StorageUploader({
+  wallet,
+  storageURL: 'https://go-uhrp-us-1.bsvblockchain.tech'
+})
+
+// Convert data to array format
+const data = Utils.toArray('This can be any file buffer', 'utf8')
+
+// Upload with retention period
+const response = await uploader.publishFile({
+  file: {
+    data,
+    type: 'text/plain'
+  },
+  retentionPeriod: 180 // minutes
+})
+```
+
+Key Concepts:
+- UHRP: Universal Hash Resolution Protocol
+- StorageUploader handles blockchain advertisement
+- publishFile() uploads and announces availability
+- retentionPeriod: storage duration in minutes
+- Returns hash identifier for retrieval
+
+UHRP Architecture:
+1. File is uploaded to storage provider
+2. Hash of file is calculated
+3. Availability advertised on blockchain (overlay network)
+4. Lookup services index the advertisement
+5. Anyone can retrieve using hash
+
+File Processing:
+- Utils.toArray() converts data to Uint8Array
+- Supports: 'utf8', 'hex', 'base64' encodings
+- type parameter: MIME type for retrieval
+- Hash is SHA256 of file content
+
+Storage Considerations:
+- retentionPeriod: temporary storage (pay per time)
+- Permanent storage possible with extended retention
+- Multiple storage providers can host same file
+- Redundancy via multiple uploads
+
+SKILL: Download Files from UHRP Network
+----------------------------------------
+Retrieve files using hash identifiers via lookup resolution.
+
+Pattern:
+```typescript
+import { StorageDownloader, Utils } from '@bsv/sdk'
+
+// No wallet needed for downloads (public data)
+const uhrp = new StorageDownloader()
+
+// Download by hash identifier
+const response = await uhrp.download('XUSzUkfq8SSqLQEn2LL98gcxBF6MwTCzuxPrnuYwiRQpi6fp7W6U')
+
+// Convert to desired format
+const text = Utils.toUTF8(response.data)
+```
+
+Key Concepts:
+- StorageDownloader queries lookup services
+- No wallet required (retrieving public data)
+- download() performs lookup then fetches file
+- Hash identifier is unique file reference
+
+Download Process:
+1. Query lookup services for file location
+2. Lookup returns storage URLs hosting the file
+3. Download from available storage provider
+4. Verify hash matches identifier
+5. Return file data
+
+Data Conversion:
+- Utils.toUTF8(): convert to UTF-8 string
+- Utils.toHex(): convert to hexadecimal
+- Utils.toBase64(): convert to base64
+- response.data: raw Uint8Array
+
+Decentralized Resolution:
+- Multiple lookup services for redundancy
+- Storage URL not required (discovered via UHRP)
+- Failover to alternative hosts if primary unavailable
+- Censorship resistant (no central control)
+
+
+=====================================================================================================
+SECTION 6: OVERLAY NETWORKS AND TOPIC BROADCASTING
+=====================================================================================================
+
+SKILL: Create and Broadcast Tokens to Overlays
+-----------------------------------------------
+Use overlay networks to publish tokens to topic-specific message boards.
+
+Pattern:
+```typescript
+import { WalletClient, PushDrop, Utils, SecurityLevels, WalletProtocol, TopicBroadcaster, Transaction } from '@bsv/sdk'
+
+const wallet = new WalletClient()
+const token = new PushDrop(wallet)
+
+// Prepare data fields
+const fields = []
+fields.push(Utils.toArray('Hello Overlay', 'utf8'))
+
+// Define protocol
+const protocolID: WalletProtocol = [SecurityLevels.Silent, 'hello world']
+const keyID = Date.now().toString()
+const counterparty = 'self'
+
+// Create PushDrop locking script
+const script = await token.lock(fields, protocolID, keyID, counterparty)
+
+// Create token
+const response = await wallet.createAction({
+  description: 'Create Hello World Token',
+  outputs: [{
+    satoshis: 1,
+    lockingScript: script.toHex(),
+    basket: 'hello world',
+    outputDescription: 'hello world token',
+    customInstructions: keyID
+  }]
+})
+
+// Broadcast to overlay network
+const tx = Transaction.fromBEEF(response.tx)
+const overlay = new TopicBroadcaster(['tm_helloworld'])
+const overlayResponse = await tx.broadcast(overlay)
+```
+
+Key Concepts:
+- PushDrop: token protocol with embedded data fields
+- Overlay networks: topic-based transaction indexing
+- TopicBroadcaster: announces transactions to overlay services
+- SecurityLevels.Silent: minimal wallet interaction
+- Protocol ID: ['security level', 'protocol name']
+
+PushDrop Protocol:
+- Embeds data directly in locking script
+- Fields are pushed onto the script stack
+- Deterministic key derivation per token
+- counterparty: 'self' for public tokens
+
+Overlay Architecture:
+- Topic managers (tm_*) accept and index transactions
+- Lookup services (ls_*) query indexed data
+- Multiple overlays can track same transaction
+- Decentralized indexing infrastructure
+
+Broadcasting Flow:
+1. Create transaction with PushDrop token
+2. Transaction is signed and gets txid
+3. TopicBroadcaster submits to overlay services
+4. Topic managers validate and index
+5. Token becomes queryable via lookup services
+
+SKILL: Query Overlay Networks for Tokens
+-----------------------------------------
+Retrieve tokens from overlay networks using lookup services.
+
+Pattern:
+```typescript
+import { LookupResolver } from '@bsv/sdk'
+
+const overlay = new LookupResolver()
+
+const response = await overlay.query({
+  service: 'ls_helloworld',
+  query: {
+    limit: 3,
+    skip: 0,
+    sortOrder: 'desc',
+    message: 'Hello Overlay'
+  }
+}, 10000) // timeout in milliseconds
+```
+
+Key Concepts:
+- LookupResolver queries lookup services
+- service parameter: specific lookup service endpoint
+- Query parameters: service-dependent search criteria
+- Returns array of matching transactions/tokens
+
+Query Parameters:
+- limit: maximum results to return
+- skip: pagination offset
+- sortOrder: 'asc' or 'desc' (chronological)
+- Custom fields: service-specific filters
+
+Lookup Services:
+- Each overlay has associated lookup service
+- Topic managers (tm_*) write, lookup services (ls_*) read
+- Services may have different query capabilities
+- Timeout prevents hanging on unavailable services
+
+Response Data:
+- Transaction details (txid, outputs)
+- Token data (decoded fields)
+- Metadata (timestamps, block height)
+- Service-specific additional information
+
+SKILL: Spend Tokens from Overlays with Custom Signatures
+---------------------------------------------------------
+Redeem tokens retrieved from overlays using complex signing patterns.
+
+Pattern:
+```typescript
+import { WalletClient, Script, PushDrop, SecurityLevels, WalletProtocol, Transaction, TopicBroadcaster } from '@bsv/sdk'
+
+const wallet = new WalletClient()
+
+// List tokens from basket
+const list = await wallet.listOutputs({
+  basket: 'hello world',
+  include: 'entire transactions',
+  includeCustomInstructions: true
+})
+
+if (list.outputs.length === 0) return
+
+// Prepare to spend token
+const token = new PushDrop(wallet)
+const protocolID: WalletProtocol = [SecurityLevels.Silent, 'hello world']
+const keyID = list.outputs[0].customInstructions
+const counterparty = 'self'
+const sighash = 'none'
+const anyoneCanPay = true
+const satoshis = 1
+
+// Parse outpoint
+const [txid, vout] = list.outputs[0].outpoint.split('.')
+const sourceTransaction = Transaction.fromBEEF(list.BEEF, txid)
+
+// Create temporary transaction for signing
+const temp = new Transaction()
+temp.addInput({
+  sourceTransaction,
+  sourceOutputIndex: Number(vout),
+  unlockingScriptTemplate: token.unlock(protocolID, keyID, counterparty, sighash, anyoneCanPay, satoshis)
+})
+temp.addOutput({
+  satoshis,
+  lockingScript: Script.fromASM('OP_TRUE')
+})
+await temp.sign()
+
+// Apply signature to wallet transaction
+const response = await wallet.createAction({
+  description: 'spend hello world token',
+  inputBEEF: list.BEEF,
+  inputs: [{
+    outpoint: list.outputs[0].outpoint,
+    unlockingScript: temp.inputs[0].unlockingScript.toHex(),
+    inputDescription: 'hello world token'
+  }]
+})
+
+// Broadcast spend to overlay
+const tx = Transaction.fromBEEF(response.tx)
+const overlay = new TopicBroadcaster(['tm_helloworld'])
+const overlayResponse = await tx.broadcast(overlay)
+```
+
+Key Concepts:
+- PushDrop.unlock() creates unlocking script template
+- SIGHASH flags control what transaction parts are signed
+- SIGHASH_NONE: signature doesn't commit to outputs
+- ANYONECANPAY: signature doesn't commit to other inputs
+- Temporary transaction isolates signature generation
+
+Advanced Signature Flags:
+- SIGHASH_NONE: allows outputs to be modified
+- SIGHASH_ALL: signs entire transaction (default)
+- SIGHASH_SINGLE: signs only corresponding output
+- ANYONECANPAY: enables adding more inputs
+
+Use Case - Flexible Spending:
+- SIGHASH_NONE + ANYONECANPAY: "anyone can complete this transaction"
+- Wallet adds necessary inputs/outputs
+- Original signature remains valid
+- Enables collaborative transaction building
+
+Transaction Construction:
+1. Create temporary transaction with input
+2. Add minimal output (OP_TRUE dummy)
+3. Sign to generate unlocking script
+4. Extract signature from temp transaction
+5. Apply to final transaction via createAction
+
+Overlay Broadcasting:
+- tx.broadcast(overlay) submits to topic manager
+- Overlay updates index to reflect spend
+- Other users see token as spent
+- Maintains consistency across network
+
+
+=====================================================================================================
+SECTION 7: ENCRYPTED MESSAGING AND PEER-TO-PEER COMMUNICATION
+=====================================================================================================
+
+SKILL: Encrypt and Decrypt Messages Between Peers
+--------------------------------------------------
+Use shared key derivation for AES-256 encryption between counterparties.
+
+Pattern:
+```typescript
+import { WalletClient, Utils, Random, WalletProtocol } from '@bsv/sdk'
+
+const wallet = new WalletClient()
+
+const message = 'This is a secret message.'
+const keyID = Utils.toBase64(Random(8))
+const protocolID = [1, 'secrets of unbounded importance'] as WalletProtocol
+const counterparty = '02fad5aee3b44846719c74832c33477adf6eeb1778901245c7bc0eb66687082e74'
+
+// Encrypt
+const encryptResponse = await wallet.encrypt({
+  plaintext: Utils.toArray(message, 'utf8'),
+  counterparty,
+  keyID,
+  protocolID
+})
+
+const encrypted = Utils.toBase64(encryptResponse.ciphertext)
+
+// Decrypt
+const decryptResponse = await wallet.decrypt({
+  ciphertext: encryptResponse.ciphertext,
+  counterparty,
+  keyID,
+  protocolID
+})
+
+const decryptedMessage = Utils.toUTF8(decryptResponse.plaintext)
+```
+
+Key Concepts:
+- wallet.encrypt(): AES-256-GCM encryption
+- Shared secret derived from identity keys
+- keyID uniquely identifies this encryption session
+- protocolID isolates keys per protocol
+- Both parties derive same encryption key
+
+Encryption Flow:
+1. Derive shared secret from sender private key + recipient public key
+2. Use ECDH (Elliptic Curve Diffie-Hellman) key agreement
+3. Encrypt plaintext with AES-256-GCM
+4. Return ciphertext (safe to transmit publicly)
+
+Decryption Flow:
+1. Recipient derives same shared secret
+2. Uses their private key + sender public key
+3. Decrypt ciphertext with AES-256-GCM
+4. Return original plaintext
+
+Security Features:
+- End-to-end encryption (only sender and recipient can decrypt)
+- Unique keys per keyID (prevents replay attacks)
+- Protocol isolation (different protocols use different keys)
+- No key transmission (derived independently)
+
+Key Derivation Properties:
+- Sender: derives from private key (self) + public key (counterparty)
+- Recipient: derives from private key (self) + public key (counterparty)
+- ECDH ensures both derive identical shared secret
+- keyID adds additional entropy and session isolation
+
+SKILL: Send Encrypted Messages via Message Box
+-----------------------------------------------
+Use message box servers for store-and-forward encrypted messaging.
+
+Pattern:
+```typescript
+import { WalletClient, Utils, ProtoWallet } from '@bsv/sdk'
+import { MessageBoxClient } from '@bsv/message-box-client'
+
+const wallet = new WalletClient()
+const { publicKey } = await wallet.getPublicKey({
+  identityKey: true
+})
+
+// Simulate counterparty encrypting message
+const proto = new ProtoWallet('anyone')
+const { ciphertext } = await proto.encrypt({
+  plaintext: Utils.toArray('Something only we can know', 'utf8'),
+  counterparty: publicKey,
+  keyID: 'random string',
+  protocolID: [0, 'secrets']
+})
+
+// Send via message box
+const mbc = new MessageBoxClient({
+  host: 'https://message-box-us-1.bsvb.tech',
+  walletClient: wallet
+})
+
+const response = await mbc.sendMessage({
+  body: Utils.toBase64(ciphertext),
+  recipient: publicKey,
+  messageBox: 'secrets of utmost importance'
+}, 'https://message-box-us-1.bsvb.tech')
+```
+
+Key Concepts:
+- MessageBoxClient: API client for message box servers
+- Store-and-forward: messages held until retrieved
+- messageBox parameter: logical inbox name
+- recipient: public key of intended recipient
+- body: encrypted message payload (base64 encoded)
+
+Message Box Architecture:
+- Server-hosted relay infrastructure
+- Messages stored encrypted at rest
+- Only recipient can decrypt (end-to-end encryption)
+- No message content visible to server
+
+ProtoWallet Usage:
+- ProtoWallet: lightweight wallet for testing
+- Uses deterministic key from seed phrase
+- 'anyone' seed for demo purposes
+- Real apps use proper key management
+
+Message Flow:
+1. Sender encrypts message for recipient
+2. Sends encrypted payload to message box server
+3. Server stores in recipient's inbox (by public key)
+4. Recipient polls server for new messages
+5. Recipient downloads and decrypts
+
+Message Box Features:
+- Offline recipients (messages wait for retrieval)
+- Multiple message boxes per user
+- Acknowledgment system (mark as read/delete)
+- Authentication via wallet signatures
+
+SKILL: Receive Encrypted Messages from Message Box
+---------------------------------------------------
+Poll message box servers and decrypt received messages.
+
+Pattern:
+```typescript
+import { WalletClient, Utils, ProtoWallet } from '@bsv/sdk'
+import { MessageBoxClient } from '@bsv/message-box-client'
+
+const wallet = new WalletClient()
+
+const mbc = new MessageBoxClient({
+  host: 'https://message-box-us-1.bsvb.tech',
+  walletClient: wallet
+})
+
+// List messages
+const list = await mbc.listMessages({
+  messageBox: 'secrets of utmost importance',
+  host: 'https://message-box-us-1.bsvb.tech'
+})
+
+// Get sender's public key (demo)
+const proto = new ProtoWallet('anyone')
+const { publicKey: senderPublicKey } = await proto.getPublicKey({
+  identityKey: true
+})
+
+// Decrypt message
+const { plaintext } = await wallet.decrypt({
+  ciphertext: Utils.toArray(list[0].body, 'base64'),
+  counterparty: senderPublicKey,
+  keyID: 'random string',
+  protocolID: [0, 'secrets']
+})
+
+const message = Utils.toUTF8(plaintext)
+```
+
+Key Concepts:
+- listMessages(): retrieves pending messages
+- Each message has messageId, body, timestamp
+- body is base64-encoded ciphertext
+- Decryption requires sender's public key
+- keyID and protocolID must match encryption parameters
+
+Message Retrieval:
+- Messages listed from specific message box
+- Multiple messages returned as array
+- Each message is end-to-end encrypted
+- Server cannot read message contents
+
+Decryption Requirements:
+- Sender's public key (counterparty)
+- Same keyID used during encryption
+- Same protocolID used during encryption
+- Recipient's private key (in wallet)
+
+Real-World Considerations:
+- Sender identity verification (validate public key)
+- Key ID coordination (sender must communicate keyID)
+- Protocol versioning (handle different protocols)
+- Message ordering (timestamps for sequencing)
+
+SKILL: Acknowledge and Remove Messages
+---------------------------------------
+Clean up message inbox by acknowledging processed messages.
+
+Pattern:
+```typescript
+import { WalletClient } from '@bsv/sdk'
+import { MessageBoxClient } from '@bsv/message-box-client'
+
+const wallet = new WalletClient()
+
+const mbc = new MessageBoxClient({
+  host: 'https://message-box-us-1.bsvb.tech',
+  walletClient: wallet
+})
+
+// List messages
+const list = await mbc.listMessages({
+  messageBox: 'secrets of utmost importance',
+  host: 'https://message-box-us-1.bsvb.tech'
+})
+
+if (list.length === 0) return
+
+// Acknowledge (delete) messages
+const response = await mbc.acknowledgeMessage({
+  messageIds: list.map(item => item.messageId),
+  host: 'https://message-box-us-1.bsvb.tech'
+})
+```
+
+Key Concepts:
+- acknowledgeMessage() removes messages from server
+- Batch operation (multiple messageIds at once)
+- Messages permanently deleted after acknowledgment
+- Prevents duplicate processing
+
+Message Lifecycle:
+1. Message sent to inbox
+2. Recipient lists messages
+3. Recipient processes/decrypts messages
+4. Recipient acknowledges to remove
+5. Server deletes acknowledged messages
+
+Best Practices:
+- Acknowledge only after successful processing
+- Store messages locally before acknowledging
+- Handle acknowledgment failures gracefully
+- Batch acknowledgments for efficiency
+
+
+=====================================================================================================
+SECTION 8: DIGITAL CERTIFICATES AND CREDENTIALS
+=====================================================================================================
+
+SKILL: Acquire Certificates from Certifiers
+--------------------------------------------
+Request digital certificates attesting to specific attributes or credentials.
+
+Pattern:
+```typescript
+import { WalletClient, Utils } from '@bsv/sdk'
+
+const wallet = new WalletClient('auto', 'deggen')
+
+// Certifier's public key
+const certifier = '03c644fe2fd97673a5d86555a58587e7936390be6582ece262bc387014bcff6fe4'
+
+// Certificate type
+const type = Utils.toBase64(Utils.toArray('internet plumbing', 'utf8'))
+
+// Request certificate
+const response = await wallet.acquireCertificate({
+  type,
+  acquisitionProtocol: 'issuance',
+  certifier,
+  certifierUrl: 'https://certify.bsvb.tech',
+  fields: {
+    'soldering': 'veteran',
+    'pipe fitting': 'expert',
+    'customer service': 'delightful',
+    'leaks': 'none whatsoever',
+    'moustache': 'impressive'
+  }
+})
+```
+
+Key Concepts:
+- Certificate: cryptographically signed attestation
+- Certifier: trusted authority issuing certificates
+- acquisitionProtocol: 'issuance' for new certificates
+- fields: key-value pairs of attested attributes
+- type: category/classification of certificate
+
+Certificate Architecture:
+- Certifier signs certificate fields
+- Subject (user) proves ownership of certificate
+- Verifier validates signature and examines fields
+- Selective disclosure (reveal only necessary fields)
+
+Acquisition Flow:
+1. Subject requests certificate from certifier
+2. Certifier verifies subject's claims (out-of-band)
+3. Certifier signs certificate with fields
+4. Certificate stored encrypted in subject's wallet
+5. Subject can create verifiable versions for verifiers
+
+Certificate Fields:
+- Arbitrary key-value pairs
+- Encrypted by default (privacy-preserving)
+- Subject controls field disclosure
+- Human-readable attributes
+
+Use Cases:
+- Professional credentials (licenses, certifications)
+- Identity verification (KYC attributes)
+- Access control (membership, permissions)
+- Reputation systems (ratings, endorsements)
+
+SKILL: List and Decrypt Existing Certificates
+----------------------------------------------
+Retrieve certificates from wallet and decrypt field data.
+
+Pattern:
+```typescript
+import { WalletClient, Utils, MasterCertificate, VerifiableCertificate } from '@bsv/sdk'
+
+const wallet = new WalletClient()
+
+const type = Utils.toBase64(Utils.toArray('internet plumbing', 'utf8'))
+
+// List certificates
+const response = await wallet.listCertificates({
+  certifiers: ['03c644fe2fd97673a5d86555a58587e7936390be6582ece262bc387014bcff6fe4'],
+  types: [type],
+  limit: 1
+})
+
+const certificate = response.certificates[0]
+
+// Decrypt all fields
+const fields = await MasterCertificate.decryptFields(
+  wallet,
+  certificate.keyring,
+  certificate.fields,
+  certificate.certifier
+)
+```
+
+Key Concepts:
+- listCertificates(): queries wallet certificate storage
+- Filters by certifier public keys and certificate types
+- MasterCertificate: full certificate with all encrypted fields
+- decryptFields(): recovers plaintext field values
+- keyring: encryption keys for certificate fields
+
+Query Parameters:
+- certifiers: array of trusted certifier public keys
+- types: array of certificate type identifiers
+- limit: maximum certificates to return
+- Returns certificates matching criteria
+
+Certificate Structure:
+- serialNumber: unique identifier
+- type: certificate category
+- certifier: issuer's public key
+- subject: certificate holder's public key
+- fields: encrypted attribute data
+- keyring: per-field encryption keys
+- signature: certifier's signature over certificate
+
+Field Encryption:
+- Each field encrypted individually
+- Keyring contains encryption key per field
+- Enables selective disclosure (reveal subset of fields)
+- Subject retains control over data
+
+SKILL: Create Verifiable Certificates with Selective Disclosure
+----------------------------------------------------------------
+Generate verifiable versions revealing only specific fields to verifiers.
+
+Pattern:
+```typescript
+import { WalletClient, MasterCertificate, VerifiableCertificate } from '@bsv/sdk'
+
+const wallet = new WalletClient()
+
+// Assume certificate already retrieved
+const certificate = /* ... from listCertificates ... */
+
+// Choose which fields to reveal
+const fieldsToReveal = ['moustache']
+
+// Verifier's identity (who will check this certificate)
+const verifier = '02ec9b58db65002d0971c3abe2eef3403d23602d8de2af51445d84e1b64c11a646'
+
+// Create verifier-specific keyring
+const verifierKeyring = await MasterCertificate.createKeyringForVerifier(
+  wallet,
+  certificate.certifier,
+  verifier,
+  certificate.fields,
+  fieldsToReveal,
+  certificate.keyring,
+  certificate.serialNumber
+)
+
+// Create verifiable certificate
+const verifiableCertificate = VerifiableCertificate.fromCertificate(
+  certificate,
+  verifierKeyring
+)
+```
+
+Key Concepts:
+- Selective disclosure: reveal subset of fields
+- Verifier-specific: keyring tailored to verifier identity
+- VerifiableCertificate: redacted version for presentation
+- Preserves signature validity (verifier can validate certifier signature)
+- Other fields remain encrypted (zero-knowledge property)
+
+Verifiable Certificate Flow:
+1. Subject chooses which fields to disclose
+2. Creates verifier-specific keyring (only selected fields decryptable)
+3. Generates VerifiableCertificate with redacted keyring
+4. Presents to verifier
+5. Verifier decrypts disclosed fields, validates signature
+6. Verifier cannot decrypt unrevealed fields
+
+Privacy Benefits:
+- Minimal disclosure (reveal only necessary information)
+- Verifier-binding (keyring only works for intended verifier)
+- Unlinkability (different verifiers see different keyrings)
+- Plausible deniability (unrevealed fields indistinguishable from random)
+
+Cryptographic Properties:
+- Certifier signature remains valid
+- Verifier can verify: certifier signed this certificate for this subject
+- Verifier can decrypt: only specified fields
+- Verifier cannot: decrypt other fields or link to other presentations
+
+Real-World Scenario:
+- Certificate has fields: name, age, address, income, employment
+- Job application: reveal only name, employment
+- Age verification: reveal only age
+- Credit check: reveal only income
+- Different verifiers see different subsets
+
+
+=====================================================================================================
+SECTION 9: ADVANCED PATTERNS AND BEST PRACTICES
+=====================================================================================================
+
+PATTERN: BEEF Transaction Format
+---------------------------------
+BEEF (Background Evaluation Extended Format) is a transaction serialization format that includes input transaction history for SPV validation.
+
+Structure:
+- Complete transaction data
+- Input transactions (dependencies)
+- Merkle proofs for blockchain verification
+- Enables stateless validation
+
+Usage:
+```typescript
+// Serialize to BEEF
+const tx = Transaction.fromBEEF(beefData)
+
+// Include BEEF in wallet operations
+await wallet.createAction({
+  inputBEEF: beefData,
+  inputs: [...]
+})
+
+// BEEF returned from wallet operations
+const response = await wallet.createAction({...})
+const beef = response.tx // BEEF format
+```
+
+Benefits:
+- No blockchain queries needed (self-contained)
+- SPV validation without full node
+- Efficient transmission (only relevant history)
+- Deterministic validation (same result everywhere)
+
+PATTERN: Protocol ID Design
+----------------------------
+Protocol IDs isolate key derivation by application/use case.
+
+Format: [SecurityLevel, 'protocol name']
+
+Security Levels:
+- 0: Free (auto-approve, no user interaction)
+- 1: Low (minimal confirmation)
+- 2: Medium (moderate security)
+- 3: High (maximum security, explicit approval)
+- SecurityLevels.Silent: same as 0
+
+Examples:
+```typescript
+[0, 'secrets'] // Auto-approve encryption
+[1, 'payments'] // Low security payments
+[SecurityLevels.Silent, 'hello world'] // Silent tokens
+```
+
+Best Practices:
+- Use semantic protocol names
+- Higher security for financial operations
+- Silent for public/non-sensitive operations
+- Version in name if needed ('app v2')
+
+PATTERN: Key ID Uniqueness
+---------------------------
+Key IDs must be unique to prevent key reuse and maintain privacy.
+
+Strategies:
+- Timestamp: Date.now().toString()
+- Random: Utils.toBase64(Random(12))
+- Derived: Hash.sha512hmac(prefix, 'suffix')
+- Sequential: incrementing counter
+- Combined: prefix + ' ' + suffix
+
+Critical for:
+- Payment privacy (unique address per payment)
+- Encryption sessions (no key reuse)
+- Token identification (track specific tokens)
+
+Example:
+```typescript
+// Payment scenario
+const prefix = Utils.toBase64(Random(12)) // Share with recipient
+const suffix = Utils.toBase64(Hash.sha512hmac(prefix, `output_${i}`))
+const keyID = `${prefix} ${suffix}` // Unique per output
+```
+
+PATTERN: Error Handling and Validation
+---------------------------------------
+Robust error handling for blockchain operations.
+
+Common Patterns:
+```typescript
+// Check for empty results
+const list = await wallet.listOutputs({...})
+if (list.outputs.length === 0) {
+  return // or throw error
+}
+
+// Validate transaction parsing
+try {
+  const tx = Transaction.fromBEEF(beefData)
+} catch (error) {
+  // Handle invalid BEEF
+}
+
+// Check for required data
+if (!paymentData) {
+  throw new Error('You must run the previous step first')
+}
+```
+
+Best Practices:
+- Always check array lengths before indexing
+- Validate BEEF data before parsing
+- Handle missing dependencies gracefully
+- Provide clear error messages
+
+PATTERN: Local Storage for Demo Coordination
+---------------------------------------------
+LocalStorage coordinates between multi-step examples (demo only).
+
+Pattern:
+```typescript
+// Save state
+const payments = JSON.parse(localStorage.getItem('payments') || '[]')
+payments.push({ response, paymentData })
+localStorage.setItem('payments', JSON.stringify(payments))
+
+// Load state
+const payments = JSON.parse(localStorage.getItem('payments') || '[]')
+const payment = payments.shift()
+if (!payment) throw new Error('No payment found')
+
+// Clean up
+localStorage.setItem('payments', JSON.stringify(payments))
+```
+
+Real-World Alternatives:
+- Message box for peer-to-peer data exchange
+- Overlay networks for public announcements
+- UHRP for file/data storage
+- Database for server-side storage
+
+PATTERN: ProtoWallet for Testing
+---------------------------------
+ProtoWallet enables testing without user wallet interaction.
+
+Usage:
+```typescript
+import { ProtoWallet, PrivateKey, WalletClient, WalletInterface } from '@bsv/sdk'
+
+// Deterministic wallet from seed
+const proto = new ProtoWallet('anyone') // 'anyone' is seed phrase
+
+// Or from private key
+const key = PrivateKey.fromWif('KzJZ...')
+const proto = new ProtoWallet(key)
+
+// Use with WalletClient
+const wallet = new WalletClient(proto as WalletInterface)
+```
+
+Testing Features:
+- Deterministic keys (repeatable tests)
+- No user interaction required
+- Multiple test identities
+- Isolated from production wallets
+
+Production Consideration:
+- Never use ProtoWallet with real funds
+- Only for testing and demonstrations
+- Use proper WalletClient in production
+
+PATTERN: Script Template System
+--------------------------------
+Script templates abstract locking and unlocking script creation.
+
+Available Templates:
+- P2PKH: Pay-to-Public-Key-Hash (standard Bitcoin)
+- PushDrop: Data embedding token protocol
+- Custom: Implement ScriptTemplate interface
+
+P2PKH Example:
+```typescript
+import { P2PKH, PublicKey } from '@bsv/sdk'
+
+const template = new P2PKH()
+
+// Locking script (output)
+const lockingScript = template.lock(address)
+
+// Unlocking script (input)
+const unlockingScriptTemplate = template.unlock(privateKey)
+```
+
+PushDrop Example:
+```typescript
+import { PushDrop } from '@bsv/sdk'
+
+const token = new PushDrop(wallet)
+
+// Lock with data
+const lockingScript = await token.lock(
+  fields,        // Data arrays
+  protocolID,    // Protocol identification
+  keyID,         // Unique key ID
+  counterparty   // Recipient or 'self'
+)
+
+// Unlock with signature
+const unlockingTemplate = token.unlock(
+  protocolID,
+  keyID,
+  counterparty,
+  sighash,       // Signature hash type
+  anyoneCanPay,  // Allow additional inputs
+  satoshis       // Amount being spent
+)
+```
+
+Template Benefits:
+- Consistent script creation
+- Handles low-level details
+- Protocol-specific logic encapsulated
+- Type-safe parameters
+
+=====================================================================================================
+SECTION 10: CRYPTOGRAPHIC UTILITIES AND DATA CONVERSION
+=====================================================================================================
+
+UTILITY: Utils Module Functions
+--------------------------------
+The Utils module provides data conversion and manipulation functions.
+
+Encoding Conversions:
+```typescript
+import { Utils } from '@bsv/sdk'
+
+// String to Uint8Array
+const bytes = Utils.toArray('hello', 'utf8')
+const hexBytes = Utils.toArray('48656c6c6f', 'hex')
+const base64Bytes = Utils.toArray('aGVsbG8=', 'base64')
+
+// Uint8Array to String
+const utf8 = Utils.toUTF8(bytes)
+const hex = Utils.toHex(bytes)
+const base64 = Utils.toBase64(bytes)
+```
+
+Common Patterns:
+- Message preparation: Utils.toArray(message, 'utf8')
+- Encryption output: Utils.toBase64(ciphertext)
+- Decryption input: Utils.toArray(base64String, 'base64')
+- Script data: Utils.toHex(scriptBytes)
+
+UTILITY: Random Data Generation
+--------------------------------
+Generate cryptographically secure random data.
+
+Pattern:
+```typescript
+import { Random, Utils } from '@bsv/sdk'
+
+// Generate random bytes
+const randomBytes = Random(12) // 12 random bytes
+
+// Convert to usable format
+const randomString = Utils.toBase64(randomBytes)
+const randomHex = Utils.toHex(randomBytes)
+```
+
+Use Cases:
+- Key ID generation (uniqueness)
+- Nonce creation (prevents replay)
+- Session identifiers
+- Initialization vectors
+
+UTILITY: Hashing Functions
+---------------------------
+Cryptographic hash functions for data integrity and derivation.
+
+Available Functions:
+```typescript
+import { Hash, Utils } from '@bsv/sdk'
+
+// SHA512 HMAC (keyed hash)
+const hmac = Hash.sha512hmac(key, data)
+
+// SHA256 (standard hash)
+const hash = Hash.sha256(data)
+
+// RIPEMD160 (address hashing)
+const ripemd = Hash.ripemd160(data)
+```
+
+Common Patterns:
+- Payment derivation: Hash.sha512hmac(prefix, outputIdentifier)
+- Data integrity: Hash.sha256(fileData)
+- Address generation: Hash.ripemd160(publicKeyHash)
+
+UTILITY: Key Management
+-----------------------
+Working with private and public keys.
+
+Patterns:
+```typescript
+import { PrivateKey, PublicKey } from '@bsv/sdk'
+
+// Create from WIF (Wallet Import Format)
+const privateKey = PrivateKey.fromWif('KzJZ...')
+
+// Derive public key
+const publicKey = privateKey.toPublicKey()
+
+// Create from string
+const pubKey = PublicKey.fromString('02abc...')
+
+// Convert to address
+const address = pubKey.toAddress()
+
+// Get key hash
+const hash = pubKey.toHash('hex')
+```
+
+Key Representations:
+- WIF: compact private key format (starts with K, L, or 5)
+- Hex: hexadecimal string of key bytes
+- DER: Distinguished Encoding Rules (X.509 standard)
+- Address: Base58Check encoded hash of public key
+
+UTILITY: KeyDeriver for Hierarchical Keys
+------------------------------------------
+Derive child keys from master keys using BIP32-style derivation.
+
+Pattern:
+```typescript
+import { KeyDeriver, PrivateKey } from '@bsv/sdk'
+
+const masterKey = PrivateKey.fromWif('...')
+const deriver = new KeyDeriver(masterKey)
+
+// Identity key
+const identityKey = deriver.identityKey // Public key string
+
+// Derive protocol-specific key
+const childKey = deriver.derivePrivateKey(
+  protocolID,     // Protocol identifier
+  keyID,          // Unique key identifier
+  counterparty    // Other party's public key
+)
+```
+
+Derivation Properties:
+- Deterministic (same inputs = same output)
+- Hierarchical (tree structure)
+- Counterparty-specific (different keys per recipient)
+- Protocol-isolated (apps don't see each other's keys)
+
+=====================================================================================================
+SECTION 11: WALLET TOOLBOX CLIENT INTEGRATION
+=====================================================================================================
+
+CONCEPT: Wallet Toolbox Architecture
+-------------------------------------
+The wallet-toolbox-client provides infrastructure for building production wallets.
+
+Components:
+- WalletStorageManager: manages persistent storage
+- WalletSigner: handles transaction signing
+- Services: network service coordination
+- StorageClient: connects to remote storage providers
+- Wallet: orchestrates all components
+
+Setup Pattern:
+```typescript
+import {
+  WalletStorageManager,
+  WalletSigner,
+  Services,
+  StorageClient,
+  Wallet
+} from '@bsv/wallet-toolbox-client'
+import { KeyDeriver, PrivateKey } from '@bsv/sdk'
+
+// Initialize key management
+const privateKey = PrivateKey.fromWif('...')
+const keyDeriver = new KeyDeriver(privateKey)
+
+// Setup storage
+const storageManager = new WalletStorageManager(keyDeriver.identityKey)
+
+// Setup signing
+const signer = new WalletSigner('main', keyDeriver, storageManager)
+
+// Setup services
+const services = new Services('main') // 'main' = mainnet
+
+// Create wallet
+const wallet = new Wallet(signer, services)
+
+// Add storage provider
+const storageClient = new StorageClient(
+  wallet,
+  'https://store-us-1.bsvb.tech'
+)
+await storageClient.makeAvailable()
+await storageManager.addWalletStorageProvider(storageClient)
+```
+
+Component Responsibilities:
+- KeyDeriver: derives all cryptographic keys
+- WalletStorageManager: persists UTXOs, certificates, keys
+- WalletSigner: signs transactions, manages key usage
+- Services: broadcasts transactions, queries chain state
+- StorageClient: syncs data with remote storage
+
+CONCEPT: BRC-29 Payment Protocol
+---------------------------------
+BRC-29 defines a standard for deriving payment keys between counterparties.
+
+Purpose:
+- Unique keys per payment (no address reuse)
+- Deterministic (both parties derive same key)
+- Privacy-preserving (different keys per transaction)
+- SPV-compatible (recipient can prove ownership)
+
+Protocol Flow:
+1. Sender generates random derivationPrefix
+2. Sender derives derivationSuffix per output
+3. Sender derives payment public key using recipient identity
+4. Sender creates transaction to derived address
+5. Sender sends derivation parameters to recipient
+6. Recipient derives same private key
+7. Recipient can spend the payment
+
+Import:
+```typescript
+import { brc29ProtocolID } from '@bsv/wallet-toolbox-client'
+```
+
+Usage in derivation:
+```typescript
+const { publicKey } = await wallet.getPublicKey({
+  protocolID: brc29ProtocolID,
+  keyID: `${prefix} ${suffix}`,
+  counterparty: recipientIdentityKey
+})
+```
+
+=====================================================================================================
+SECTION 12: MESSAGE BOX CLIENT FOR ASYNCHRONOUS MESSAGING
+=====================================================================================================
+
+CONCEPT: Message Box Architecture
+----------------------------------
+Message boxes provide store-and-forward messaging infrastructure.
+
+Architecture:
+- Centralized servers (easy to deploy)
+- Encrypted payloads (end-to-end encryption)
+- Identity-based routing (messages sent to public keys)
+- Logical inboxes (multiple message boxes per user)
+
+MessageBoxClient Setup:
+```typescript
+import { MessageBoxClient } from '@bsv/message-box-client'
+import { WalletClient } from '@bsv/sdk'
+
+const wallet = new WalletClient()
+
+const mbc = new MessageBoxClient({
+  host: 'https://message-box-us-1.bsvb.tech',
+  walletClient: wallet
+})
+```
+
+Operations:
+- sendMessage(): deposit message in recipient inbox
+- listMessages(): retrieve pending messages
+- acknowledgeMessage(): delete processed messages
+
+Message Box Use Cases:
+- Offline recipients (messages wait)
+- Payment remittance (send transaction + metadata)
+- Notification system (alerts and updates)
+- Command and control (instruct wallet actions)
+
+Security Model:
+- Messages encrypted before sending
+- Server cannot decrypt contents
+- Authentication via wallet signatures
+- Recipient proves identity to retrieve
+
+=====================================================================================================
+SECTION 13: TRANSACTION CONSTRUCTION AND SIGNING PATTERNS
+=====================================================================================================
+
+PATTERN: Basic Transaction Creation
+------------------------------------
+Create transactions using wallet.createAction().
+
+Structure:
+```typescript
+const response = await wallet.createAction({
+  description: 'Human-readable description',
+  outputs: [{
+    satoshis: 1,
+    lockingScript: script.toHex(),
+    basket: 'category',
+    outputDescription: 'Output label',
+    customInstructions: 'metadata'
+  }]
+})
+```
+
+Response Contains:
+- txid: transaction identifier
+- tx: BEEF-encoded transaction
+- signableTransaction: draft for external signing (if needed)
+
+PATTERN: Transaction with Inputs (Spending)
+--------------------------------------------
+Spend existing outputs by providing inputs.
+
+Structure:
+```typescript
+const response = await wallet.createAction({
+  description: 'Spending description',
+  inputBEEF: sourceBeef,
+  inputs: [{
+    outpoint: 'txid.vout',
+    unlockingScript: script.toHex(),
+    inputDescription: 'Input label'
+  }],
+  outputs: [...]
+})
+```
+
+Input Requirements:
+- outpoint: identifies which UTXO to spend
+- unlockingScript: satisfies locking conditions
+- inputBEEF: provides transaction history
+
+PATTERN: Two-Phase Signing (External Signatures)
+-------------------------------------------------
+For hardware wallets or multi-party signing.
+
+Phase 1 - Create Draft:
+```typescript
+const draft = await wallet.createAction({
+  description: '...',
+  inputBEEF: beef,
+  inputs: [{
+    outpoint: '...',
+    unlockingScriptLength: 108, // Declare length, not script
+    inputDescription: '...'
+  }]
+})
+```
+
+Phase 2 - Apply Signatures:
+```typescript
+// External signing happens here
+const tx = Transaction.fromBEEF(draft.signableTransaction.tx)
+tx.inputs[0].unlockingScriptTemplate = template
+await tx.sign()
+
+// Apply signatures
+const final = await wallet.signAction({
+  reference: draft.signableTransaction.reference,
+  spends: {
+    [0]: {
+      unlockingScript: tx.inputs[0].unlockingScript.toHex()
+    }
+  }
+})
+```
+
+Use Cases:
+- Hardware wallet integration
+- Multi-signature coordination
+- Custom signing logic
+- Air-gapped signing
+
+PATTERN: Fee Calculation
+-------------------------
+Transactions automatically calculate appropriate fees.
+
+Manual Fee Management:
+```typescript
+const tx = new Transaction()
+tx.addInput({...})
+tx.addOutput({...})
+await tx.fee() // Calculates and adjusts fees
+await tx.sign()
+```
+
+Fee Handling:
+- Wallet automatically adds fee outputs
+- Based on transaction size
+- Uses current fee rate
+- Subtracts from input amounts or adds change
+
+PATTERN: Transaction Broadcasting
+----------------------------------
+Send transactions to the network.
+
+Standard Broadcasting:
+```typescript
+// Via wallet (automatic)
+const response = await wallet.createAction({...})
+// Transaction already broadcast
+
+// Manual broadcasting
+const tx = Transaction.fromBEEF(beef)
+await tx.broadcast() // Uses default broadcaster
+```
+
+Overlay Broadcasting:
+```typescript
+import { TopicBroadcaster } from '@bsv/sdk'
+
+const tx = Transaction.fromBEEF(beef)
+const overlay = new TopicBroadcaster(['tm_helloworld'])
+await tx.broadcast(overlay)
+```
+
+Broadcasting Strategies:
+- Default: ARC broadcaster (public miners)
+- Overlay: topic managers (specialized indexers)
+- Multiple: broadcast to several services
+- Retry: handle temporary failures
+
+=====================================================================================================
+SECTION 14: ADVANCED SECURITY AND PRIVACY PATTERNS
+=====================================================================================================
+
+PATTERN: Security Levels for User Experience
+---------------------------------------------
+Security levels balance convenience and protection.
+
+Levels:
+- 0/Silent: No user interaction (auto-approve)
+- 1/Low: Minimal confirmation
+- 2/Medium: Standard approval
+- 3/High: Explicit verification
+
+Recommendations:
+- Silent: Public tokens, read-only operations
+- Low: Messaging, small payments
+- Medium: Standard payments, certificate operations
+- High: Large payments, key exports, sensitive data
+
+Implementation:
+```typescript
+import { SecurityLevels } from '@bsv/sdk'
+
+const protocolID = [SecurityLevels.Silent, 'public messages']
+// or
+const protocolID = [3, 'large payment']
+```
+
+PATTERN: Key Isolation by Protocol
+-----------------------------------
+Different protocols derive different keys from same master.
+
+Benefits:
+- Application isolation (apps can't see each other's keys)
+- Protocol versioning (upgrade without migration)
+- Security boundaries (compromise limited to one protocol)
+
+Example:
+```typescript
+const messagesKey = await wallet.getPublicKey({
+  protocolID: [1, 'messages'],
+  keyID: '...',
+  counterparty: '...'
+})
+
+const paymentsKey = await wallet.getPublicKey({
+  protocolID: [2, 'payments'],
+  keyID: '...',
+  counterparty: '...'
+})
+
+// messagesKey !== paymentsKey (even with same keyID and counterparty)
+```
+
+PATTERN: Counterparty-Specific Keys
+------------------------------------
+Derive different keys for each counterparty.
+
+Privacy Benefits:
+- Counterparties can't collude to link transactions
+- Graph analysis resistance
+- Plausible deniability
+
+Implementation:
+```typescript
+const aliceKey = await wallet.getPublicKey({
+  protocolID: brc29ProtocolID,
+  keyID: 'payment-1',
+  counterparty: aliceIdentityKey
+})
+
+const bobKey = await wallet.getPublicKey({
+  protocolID: brc29ProtocolID,
+  keyID: 'payment-1', // Same keyID
+  counterparty: bobIdentityKey
+})
+
+// aliceKey !== bobKey (different counterparties)
+```
+
+PATTERN: SIGHASH Flags for Transaction Flexibility
+---------------------------------------------------
+SIGHASH flags control which parts of transaction are signed.
+
+Flag Types:
+- SIGHASH_ALL: signs entire transaction (most secure)
+- SIGHASH_NONE: doesn't sign outputs (allows anyone to set destination)
+- SIGHASH_SINGLE: signs only corresponding output
+- SIGHASH_ANYONECANPAY: doesn't sign other inputs (allows adding inputs)
+
+Use Cases:
+- Crowdfunding: SIGHASH_ALL | ANYONECANPAY (anyone can add inputs)
+- Blank check: SIGHASH_NONE | ANYONECANPAY (anyone completes transaction)
+- Partial signing: SIGHASH_SINGLE (sign only your output)
+
+Example:
+```typescript
+const unlockingTemplate = token.unlock(
+  protocolID,
+  keyID,
+  counterparty,
+  'none', // SIGHASH_NONE
+  true    // ANYONECANPAY
+)
+```
+
+=====================================================================================================
+SECTION 15: SUMMARY OF CORE SKILLS
+=====================================================================================================
+
+This training guide covers these essential BSV Blockchain development skills:
+
+1. WALLET OPERATIONS
+   - Initialize WalletClient
+   - Connect to user wallets
+   - Query wallet state
+
+2. TOKEN MANAGEMENT
+   - Create tokens with locking scripts
+   - Organize tokens in baskets
+   - List and query tokens
+   - Spend/redeem tokens
+
+3. IDENTITY RESOLUTION
+   - Resolve identity keys by attributes
+   - Derive identity keys from wallet
+   - Manage counterparty relationships
+
+4. PAYMENT PROTOCOLS
+   - Derive payment addresses (BRC-29)
+   - Create payment transactions
+   - Internalize received payments
+   - Process refunds and complex flows
+
+5. DISTRIBUTED DATA
+   - Upload files to UHRP network
+   - Download files by hash
+   - Manage retention periods
+
+6. OVERLAY NETWORKS
+   - Create and broadcast tokens to overlays
+   - Query overlay lookup services
+   - Spend tokens with overlay coordination
+
+7. ENCRYPTED MESSAGING
+   - Encrypt/decrypt between peers
+   - Send messages via message box
+   - Receive and process messages
+   - Acknowledge and clean up
+
+8. DIGITAL CERTIFICATES
+   - Acquire certificates from certifiers
+   - List and decrypt certificate fields
+   - Create verifiable certificates
+   - Selective field disclosure
+
+9. ADVANCED PATTERNS
+   - BEEF transaction format
+   - Protocol ID design
+   - Key ID uniqueness
+   - Error handling strategies
+
+10. CRYPTOGRAPHIC UTILITIES
+    - Data encoding conversions
+    - Random data generation
+    - Hashing functions
+    - Key management
+
+11. TRANSACTION CONSTRUCTION
+    - Basic transaction creation
+    - Spending patterns
+    - Two-phase signing
+    - Fee calculation
+    - Broadcasting strategies
+
+12. SECURITY PATTERNS
+    - Security level selection
+    - Key isolation
+    - Counterparty-specific keys
+    - SIGHASH flag usage
+
+=====================================================================================================
+
+All code examples are from the BSV Blockchain Wallet Client Developer Documentation
+available at https://fast.brc.dev
+
+For more information:
+- @bsv/sdk documentation: https://docs.bsvblockchain.org
+- BSV Blockchain: https://bsvblockchain.org
+- Wallet Toolbox: https://github.com/bitcoin-sv/ts-sdk
+
+End of LLM Training Guide
+=====================================================================================================

@@ -1,0 +1,17 @@
+{
+  "domain": "brc100",
+  "case": "abortAction-simple",
+  "source": "bsv-blockchain/universal-test-vectors@e9d32e6688ddef63259bae094c1275b63fcb157a",
+  "args": {
+    "json": {
+      "reference": "dGVzdA=="
+    },
+    "wire": "030074657374"
+  },
+  "result": {
+    "json": {
+      "aborted": true
+    },
+    "wire": "00"
+  }
+}

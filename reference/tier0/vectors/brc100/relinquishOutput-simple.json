@@ -1,0 +1,18 @@
+{
+  "domain": "brc100",
+  "case": "relinquishOutput-simple",
+  "source": "bsv-blockchain/universal-test-vectors@e9d32e6688ddef63259bae094c1275b63fcb157a",
+  "args": {
+    "json": {
+      "basket": "test-basket",
+      "output": "abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890.2"
+    },
+    "wire": "07000b746573742d6261736b6574abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789002"
+  },
+  "result": {
+    "json": {
+      "relinquished": true
+    },
+    "wire": "00"
+  }
+}

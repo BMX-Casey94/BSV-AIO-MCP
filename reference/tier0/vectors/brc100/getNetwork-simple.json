@@ -1,0 +1,15 @@
+{
+  "domain": "brc100",
+  "case": "getNetwork-simple",
+  "source": "bsv-blockchain/universal-test-vectors@e9d32e6688ddef63259bae094c1275b63fcb157a",
+  "args": {
+    "json": {},
+    "wire": "1b00"
+  },
+  "result": {
+    "json": {
+      "network": "mainnet"
+    },
+    "wire": "0000"
+  }
+}

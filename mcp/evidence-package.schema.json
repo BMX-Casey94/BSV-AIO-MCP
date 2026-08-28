@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "csw://mcp/evidence-package",
+  "title": "EvidencePackage",
+  "description": "Return type of investigate / design_review. The model reasons over this; it is not chat text.",
+  "type": "object",
+  "required": ["question", "network", "index", "claims", "hits", "gaps", "contradictions", "recommended_next", "needs"],
+  "properties": {
+    "question": { "type": "string" },
+    "classified_as": {
+      "type": "string",
+      "enum": ["spec", "implementation", "design-why", "live-ops", "historical", "actuate", "mixed"]
+    },
+    "network": { "type": "string", "enum": ["any", "main", "test", "ttn", "tstn"] },
+    "hops_used": { "type": "integer", "minimum": 0, "maximum": 4 },
+    "index": { "$ref": "#/$defs/IndexStatus" },
+    "needs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["arcade_status", "faucet_health", "woc_status", "github_release"]
+      },
+      "description": "Live facts investigate refused to fetch itself."
+    },
+    "claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["text", "support", "status"],
+        "properties": {
+          "text": { "type": "string" },
+          "support": { "type": "array", "items": { "type": "string" }, "description": "TypedHit ids" },
+          "status": { "type": "string", "enum": ["supports", "contradicts", "insufficient"] },
+          "confidence": { "type": "string", "enum": ["high", "medium", "low"] }
+        }
+      }
+    },
+    "hits": { "type": "array", "items": { "$ref": "#/$defs/TypedHit" } },
+    "gaps": { "type": "array", "items": { "type": "string" } },
+    "contradictions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["kind", "summary"],
+        "properties": {
+          "id": { "type": "string" },
+          "kind": { "type": "string", "enum": ["essay-essay", "spec-code", "ts-go", "stale-rename"] },
+          "summary": { "type": "string" },
+          "winner": { "type": ["string", "null"], "description": "TypedHit id or null if unresolved" },
+          "reason": { "type": "string", "description": "Winner-policy rule that applied" }
+        }
+      }
+    },
+    "recommended_next": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "tool": { "type": "string" },
+          "reason": { "type": "string" }
+        }
+      }
+    },
+    "answer_sketch": {
+      "type": "string",
+      "description": "Optional short composition: how (spec/code) then when/why (writings). Not a substitute for hits."
+    }
+  },
+  "$defs": {
+    "IndexStatus": {
+      "type": "object",
+      "required": ["status", "sha", "brc_revision", "fetched_at", "policy_version"],
+      "properties": {
+        "status": { "type": "string", "enum": ["ready", "empty", "stale"] },
+        "sha": { "type": "string" },
+        "brc_revision": { "type": "string" },
+        "fetched_at": { "type": "string" },
+        "counts": {
+          "type": "object",
+          "properties": {
+            "brcs": { "type": "integer" },
+            "essays": { "type": "integer" },
+            "education": { "type": "integer" },
+            "packages": { "type": "integer" }
+          }
+        },
+        "policy_version": { "type": "string" }
+      }
+    },
+    "TypedHit": {
+      "type": "object",
+      "required": ["id", "kind", "authority", "title", "locator", "revision"],
+      "properties": {
+        "id": { "type": "string" },
+        "kind": { "type": "string" },
+        "authority": { "type": "integer", "minimum": 0, "maximum": 5 },
+        "title": { "type": "string" },
+        "locator": { "type": "string" },
+        "revision": { "type": "string" },
+        "fetched_at": { "type": "string" },
+        "stale": { "type": "boolean" },
+        "network": { "type": "string" },
+        "language": { "type": "string" },
+        "contradiction_ids": { "type": "array", "items": { "type": "string" } },
+        "successor": { "type": ["string", "null"] },
+        "excerpt": { "type": "string" }
+      }
+    }
+  }
+}

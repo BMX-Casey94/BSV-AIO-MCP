@@ -1,0 +1,40 @@
+{
+  "domain": "brc100",
+  "case": "encrypt-simple",
+  "source": "bsv-blockchain/universal-test-vectors@e9d32e6688ddef63259bae094c1275b63fcb157a",
+  "args": {
+    "json": {
+      "protocolID": [
+        1,
+        "test-protocol"
+      ],
+      "keyID": "test-key",
+      "counterparty": "self",
+      "privileged": true,
+      "privilegedReason": "test reason",
+      "seekPermission": true,
+      "plaintext": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    "wire": "0b00010d746573742d70726f746f636f6c08746573742d6b65790b010b7465737420726561736f6e040102030401"
+  },
+  "result": {
+    "json": {
+      "ciphertext": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    "wire": "000102030405060708"
+  }
+}

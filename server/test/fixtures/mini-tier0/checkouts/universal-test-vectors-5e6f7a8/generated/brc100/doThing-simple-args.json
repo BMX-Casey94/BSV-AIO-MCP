@@ -1,0 +1,5 @@
+{
+  "action": "doThing",
+  "input": "hello",
+  "network": "test"
+}

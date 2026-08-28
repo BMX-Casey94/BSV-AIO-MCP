@@ -1,0 +1,149 @@
+{
+  "generated": "2026-08-14",
+  "purpose": "Golden set. Phase A must pass G04, G05, G09, G10. Later phases add the rest. BitGenius public Q&A is a canary only — never ingested.",
+  "phase_a": ["G04", "G05", "G09", "G10"],
+  "phase_b": ["G02", "G12", "G13"],
+  "cases": [
+    {
+      "id": "G01",
+      "question": "How do I internalize a Teratestnet faucet payout into a BRC-100 wallet?",
+      "class": "mixed",
+      "expect": {
+        "network": "ttn",
+        "must_include_kinds": ["brc", "doc", "example"],
+        "must_cite": ["BRC-29", "BRC-100", "ops://testnet"],
+        "must_mention": ["POST /api/claim/wallet", "internalizeAction", "Atomic BEEF"],
+        "authority_lead": 1,
+        "must_not": ["scrypt.io/faucet", "bitcoin-sv/lars"]
+      }
+    },
+    {
+      "id": "G02",
+      "question": "What is BEEF and which packages implement it?",
+      "class": "implementation",
+      "expect": {
+        "must_cite": ["BRC-62", "BRC-95", "BRC-96"],
+        "must_include_kinds": ["brc", "symbol"],
+        "packages": ["@bsv/sdk", "go-sdk"],
+        "authority_lead": 1
+      }
+    },
+    {
+      "id": "G03",
+      "question": "Should I broadcast application transactions via Arcade or Arc/SVNode?",
+      "class": "implementation",
+      "expect": {
+        "must_mention": ["Arcade", "per-network", "ttn"],
+        "must_cite": ["ops://testnet"],
+        "must_not": ["prefer SVNode", "Arcade first on every network", "SEEN_MULTIPLE_NODES"],
+        "authority_lead": 2
+      }
+    },
+    {
+      "id": "G04",
+      "question": "Which BRC governs the wallet-to-application interface?",
+      "class": "spec",
+      "expect": {
+        "must_cite": ["BRC-100"],
+        "authority_lead": 1
+      }
+    },
+    {
+      "id": "G05",
+      "question": "What does Craig say about SPV versus running a full node, and is the corpus consistent?",
+      "class": "design-why",
+      "expect": {
+        "must_include_kinds": ["principle", "essay", "contradiction"],
+        "must_cite_contradiction": "IT-01",
+        "must_mention": ["SPV", "full node"]
+      }
+    },
+    {
+      "id": "G06",
+      "question": "I want to test a payment flow. Should I use mainnet?",
+      "class": "actuate",
+      "expect": {
+        "tool": "network_guard",
+        "action": "ask_switch",
+        "network": "ttn"
+      }
+    },
+    {
+      "id": "G07",
+      "question": "How do I create a TypeScript testnet wallet and switch back afterwards?",
+      "class": "implementation",
+      "expect": {
+        "must_mention": ["Setup.createWalletSQLite", "chain: 'ttn'", "separate storage"],
+        "must_cite": ["ops://testnet"],
+        "must_not": ["hot-swap the same sqlite onto mainnet"]
+      }
+    },
+    {
+      "id": "G08",
+      "question": "Where is UHRP specified and implemented?",
+      "class": "mixed",
+      "expect": {
+        "must_cite": ["BRC-26"],
+        "packages": ["uhrp-services"],
+        "example_packages": ["uhrp-react"],
+        "must_not": ["bitcoin-sv/lars as current"]
+      }
+    },
+    {
+      "id": "G09",
+      "question": "Does a valid AtomicBEEF prove 1Sat ordinal provenance?",
+      "class": "mixed",
+      "phase": "A",
+      "expect": {
+        "must_cite": ["BRC-150", "ops://ordinality"],
+        "must_mention": ["sat ordering", "fail closed"],
+        "must_not": ["AtomicBEEF is sufficient for ordinality"]
+      }
+    },
+    {
+      "id": "G10",
+      "question": "What pin is this answer using?",
+      "class": "spec",
+      "phase": "A",
+      "expect": {
+        "tool": "get_index_status",
+        "index_status": ["ready", "stale"],
+        "must_include_fields": ["sha", "brc_revision", "fetched_at", "policy_version"]
+      }
+    },
+    {
+      "id": "G12",
+      "question": "When should I use OP_NOP in Bitcoin Script, and which reserved opcodes remain after the Chronicle restoration?",
+      "class": "mixed",
+      "expect": {
+        "must_include_kinds": ["doc"],
+        "must_cite": ["OP_NOP"],
+        "must_mention": ["OP_NOP"],
+        "authority_lead": 1
+      }
+    },
+    {
+      "id": "G13",
+      "question": "How do I write a custom BSV smart contract?",
+      "class": "implementation",
+      "expect": {
+        "must_include_kinds": ["doc"],
+        "must_cite": ["runar"],
+        "must_mention": ["runar"],
+        "authority_lead": 1
+      }
+    },
+    {
+      "id": "G11",
+      "question": "Should I depend on the npm package named bsv for a new wallet?",
+      "class": "implementation",
+      "phase": "D",
+      "expect": {
+        "tool": "check_dependency",
+        "status": "denied",
+        "must_cite": ["repo://deny"],
+        "must_mention": ["@bsv/sdk", "CVE-2025-69287"]
+      }
+    }
+  ]
+}

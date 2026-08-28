@@ -1,0 +1,23 @@
+openapi: 3.1.0
+info:
+  title: Fixture wallet service
+  version: 0.0.1
+  description: Test fixture only. Not a real ts-stack contract.
+paths:
+  /wallet/balance:
+    get:
+      operationId: getFixtureWalletBalance
+      summary: Return the fixture wallet balance in satoshis.
+      responses:
+        "200":
+          description: Balance returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - satoshis
+                properties:
+                  satoshis:
+                    type: integer
+                    minimum: 0

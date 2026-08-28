@@ -1,0 +1,43 @@
+{
+  "domain": "brc100",
+  "case": "listOutputs-simple",
+  "source": "bsv-blockchain/universal-test-vectors@e9d32e6688ddef63259bae094c1275b63fcb157a",
+  "args": {
+    "json": {
+      "basket": "test-basket",
+      "tags": [
+        "tag1",
+        "tag2"
+      ],
+      "tagQueryMode": "any",
+      "include": "locking scripts",
+      "includeTags": true,
+      "limit": 10
+    },
+    "wire": "06000b746573742d6261736b657402047461673104746167320201ff01ff0affffffffffffffffffff"
+  },
+  "result": {
+    "json": {
+      "totalOutputs": 2,
+      "BEEF": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "outputs": [
+        {
+          "satoshis": 1000,
+          "spendable": true,
+          "outpoint": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef.0"
+        },
+        {
+          "satoshis": 5000,
+          "spendable": true,
+          "outpoint": "abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890.2"
+        }
+      ]
+    },
+    "wire": "000204010203041234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef00fde803ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffabcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789002fd8813ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+  }
+}

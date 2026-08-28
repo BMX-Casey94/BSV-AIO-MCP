@@ -1,0 +1,22 @@
+---
+title: "Your Token Is Not Your JPEG — And That Distinction Is the Entire Point"
+era: substack
+date: 2026-03-12
+slug: your-token-is-not-your-jpeg-and-that
+themes: [property-rights, law-regulation, tokenisation]
+source_summary: summaries/your-token-is-not-your-jpeg-and-that.md
+url: https://singulargrit.substack.com/p/your-token-is-not-your-jpeg-and-that
+---
+
+# Your Token Is Not Your JPEG — And That Distinction Is the Entire Point — core principles
+
+- **Every token dispute involves three distinct objects.** The off-chain work (infinitely reproducible, governed by copyright), the on-chain token (a ledger entry — unique identifier, contract address, owner address — controlled exclusively through the private key: exclusive, rivalrous, self-executing), and the allegedly wrongful conduct. Collapsing the three produces the confusion saturating the field.
+- **The work–token relationship is referential, not constitutive.** Owning the token confers no copyright; owning the copyright confers no rights over the token. Analyse each dispute by asking which object the conduct actually targets.
+- **Recognition without remedy is a real and documented gap.** The Hangzhou Internet Court's *Fat Tiger* ruling characterised the token as having property interests (财产权益) distinct from the artwork's copyright, then resolved the case on copyright grounds and left the property question untouched. Singapore's *CLM v CLN* held cryptocurrencies satisfy the four *Ainsworth* criteria and *Quoine* saw "much to commend" in property assimilation — yet no conversion claim can currently be brought because the tort has not been extended beyond tangibles.
+- **In China the gap is legislative.** Civil Code Article 127 delegates "network virtual property" (网络虚拟财产) to future legislation that has never arrived, and numerus clausus makes courts reluctant to create new property categories; if a token is not a "thing" (物) under Articles 114–115, holders lose the no-fault possessory remedies of Articles 235–237 (return, elimination of obstruction, restoration) and are left with fault-based tort, contract or copyright.
+- **Only one family of conduct engages property-interference liability.** Passive copying of publicly displayed content is a copyright matter; access-control circumvention (credential stuffing, API abuse) is computer misuse — wrongful means do not create possessory wrongs; token-level interference — unauthorised transfer, freezing, custodial refusal, burning to an inaccessible address — is the sole residual category.
+- **Indirect interference is not property interference.** Systematic scraping that destroys a token's commercial environment leaves the token on the ledger under the same key control; reducing market value through competing content is market competition. The tort protects the thing, not the surrounding market conditions in which the thing happens to be valuable.
+- **Adjacent doctrines fail precisely where it matters.** Contract requires privity (a hacker has none); unjust enrichment reverses gains rather than vindicating possession; unfair competition protects market order and requires a competitive relationship; equitable tracing follows proceeds, not the token; criminal prosecution punishes without restoring.
+- **Remedial architectures diverge instructively.** China's modular menu (Articles 235–238) permits return without proof of fault, bifurcating possessory relief from damages; Singaporean conversion is all-or-nothing strict liability with a forced-sale measure — the defendant acquires the token on paying market value, commercially incoherent for a hacker and prone to valuation problems in volatile markets.
+- **Formalist barriers are constitutive, not quaint — but answerable.** Numerus clausus and tangibility belong to the doctrines' institutional identity; the functional rejoinder is that a key-controlled token burdens third parties no more than a chattel in a locked room and is more susceptible to possessory control than many physical chattels.
+- **Route claims with a five-step test.** Identify the layer; identify the object (Civil Code "thing" / Ainsworth criteria); assess impairment of exclusive control; assess seriousness (fault for damages in China, permanent deprivation for conversion in Singapore); route the claim. The test's most important function is exclusion, and it extends beyond NFTs to tokenised securities, DeFi positions, digital identity credentials and on-chain governance rights.
