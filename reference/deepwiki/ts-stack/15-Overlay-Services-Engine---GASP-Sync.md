@@ -7,15 +7,15 @@
 
 The following files were used as context for generating this wiki page:
 
-- [packages/overlays/gasp-core/package.json](packages/overlays/gasp-core/package.json)
-- [packages/overlays/overlay-discovery-services/package.json](packages/overlays/overlay-discovery-services/package.json)
-- [packages/overlays/overlay-services/package.json](packages/overlays/overlay-services/package.json)
-- [specs/merkle/merkle-service-http.yaml](specs/merkle/merkle-service-http.yaml)
-- [specs/payments/brc121.yaml](specs/payments/brc121.yaml)
-- [specs/payments/brc29-payment-protocol.yaml](specs/payments/brc29-payment-protocol.yaml)
-- [specs/storage/uhrp-http.yaml](specs/storage/uhrp-http.yaml)
-- [specs/sync/gasp-asyncapi.yaml](specs/sync/gasp-asyncapi.yaml)
-- [specs/wallet/storage-adapter.yaml](specs/wallet/storage-adapter.yaml)
+- [packages/overlays/gasp-core/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/gasp-core/package.json)
+- [packages/overlays/overlay-discovery-services/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/overlay-discovery-services/package.json)
+- [packages/overlays/overlay-services/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/overlay-services/package.json)
+- [specs/merkle/merkle-service-http.yaml](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/merkle/merkle-service-http.yaml)
+- [specs/payments/brc121.yaml](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/payments/brc121.yaml)
+- [specs/payments/brc29-payment-protocol.yaml](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/payments/brc29-payment-protocol.yaml)
+- [specs/storage/uhrp-http.yaml](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/storage/uhrp-http.yaml)
+- [specs/sync/gasp-asyncapi.yaml](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/sync/gasp-asyncapi.yaml)
+- [specs/wallet/storage-adapter.yaml](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/wallet/storage-adapter.yaml)
 
 </details>
 
@@ -65,7 +65,7 @@ graph TD
     GASPRemote --> GASP
 ``` |
 
-Sources: [packages/overlays/overlay-services/package.json:1-81](), [specs/sync/gasp-asyncapi.yaml:1-36]()
+Sources: [packages/overlays/overlay-services/package.json:1-81](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/overlay-services/package.json#L1-L81), [specs/sync/gasp-asyncapi.yaml:1-36](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/sync/gasp-asyncapi.yaml#L1-L36)
 
 ## GASP: Graph Aware Sync Protocol
 
@@ -100,7 +100,7 @@ sequenceDiagram
     Note over I: Engine.submit(GASPNode)
 ``` |
 
-Sources: [specs/sync/gasp-asyncapi.yaml:1-110](), [packages/overlays/gasp-core/package.json:1-67]()
+Sources: [specs/sync/gasp-asyncapi.yaml:1-110](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/sync/gasp-asyncapi.yaml#L1-L110), [packages/overlays/gasp-core/package.json:1-67](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/gasp-core/package.json#L1-L67)
 
 ## Storage & Persistence
 
@@ -116,7 +116,7 @@ The storage layer must track:
 *   **Outputs (UTXOs)**: Topic-specific outputs that are currently spendable.
 *   **Sync State**: Timestamps of the last successful sync with various peers.
 
-Sources: [packages/overlays/overlay-services/package.json:75-79](), [packages/overlays/overlay-discovery-services/package.json:65-69]()
+Sources: [packages/overlays/overlay-services/package.json:75-79](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/overlay-services/package.json#L75-L79), [packages/overlays/overlay-discovery-services/package.json:65-69](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/overlay-discovery-services/package.json#L65-L69)
 
 ## Discovery & Advertisement (SHIP/SLAP)
 
@@ -145,7 +145,7 @@ graph LR
     Client -- "3. GET /download" --> Storage
 ``` |
 
-Sources: [specs/storage/uhrp-http.yaml:1-40](), [packages/overlays/overlay-discovery-services/package.json:1-71]()
+Sources: [specs/storage/uhrp-http.yaml:1-40](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/storage/uhrp-http.yaml#L1-L40), [packages/overlays/overlay-discovery-services/package.json:1-71](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/overlay-discovery-services/package.json#L1-L71)
 
 ## Key Implementation Files
 
@@ -157,6 +157,6 @@ Sources: [specs/storage/uhrp-http.yaml:1-40](), [packages/overlays/overlay-disco
 | **Storage Interface** | `packages/overlays/overlay-services/src/storage/index.ts` | Base storage abstraction. |
 | **Topic Manager** | `packages/overlays/overlay-services/src/interfaces/TopicManager.ts` | Interface for topic-specific validation logic. |
 
-Sources: [packages/overlays/overlay-services/package.json:23-36](), [packages/overlays/gasp-core/package.json:14-34]()
+Sources: [packages/overlays/overlay-services/package.json:23-36](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/overlay-services/package.json#L23-L36), [packages/overlays/gasp-core/package.json:14-34](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/gasp-core/package.json#L14-L34)
 
 ---

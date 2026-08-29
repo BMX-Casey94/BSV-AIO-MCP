@@ -5,11 +5,17 @@ export type ServerConfig = {
   root: string;
   dbPath: string;
   tier0Root: string;
+  tier1Root: string;
 };
 
 /** The single derivation of the Tier 0 card root, so every plane reads one tree. */
 export function tier0RootFor(root: string): string {
   return join(root, "reference", "tier0");
+}
+
+/** The single derivation of the Tier 1 card root, so every plane reads one tree. */
+export function tier1RootFor(root: string): string {
+  return join(root, "reference", "tier1");
 }
 
 export function defaultConfig(root: string): ServerConfig {
@@ -20,5 +26,6 @@ export function defaultConfig(root: string): ServerConfig {
     // into its own node_modules directory.
     dbPath: process.env.BSV_AIO_DB_PATH ?? join(tmpdir(), "bsv-aio-mcp", "knowledge.sqlite"),
     tier0Root: tier0RootFor(root),
+    tier1Root: tier1RootFor(root),
   };
 }

@@ -7,18 +7,18 @@
 
 The following files were used as context for generating this wiki page:
 
-- [packages/helpers/amountinator/tsconfig.json](packages/helpers/amountinator/tsconfig.json)
-- [packages/helpers/bsv-wallet-helper/src/script-templates/ordlock.ts](packages/helpers/bsv-wallet-helper/src/script-templates/ordlock.ts)
-- [packages/helpers/bsv-wallet-helper/src/script-templates/p2pkh.ts](packages/helpers/bsv-wallet-helper/src/script-templates/p2pkh.ts)
-- [packages/helpers/bsv-wallet-helper/src/utils/derivation.ts](packages/helpers/bsv-wallet-helper/src/utils/derivation.ts)
-- [packages/messaging/message-box-client/tsconfig.base.json](packages/messaging/message-box-client/tsconfig.base.json)
-- [packages/messaging/message-box-server/src/swagger.ts](packages/messaging/message-box-server/src/swagger.ts)
-- [packages/messaging/messagebox-services/backend/tsconfig.base.json](packages/messaging/messagebox-services/backend/tsconfig.base.json)
-- [packages/network/chaintracks-server/package.json](packages/network/chaintracks-server/package.json)
-- [packages/network/ts-p2p/package.json](packages/network/ts-p2p/package.json)
-- [packages/overlays/overlay-express/package.json](packages/overlays/overlay-express/package.json)
-- [packages/wallet/wab/package.json](packages/wallet/wab/package.json)
-- [packages/wallet/wallet-toolbox/package.json](packages/wallet/wallet-toolbox/package.json)
+- [packages/helpers/amountinator/tsconfig.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/amountinator/tsconfig.json)
+- [packages/helpers/bsv-wallet-helper/src/script-templates/ordlock.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/bsv-wallet-helper/src/script-templates/ordlock.ts)
+- [packages/helpers/bsv-wallet-helper/src/script-templates/p2pkh.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/bsv-wallet-helper/src/script-templates/p2pkh.ts)
+- [packages/helpers/bsv-wallet-helper/src/utils/derivation.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/bsv-wallet-helper/src/utils/derivation.ts)
+- [packages/messaging/message-box-client/tsconfig.base.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/message-box-client/tsconfig.base.json)
+- [packages/messaging/message-box-server/src/swagger.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/message-box-server/src/swagger.ts)
+- [packages/messaging/messagebox-services/backend/tsconfig.base.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/messagebox-services/backend/tsconfig.base.json)
+- [packages/network/chaintracks-server/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/chaintracks-server/package.json)
+- [packages/network/ts-p2p/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/ts-p2p/package.json)
+- [packages/overlays/overlay-express/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/overlay-express/package.json)
+- [packages/wallet/wab/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wab/package.json)
+- [packages/wallet/wallet-toolbox/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wallet-toolbox/package.json)
 
 </details>
 
@@ -46,7 +46,7 @@ graph TD
     TL -->|Uses libp2p| SDK
     WT --> SDK
 ```
-Sources: [@bsv/chaintracks-server:29-33](), [@bsv/teranode-listener:16-32]()
+Sources: [@bsv/chaintracks-server:29-33](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/chaintracks-server), [@bsv/teranode-listener:16-32](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/teranode-listener)
 
 ---
 
@@ -63,9 +63,9 @@ The server supports multiple entry points and configuration modes via the `CHAIN
 | **Network Modes** | Mainnet, Testnet (via `CHAIN` env) |
 | **Entry Points** | `server.ts`, `server-custom.ts`, `server-with-prefix.ts` |
 
-For details, see [Chaintracks Server](#7.1).
+For details, see [Chaintracks Server](25-Chaintracks-Server.md).
 
-**Sources:** [@bsv/chaintracks-server:1-42](), [@bsv/chaintracks-server:5-6](), [@bsv/chaintracks-server:11-13]()
+**Sources:** [@bsv/chaintracks-server:1-42](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/chaintracks-server), [@bsv/chaintracks-server:5-6](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/chaintracks-server), [@bsv/chaintracks-server:11-13](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/chaintracks-server)
 
 ---
 
@@ -105,9 +105,9 @@ graph LR
 | **Private Network** | `@libp2p/pnet` (PSK-based access) |
 | **Peer Discovery** | `@libp2p/bootstrap` & `@libp2p/pubsub-peer-discovery` |
 
-For details, see [Teranode P2P Listener](#7.2).
+For details, see [Teranode P2P Listener](26-Teranode-P2P-Listener.md).
 
-**Sources:** [@bsv/teranode-listener:1-60](), [@bsv/teranode-listener:18-32](), [@bsv/teranode-listener:39-45]()
+**Sources:** [@bsv/teranode-listener:1-60](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/teranode-listener), [@bsv/teranode-listener:18-32](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/teranode-listener), [@bsv/teranode-listener:39-45](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/teranode-listener)
 
 ---
 
@@ -128,6 +128,6 @@ sequenceDiagram
     CT-->>App: Header Data + Merkle Proof
 ```
 
-**Sources:** [@bsv/chaintracks-server:5-6](), [@bsv/teranode-listener:39-44]()
+**Sources:** [@bsv/chaintracks-server:5-6](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/chaintracks-server), [@bsv/teranode-listener:39-44](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/teranode-listener)
 
 ---

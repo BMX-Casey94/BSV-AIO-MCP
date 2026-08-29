@@ -95,6 +95,27 @@ export type PackageForConceptResult = {
   hits: TypedHit[];
 };
 
+export type DependencyStatus = "allowed" | "denied" | "unknown";
+
+export type CheckDependencyResult = {
+  name: string;
+  status: DependencyStatus;
+  reason?: string;
+  /** Always present on denied: the successor name, or null when the deny list names none. */
+  successor?: string | null;
+  /** Where the verdict came from: the deny list, a confirmed package card, or neither. */
+  source: string;
+  note?: string;
+};
+
+export type NetworkGuardAction = "ask_switch" | "allow" | "deny" | "remind_main";
+
+export type NetworkGuardResult = {
+  action: NetworkGuardAction;
+  network: Network;
+  reason: string;
+};
+
 export type IndexCounts = {
   brcs: number;
   essays: number;

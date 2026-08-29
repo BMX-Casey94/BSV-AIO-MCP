@@ -5,12 +5,13 @@ import {
   readBrcIndexMeta,
   snapshotFetchedAt,
 } from "./indexManifest.js";
-import { ingestTier0Cards } from "./tier0Ingest.js";
+import { ingestRepoCards, ingestTier0Cards } from "./tier0Ingest.js";
 import type { KnowledgeStore, StoredDocument } from "../store/knowledgeStore.js";
 import type { HitKind, Language } from "../types.js";
 
 export type IngestOptions = {
   tier0Root?: string;
+  tier1Root?: string;
 };
 
 export type IngestResult = {
@@ -73,6 +74,7 @@ export function ingestSnapshots(
   options?: IngestOptions,
 ): IngestResult {
   const tier0Root = options?.tier0Root ?? join(root, "reference", "tier0");
+  const tier1Root = options?.tier1Root ?? join(root, "reference", "tier1");
   const brc = readBrcIndexMeta(root);
   const fetchedAt = snapshotFetchedAt(root, brc.generated);
   const snapshotRevision = hashSnapshotSet(root);
@@ -97,13 +99,20 @@ export function ingestSnapshots(
     const tier0 = existsSync(tier0Root)
       ? ingestTier0Cards(tier0Root, store, { revision: snapshotRevision, fetched_at: fetchedAt })
       : { packages: 0, symbols: 0, documents: 0 };
-    const total = documents.length + tier0.documents;
+    const tier1 = existsSync(tier1Root)
+      ? ingestRepoCards(tier1Root, store, { revision: snapshotRevision, fetched_at: fetchedAt }, "Tier 1")
+      : { packages: 0, symbols: 0, documents: 0 };
+    const total = documents.length + tier0.documents + tier1.documents;
     store.setMeta("count.brcs", String(countKind(documents, "brc")));
     store.setMeta("count.essays", String(countKind(documents, "essay")));
     store.setMeta("count.education", String(countKind(documents, "principle")));
     store.setMeta("count.contradictions", String(countKind(documents, "contradiction")));
     store.setMeta("count.documents", String(total));
-    return { documents: total, packages: tier0.packages, symbols: tier0.symbols };
+    return {
+      documents: total,
+      packages: tier0.packages + tier1.packages,
+      symbols: tier0.symbols + tier1.symbols,
+    };
   });
 }
 

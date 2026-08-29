@@ -12,6 +12,13 @@ export const SNAPSHOT_RELATIVE_PATHS = [
   "reference/tier0/manifest.json",
   "reference/tier0/packages.json",
   "reference/tier0/symbols.json",
+  "reference/tier0/docs/manifest.json",
+  "reference/tier0/docs/brc-mentions.json",
+  "reference/tier1/manifest.json",
+  "reference/tier1/packages.json",
+  "reference/tier1/symbols.json",
+  "reference/tier1/docs/manifest.json",
+  "reference/tier1/docs/brc-mentions.json",
   "reference/academy/manifest.json",
   "reference/brcs/manifest.json",
 ] as const;

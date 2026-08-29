@@ -54,6 +54,10 @@ type SymbolsCard = {
   symbols?: unknown;
 };
 
+type BrcMentionsCard = {
+  mentions?: unknown;
+};
+
 type ConfirmedSymbol = {
   name: string;
   package: string;
@@ -118,6 +122,7 @@ export function buildCapabilityGraph(root: string): CapabilityRecord[] {
   const education = JSON.parse(readFileSync(join(root, "data", "education_index.json"), "utf8")) as EducationIndexFile;
   readSuccessorMap(root);
   const cards = loadConfirmedCards(root);
+  const brcMentions = loadBrcMentions(root);
 
   const rows = (Array.isArray(brcIndex.brcs) ? brcIndex.brcs : [])
     .map(normaliseBrc)
@@ -132,12 +137,16 @@ export function buildCapabilityGraph(root: string): CapabilityRecord[] {
     const mentioned = mentions.get(row.brc) ?? [];
     const also = uniqueSortedBrcs([...grouped, ...mentioned].filter((id) => id !== row.brc));
     const tokens = groupingKeys(row.title);
+    // Evidenced mentions are keyed by whatever label the refresh wrote — a repo short name when
+    // the repo publishes no package (ts-stack). Only confirmed packages may enter the graph.
+    const confirmed = new Set(cards.packages);
+    const evidenced = (brcMentions.get(row.brc) ?? []).filter((name) => confirmed.has(name));
     return {
       id: capabilityId(row),
       name: row.title,
       brc: row.brc,
       also,
-      packages: packagesForTokens(tokens, cards),
+      packages: [...new Set([...packagesForTokens(tokens, cards), ...evidenced])].sort(),
       api: apiForTokens(tokens, cards.symbols),
       education_themes: matchEducationThemes(row.title, themes),
       authority_hint: row.authority,
@@ -157,9 +166,13 @@ export function writeCapabilityGraph(root: string): string {
       "reference/shoprag-successor-map.json",
       "reference/tier0/packages.json",
       "reference/tier0/symbols.json",
+      "reference/tier0/docs/brc-mentions.json",
+      "reference/tier1/packages.json",
+      "reference/tier1/symbols.json",
+      "reference/tier1/docs/brc-mentions.json",
     ],
     policy:
-      "Titles plus confirmed Tier 0 cards. packages come from a word-boundary match of grouping tokens of length ≥ 3 against exported symbols. api lists only exported names that exact-match a title token. Do not invent API names.",
+      "Titles plus confirmed Tier 0/1 cards. packages come from a word-boundary match of grouping tokens of length ≥ 3 against exported symbols, unioned with the evidenced BRC mentions each repo's own documentation makes. api lists only exported names that exact-match a title token. Do not invent API names.",
     count: capabilities.length,
     capabilities,
   };
@@ -243,31 +256,75 @@ function matchEducationThemes(title: string, themes: string[]): string[] {
 }
 
 function loadConfirmedCards(root: string): { packages: string[]; symbols: ConfirmedSymbol[] } {
-  const packagesCard = JSON.parse(
-    readFileSync(join(root, "reference", "tier0", "packages.json"), "utf8"),
-  ) as PackagesCard;
-  const symbolsCard = JSON.parse(
-    readFileSync(join(root, "reference", "tier0", "symbols.json"), "utf8"),
-  ) as SymbolsCard;
-  const packages = (Array.isArray(packagesCard.packages) ? packagesCard.packages : []).filter(
-    (name): name is string => typeof name === "string" && name.length > 0,
-  );
-  const confirmed = new Set(packages);
+  // Confirmed packages come from every pinned tier: Tier 0 SDKs/wallets and Tier 1 services/
+  // libraries are equally confirmed; the tier distinction is operational criticality, not trust.
+  const packages: string[] = [];
   const symbols: ConfirmedSymbol[] = [];
-  for (const row of Array.isArray(symbolsCard.symbols) ? symbolsCard.symbols : []) {
-    if (!row || typeof row !== "object") {
-      continue;
+  for (const tier of ["tier0", "tier1"] as const) {
+    const tierRoot = join(root, "reference", tier);
+    const packagesCard = readJsonCard<PackagesCard>(join(tierRoot, "packages.json"));
+    const symbolsCard = readJsonCard<SymbolsCard>(join(tierRoot, "symbols.json"));
+    const tierPackages = (Array.isArray(packagesCard?.packages) ? packagesCard.packages : []).filter(
+      (name): name is string => typeof name === "string" && name.length > 0,
+    );
+    const confirmed = new Set(tierPackages);
+    packages.push(...tierPackages);
+    for (const row of Array.isArray(symbolsCard?.symbols) ? symbolsCard.symbols : []) {
+      if (!row || typeof row !== "object") {
+        continue;
+      }
+      const rec = row as SymbolCardRow;
+      if (rec.exported !== true || typeof rec.name !== "string" || typeof rec.package !== "string") {
+        continue;
+      }
+      if (!confirmed.has(rec.package)) {
+        continue;
+      }
+      symbols.push({ name: rec.name, package: rec.package });
     }
-    const rec = row as SymbolCardRow;
-    if (rec.exported !== true || typeof rec.name !== "string" || typeof rec.package !== "string") {
-      continue;
-    }
-    if (!confirmed.has(rec.package)) {
-      continue;
-    }
-    symbols.push({ name: rec.name, package: rec.package });
   }
-  return { packages, symbols };
+  return { packages: [...new Set(packages)].sort(), symbols };
+}
+
+/**
+ * BRC↔package edges evidenced by the repos themselves: each tier's `brc-mentions.json` records
+ * the BRC numbers a package's own README/docs/examples cite. A package is attached to a BRC's
+ * capability row only when its own documentation names that BRC.
+ */
+function loadBrcMentions(root: string): Map<string, string[]> {
+  const byBrc = new Map<string, Set<string>>();
+  for (const tier of ["tier0", "tier1"] as const) {
+    const card = readJsonCard<BrcMentionsCard>(
+      join(root, "reference", tier, "docs", "brc-mentions.json"),
+    );
+    const mentions = card?.mentions;
+    if (!mentions || typeof mentions !== "object") {
+      continue;
+    }
+    for (const [pkg, numbers] of Object.entries(mentions)) {
+      if (!Array.isArray(numbers)) {
+        continue;
+      }
+      for (const n of numbers) {
+        if (typeof n !== "number" || !Number.isInteger(n)) {
+          continue;
+        }
+        const brc = `BRC-${n}`;
+        const set = byBrc.get(brc) ?? new Set<string>();
+        set.add(pkg);
+        byBrc.set(brc, set);
+      }
+    }
+  }
+  return new Map([...byBrc.entries()].map(([brc, pkgs]) => [brc, [...pkgs].sort()]));
+}
+
+function readJsonCard<T>(abs: string): T | undefined {
+  try {
+    return JSON.parse(readFileSync(abs, "utf8")) as T;
+  } catch {
+    return undefined;
+  }
 }
 
 function packagesForTokens(

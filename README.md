@@ -87,17 +87,21 @@ Then point the client at the built entry directly:
 | `inspect_schema` | Pinned service schemas (e.g. the BRC-100 wallet interface). |
 | `error_taxonomy` | The pinned `ERR_*` error catalogue with descriptions and interfaces. |
 | `get_conformance_vector` | Pinned test vectors (e.g. BRC-100 `createAction`). |
+| `check_dependency` | Read-only policy: is this package name denied (with reason and successor), confirmed in the pinned Tier 0/1 cards, or unknown? Absence from the deny list is never an endorsement. |
+| `network_guard` | Read-only policy: which network does this intent belong on? Testing on mainnet gets `ask_switch` to ttn; actuation requests are refused — this server never broadcasts, signs, or claims. |
 
 ## The corpus
 
 The snapshot pins: the BRC index and full BRC bodies; BSV Academy opcode/Script
-documentation; the Rúnar documentation set; Tier 0 package/symbol/spec cards; a deny list;
+documentation; the Rúnar documentation set; Tier 0 package/symbol/spec cards plus Tier 0/1
+repo documentation (READMEs, docs, examples) with evidenced BRC-to-package edges; a deny list;
 testnet operations notes; ordinality/provenance rules; and 476 summarised Craig Wright essays
 (Medium 2018–2022 and Substack 2025–2026) with a curated contradiction map. See
 [CORPUS.md](CORPUS.md) for the full corpus documentation.
 
 The snapshot is the product: answers are reproducible and auditable against it. Operators
-refresh it with `npm run refresh:tier0 --workspace=server` (Tier 0 cards) and
+refresh it with `npm run refresh:tier0 --workspace=server` (Tier 0 cards),
+`npm run refresh:tier1 --workspace=server` (Tier 1 services/libraries) and
 `npm run fetch:academy --workspace=server` (academy docs), each guarded against accidental
 data loss.
 
@@ -106,7 +110,7 @@ data loss.
 ```bash
 npm install          # install workspace deps
 npm run build        # bundle server/dist
-npm test             # 143 tests: goldens, tools, composition, ingest
+npm test             # 189 tests: goldens (A–D), tools, composition, ingest
 npm run typecheck    # tsc --noEmit
 node server/probe-full-battery.mjs   # adversarial smoke battery against the built server
 ```

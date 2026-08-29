@@ -1,5 +1,5 @@
 import { existsSync, lstatSync, readFileSync, readdirSync } from "node:fs";
-import { join } from "node:path";
+import { basename, join } from "node:path";
 import type { KnowledgeStore, StoredDocument } from "../store/knowledgeStore.js";
 import type { Language } from "../types.js";
 
@@ -34,6 +34,27 @@ type SymbolCardRow = {
   exported?: unknown;
 };
 
+type TierManifest = {
+  repos?: unknown;
+};
+
+type TierManifestRow = {
+  repo?: unknown;
+  package?: unknown;
+  role?: unknown;
+  status?: unknown;
+  successor?: unknown;
+};
+
+type DocsManifest = {
+  files?: unknown;
+};
+
+type DocsManifestEntry = {
+  sha256?: unknown;
+  example?: unknown;
+};
+
 const LANGUAGES: readonly Language[] = ["spec", "ts", "go", "py", "prose"];
 
 export function ingestTier0Cards(
@@ -41,29 +62,45 @@ export function ingestTier0Cards(
   store: KnowledgeStore,
   pin: Tier0Pin,
 ): Tier0IngestResult {
-  const packages = packageDocuments(tier0Root, pin);
-  const symbols = symbolDocuments(tier0Root, pin);
-  const specs = specDocuments(tier0Root, pin);
-  const vectors = vectorDocuments(tier0Root, pin);
+  return ingestRepoCards(tier0Root, store, pin, "Tier 0");
+}
 
-  for (const doc of [...packages, ...symbols, ...specs, ...vectors]) {
+/**
+ * Ingests one tier's committed card set: package labels, scanned symbols, specs/vectors when the
+ * tier carries them (Tier 0 only), and the repo-docs snapshot (README/docs as doc cards,
+ * examples/templates as example cards). `tierLabel` is the human tier name in card prose.
+ */
+export function ingestRepoCards(
+  tierRoot: string,
+  store: KnowledgeStore,
+  pin: Tier0Pin,
+  tierLabel: string,
+): Tier0IngestResult {
+  const packages = packageDocuments(tierRoot, pin, tierLabel);
+  const symbols = symbolDocuments(tierRoot, pin);
+  const specs = specDocuments(tierRoot, pin);
+  const vectors = vectorDocuments(tierRoot, pin);
+  const repoDocs = repoDocDocuments(tierRoot, pin);
+
+  for (const doc of [...packages, ...symbols, ...specs, ...vectors, ...repoDocs]) {
     store.insertDocument(doc);
   }
 
   return {
     packages: packages.length,
     symbols: symbols.length,
-    documents: packages.length + symbols.length + specs.length + vectors.length,
+    documents: packages.length + symbols.length + specs.length + vectors.length + repoDocs.length,
   };
 }
 
-function packageDocuments(tier0Root: string, pin: Tier0Pin): StoredDocument[] {
-  const card = readCard<PackagesCard>(join(tier0Root, "packages.json"));
+function packageDocuments(tierRoot: string, pin: Tier0Pin, tierLabel: string): StoredDocument[] {
+  const card = readCard<PackagesCard>(join(tierRoot, "packages.json"));
   if (!card) {
     return [];
   }
   const revision = cardRevision(card.revision, pin);
   const names = Array.isArray(card.packages) ? card.packages : [];
+  const provenance = packageProvenance(tierRoot);
   const seen = new Set<string>();
   const out: StoredDocument[] = [];
   for (const raw of names) {
@@ -72,19 +109,47 @@ function packageDocuments(tier0Root: string, pin: Tier0Pin): StoredDocument[] {
       continue;
     }
     seen.add(name);
+    const source = provenance.get(name);
+    const from = source ? ` from ${source.repo} (${source.role})` : "";
+    const archived =
+      source?.status === "archived"
+        ? ` Archived upstream${source.successor ? `; current development continues at ${source.successor}` : ""}.`
+        : "";
     out.push({
       id: `package:${name}`,
       kind: "doc",
       authority: 2,
-      title: `Tier 0 package: ${name}`,
-      locator: `reference/tier0/packages.json#${name}`,
+      title: `${tierLabel} package: ${name}`,
+      locator: `reference/${basename(tierRoot)}/packages.json#${name}`,
       revision,
       fetched_at: pin.fetched_at,
       network: "any",
       language: "prose",
       era: null,
-      body: `${name} is a confirmed Tier 0 package. The name is read from the repository's own package manifest during refresh, never from prose or a successor map.`,
+      body: `${name} is a confirmed ${tierLabel} package${from}.${archived} The name is read from the repository's own package manifest during refresh, never from prose or a successor map.`,
     });
+  }
+  return out;
+}
+
+/** package name → {repo, role, status, successor} from the tier manifest, so cards carry their provenance. */
+function packageProvenance(
+  tierRoot: string,
+): Map<string, { repo: string; role: string; status: string; successor: string }> {
+  const card = readCard<TierManifest>(join(tierRoot, "manifest.json"));
+  const out = new Map<string, { repo: string; role: string; status: string; successor: string }>();
+  const rows = Array.isArray(card?.repos) ? (card?.repos as TierManifestRow[]) : [];
+  for (const row of rows) {
+    const name = stringField(row.package);
+    const repo = stringField(row.repo);
+    if (name && repo) {
+      out.set(name, {
+        repo,
+        role: stringField(row.role),
+        status: stringField(row.status),
+        successor: stringField(row.successor),
+      });
+    }
   }
   return out;
 }
@@ -182,6 +247,63 @@ function vectorDocuments(tier0Root: string, pin: Tier0Pin): StoredDocument[] {
     });
   }
   return out;
+}
+
+/**
+ * The repo-docs snapshot: one card per snapshotted file. README/`docs/**` become doc cards
+ * (authority 2, the project's own words about itself); `examples/**` and template sources become
+ * example cards (authority 3, illustrative rather than normative). The docs manifest carries the
+ * per-file example flag written at refresh time; the path heuristic is only a fallback.
+ */
+function repoDocDocuments(tierRoot: string, pin: Tier0Pin): StoredDocument[] {
+  const docsRoot = join(tierRoot, "docs");
+  const manifest = readCard<DocsManifest>(join(docsRoot, "manifest.json"));
+  const flags = new Map<string, boolean>();
+  if (manifest && manifest.files && typeof manifest.files === "object") {
+    for (const [rel, entry] of Object.entries(manifest.files as Record<string, DocsManifestEntry>)) {
+      flags.set(rel, entry?.example === true);
+    }
+  }
+  const out: StoredDocument[] = [];
+  for (const rel of listCardFiles(docsRoot)) {
+    const segments = rel.split("/");
+    if (segments.length < 2) {
+      continue; // docs/manifest.json and docs/brc-mentions.json are metadata, not cards
+    }
+    const shortRepo = segments[0] ?? "";
+    const path = segments.slice(1).join("/");
+    const example = flags.get(rel) ?? /^examples?\//i.test(path);
+    const text = readFileSync(join(docsRoot, ...segments), "utf8");
+    const kind = example ? "example" : "doc";
+    out.push({
+      id: `${kind}:${shortRepo}:${path}`,
+      kind,
+      authority: example ? 3 : 2,
+      title: firstHeading(text) ?? `${shortRepo}: ${path}`,
+      locator: `repo://${shortRepo}/${path}`,
+      revision: pin.revision,
+      fetched_at: pin.fetched_at,
+      network: "any",
+      language: example ? exampleLanguage(path) : "prose",
+      era: null,
+      body: text,
+    });
+  }
+  return out;
+}
+
+function exampleLanguage(path: string): Language {
+  const ext = path.slice(path.lastIndexOf(".")).toLowerCase();
+  if (ext === ".ts" || ext === ".tsx" || ext === ".mts" || ext === ".cts" || ext === ".js" || ext === ".jsx") {
+    return "ts";
+  }
+  if (ext === ".go") {
+    return "go";
+  }
+  if (ext === ".py") {
+    return "py";
+  }
+  return "prose";
 }
 
 function readCard<T>(abs: string): T | undefined {

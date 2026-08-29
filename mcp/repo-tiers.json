@@ -1,6 +1,6 @@
 {
-  "generated": "2026-08-14",
-  "policy": "Index Tier 0+1 at symbol granularity first. Warm/cold the rest. Never hot-index bitcoin-sv/*.",
+  "generated": "2026-08-29",
+  "policy": "Index Tier 0+1 at symbol granularity first. Warm/cold the rest. Never hot-index bitcoin-sv/*. Tier 1 was verified against live GitHub on 2026-08-29: the June 2026 migration archived overlay-services, gasp-core, message-box-client, ts-p2p and 402-pay as redirect stubs into ts-stack packages, so they are never pinned — their successors are snapshotted from ts-stack itself. overlay-topics never existed as a standalone repo. x402 is an upstream Coinbase fork, not BSV-native, and is intentionally excluded.",
   "tiers": {
     "0": {
       "role": "Core protocol / wallet / standards. Failure breaks the stack.",
@@ -16,28 +16,30 @@
       ]
     },
     "1": {
-      "role": "Critical services consumed by many apps.",
+      "role": "Critical services and libraries consumed by many apps. Only live or source-intact repos are pinned; archived redirect stubs are represented by their ts-stack successors.",
       "repos": [
         "bsv-blockchain/arcade",
-        "bsv-blockchain/overlay-services",
-        "bsv-blockchain/overlay-topics",
-        "bsv-blockchain/gasp-core",
-        "bsv-blockchain/message-box-server",
-        "bsv-blockchain/message-box-client",
-        "bsv-blockchain/storage-server",
-        "bsv-blockchain/ts-p2p",
         "bsv-blockchain/go-p2p",
         "bsv-blockchain/merkle-service",
-        "bsv-blockchain/402-pay",
-        "bsv-blockchain/x402"
-      ]
+        "bsv-blockchain/message-box-server",
+        "bsv-blockchain/storage-server",
+        "bsv-blockchain/uhrp-services",
+        "bsv-blockchain/uhrp-react"
+      ],
+      "archived_redirect_stubs": {
+        "bsv-blockchain/overlay-services": "bsv-blockchain/ts-stack (packages/overlays/overlay)",
+        "bsv-blockchain/gasp-core": "bsv-blockchain/ts-stack (packages/overlays/gasp-core)",
+        "bsv-blockchain/message-box-client": "bsv-blockchain/ts-stack (packages/messaging/message-box-client)",
+        "bsv-blockchain/ts-p2p": "bsv-blockchain/ts-stack (packages/network/ts-p2p)",
+        "bsv-blockchain/402-pay": "bsv-blockchain/ts-stack (packages/middleware/402-pay)"
+      },
+      "never_existed": ["bsv-blockchain/overlay-topics"],
+      "excluded_upstream_forks": ["bsv-blockchain/x402"]
     },
     "2": {
       "role": "Important single-domain. Warm index (docs + registry), symbols on demand.",
       "repos": [
         "bsv-blockchain/identity-react",
-        "bsv-blockchain/uhrp-react",
-        "bsv-blockchain/uhrp-services",
         "bsv-blockchain/btms",
         "bsv-blockchain/wab",
         "bsv-blockchain/simple",

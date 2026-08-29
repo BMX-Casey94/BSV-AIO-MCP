@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-19",
+  "generated": "2026-08-29",
   "policy": "Query path reads committed cards only. Refresh fetches the GitHub tarball at the pinned SHA when BSV_AIO_ALLOW_REFRESH=1.",
   "repos": [
     {

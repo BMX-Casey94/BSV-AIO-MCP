@@ -1,0 +1,12 @@
+{
+  "revision": "deb324df58f4",
+  "packages": [
+    "@bsv/uhrp-react",
+    "@bsv/uhrp-storage-server",
+    "arcade",
+    "go-p2p",
+    "merkle-service",
+    "messagebox-server",
+    "uhrp-services"
+  ]
+}

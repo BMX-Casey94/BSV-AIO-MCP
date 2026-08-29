@@ -27,6 +27,11 @@ data/education/
 data/developer_scan.json
 reference/shoprag-bsv-specs-and-docs.json
 server/probe-*.json
+server/probe-*.txt
+server/probe-consumer-*.md
+server/probe-adjacent.mjs
+server/probe-debug.mjs
+server/probe-policy-adversarial.mjs
 medium_profile.html
 medium_stream_test.json
 page2.json

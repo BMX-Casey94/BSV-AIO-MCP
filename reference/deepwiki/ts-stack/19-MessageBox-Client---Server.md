@@ -7,22 +7,22 @@
 
 The following files were used as context for generating this wiki page:
 
-- [.editorconfig](.editorconfig)
-- [.npmrc](.npmrc)
-- [conformance/vectors/README.md](conformance/vectors/README.md)
-- [packages/messaging/authsocket-client/package.json](packages/messaging/authsocket-client/package.json)
-- [packages/messaging/authsocket/package.json](packages/messaging/authsocket/package.json)
-- [packages/messaging/message-box-client/package.json](packages/messaging/message-box-client/package.json)
-- [packages/messaging/message-box-server/package.json](packages/messaging/message-box-server/package.json)
-- [packages/messaging/messagebox-services/backend/package.json](packages/messaging/messagebox-services/backend/package.json)
-- [packages/middleware/auth-express-middleware/package.json](packages/middleware/auth-express-middleware/package.json)
-- [packages/middleware/payment-express-middleware/package.json](packages/middleware/payment-express-middleware/package.json)
-- [packages/wallet/btms/package.json](packages/wallet/btms/package.json)
-- [specs/EXCEPTIONS.md](specs/EXCEPTIONS.md)
-- [specs/README.md](specs/README.md)
-- [specs/auth/brc31-handshake.yaml](specs/auth/brc31-handshake.yaml)
-- [specs/messaging/authsocket-asyncapi.yaml](specs/messaging/authsocket-asyncapi.yaml)
-- [specs/messaging/message-box-http.yaml](specs/messaging/message-box-http.yaml)
+- [.editorconfig](https://github.com/bsv-blockchain/ts-stack/blob/main/.editorconfig)
+- [.npmrc](https://github.com/bsv-blockchain/ts-stack/blob/main/.npmrc)
+- [conformance/vectors/README.md](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/README.md)
+- [packages/messaging/authsocket-client/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/authsocket-client/package.json)
+- [packages/messaging/authsocket/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/authsocket/package.json)
+- [packages/messaging/message-box-client/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/message-box-client/package.json)
+- [packages/messaging/message-box-server/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/message-box-server/package.json)
+- [packages/messaging/messagebox-services/backend/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/messagebox-services/backend/package.json)
+- [packages/middleware/auth-express-middleware/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/middleware/auth-express-middleware/package.json)
+- [packages/middleware/payment-express-middleware/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/middleware/payment-express-middleware/package.json)
+- [packages/wallet/btms/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/package.json)
+- [specs/EXCEPTIONS.md](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/EXCEPTIONS.md)
+- [specs/README.md](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/README.md)
+- [specs/auth/brc31-handshake.yaml](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/auth/brc31-handshake.yaml)
+- [specs/messaging/authsocket-asyncapi.yaml](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/messaging/authsocket-asyncapi.yaml)
+- [specs/messaging/message-box-http.yaml](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/messaging/message-box-http.yaml)
 
 </details>
 
@@ -76,7 +76,7 @@ graph TD
     E -. "Real-time Emit" .-> F
     F -- "authMessage (general)" --> G
 ```
-Sources: [specs/messaging/message-box-http.yaml:7-13](), [packages/messaging/message-box-server/package.json:64-68](), [specs/messaging/authsocket-asyncapi.yaml:19-27]()
+Sources: [specs/messaging/message-box-http.yaml:7-13](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/messaging/message-box-http.yaml#L7-L13), [packages/messaging/message-box-server/package.json:64-68](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/message-box-server/package.json#L64-L68), [specs/messaging/authsocket-asyncapi.yaml:19-27](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/messaging/authsocket-asyncapi.yaml#L19-L27)
 
 ---
 
@@ -85,11 +85,11 @@ Sources: [specs/messaging/message-box-http.yaml:7-13](), [packages/messaging/mes
 The `@bsv/messagebox-server` is an Express-based implementation of the MessageBox specification. It manages message persistence, recipient discovery, and notification dispatch.
 
 ### REST Endpoints
-The server implements 9 core REST endpoints defined in the specification [specs/messaging/message-box-http.yaml:73-73]().
+The server implements 9 core REST endpoints defined in the specification [specs/messaging/message-box-http.yaml:73-73](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/messaging/message-box-http.yaml#L73-L73).
 
 | Method | Endpoint | Description |
 | --- | --- | --- |
-| `POST` | `/sendMessage` | Sends a message to one or more recipients. Supports optional BEEF payments [specs/messaging/message-box-http.yaml:91-138](). |
+| `POST` | `/sendMessage` | Sends a message to one or more recipients. Supports optional BEEF payments [specs/messaging/message-box-http.yaml:91-138](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/messaging/message-box-http.yaml#L91-L138). |
 | `GET` | `/listMessages` | Retrieves a list of messages for the authenticated user, filtered by `messageBox`. |
 | `POST` | `/acknowledgeMessages` | Marks messages as read/received so they are no longer returned in `listMessages`. |
 | `GET` | `/listMessageBoxes` | Lists all active message boxes (e.g., `payment_inbox`) for the user. |
@@ -100,21 +100,21 @@ The server implements 9 core REST endpoints defined in the specification [specs/
 | `GET` | `/getRecipientRequest` | (Admin/Internal) Retrieves the original request metadata. |
 
 ### Persistence & Notifications
-The server supports multiple persistence layers via Knex (SQL) or MongoDB [packages/messaging/message-box-server/package.json:73-75]().
+The server supports multiple persistence layers via Knex (SQL) or MongoDB [packages/messaging/message-box-server/package.json:73-75](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/message-box-server/package.json#L73-L75).
 - **Knex:** Used for structured message storage and metadata.
 - **MongoDB:** Supported for high-volume message bodies.
-- **Notifications:** Integrated with `web-push` for browser notifications and `firebase-admin` (FCM) for mobile push [packages/messaging/message-box-server/package.json:72-79]().
+- **Notifications:** Integrated with `web-push` for browser notifications and `firebase-admin` (FCM) for mobile push [packages/messaging/message-box-server/package.json:72-79](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/message-box-server/package.json#L72-L79).
 
-Sources: [packages/messaging/message-box-server/package.json:69-80](), [specs/messaging/message-box-http.yaml:15-16]()
+Sources: [packages/messaging/message-box-server/package.json:69-80](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/message-box-server/package.json#L69-L80), [specs/messaging/message-box-http.yaml:15-16](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/messaging/message-box-http.yaml#L15-L16)
 
 ---
 
 ## AuthSocket: Real-time Messaging
 
-Real-time delivery is handled by the `@bsv/authsocket` protocol, which layers BRC-103 mutual authentication over Socket.IO [specs/messaging/authsocket-asyncapi.yaml:7-15]().
+Real-time delivery is handled by the `@bsv/authsocket` protocol, which layers BRC-103 mutual authentication over Socket.IO [specs/messaging/authsocket-asyncapi.yaml:7-15](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/messaging/authsocket-asyncapi.yaml#L7-L15).
 
 ### Connection Handshake
-Every WebSocket connection must complete a BRC-31 handshake before application events can be exchanged. This is performed via the `authMessage` event [specs/messaging/authsocket-asyncapi.yaml:19-22]().
+Every WebSocket connection must complete a BRC-31 handshake before application events can be exchanged. This is performed via the `authMessage` event [specs/messaging/authsocket-asyncapi.yaml:19-22](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/messaging/authsocket-asyncapi.yaml#L19-L22).
 
 ```mermaid
 sequenceDiagram
@@ -127,11 +127,11 @@ sequenceDiagram
     C->>S: authMessage (general: joinRoom "recipient-inbox")
     S->>C: authMessage (general: joinedRoom)
 ```
-Sources: [specs/auth/brc31-handshake.yaml:24-51](), [specs/messaging/authsocket-asyncapi.yaml:152-165]()
+Sources: [specs/auth/brc31-handshake.yaml:24-51](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/auth/brc31-handshake.yaml#L24-L51), [specs/messaging/authsocket-asyncapi.yaml:152-165](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/messaging/authsocket-asyncapi.yaml#L152-L165)
 
 ### Key Classes
-- `AuthSocketServer`: Wraps the Socket.IO server and manages authenticated rooms [specs/messaging/authsocket-asyncapi.yaml:7-8]().
-- `SocketServerTransport`: Implements the `Transport` interface from `@bsv/sdk` to handle signing and verification of WebSocket payloads [specs/messaging/authsocket-asyncapi.yaml:38-39]().
+- `AuthSocketServer`: Wraps the Socket.IO server and manages authenticated rooms [specs/messaging/authsocket-asyncapi.yaml:7-8](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/messaging/authsocket-asyncapi.yaml#L7-L8).
+- `SocketServerTransport`: Implements the `Transport` interface from `@bsv/sdk` to handle signing and verification of WebSocket payloads [specs/messaging/authsocket-asyncapi.yaml:38-39](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/messaging/authsocket-asyncapi.yaml#L38-L39).
 
 ---
 
@@ -146,16 +146,16 @@ The primary class for standard messaging. It handles:
 - **Push Registration:** Simplifies the exchange of VAPID keys and subscription tokens.
 
 ### PeerPayClient
-A specialized client for BRC-29 peer payments. It facilitates the delivery of BEEF transactions to a recipient's `payment_inbox` while ensuring the sender satisfies any required `recipientFee` [specs/messaging/message-box-http.yaml:184-190]().
+A specialized client for BRC-29 peer payments. It facilitates the delivery of BEEF transactions to a recipient's `payment_inbox` while ensuring the sender satisfies any required `recipientFee` [specs/messaging/message-box-http.yaml:184-190](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/messaging/message-box-http.yaml#L184-L190).
 
-Sources: [packages/messaging/message-box-client/package.json:2-5](), [specs/messaging/message-box-http.yaml:139-183]()
+Sources: [packages/messaging/message-box-client/package.json:2-5](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/message-box-client/package.json#L2-L5), [specs/messaging/message-box-http.yaml:139-183](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/messaging/message-box-http.yaml#L139-L183)
 
 ---
 
 ## Implementation Details
 
 ### Message Envelope
-Messages are stored and transmitted using a standard `MessageObject` [specs/messaging/message-box-http.yaml:91-98]().
+Messages are stored and transmitted using a standard `MessageObject` [specs/messaging/message-box-http.yaml:91-98](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/messaging/message-box-http.yaml#L91-L98).
 
 ```typescript
 interface MessageObject {
@@ -167,8 +167,8 @@ interface MessageObject {
 ```
 
 ### Payment Integration (BRC-29)
-When a message requires a payment (delivery fee), the `Payment` object is attached to the request. The `payment-express-middleware` validates that the BEEF transaction in the `tx` field contains the correct outputs and satisfies the required amount [specs/messaging/message-box-http.yaml:184-205]().
+When a message requires a payment (delivery fee), the `Payment` object is attached to the request. The `payment-express-middleware` validates that the BEEF transaction in the `tx` field contains the correct outputs and satisfies the required amount [specs/messaging/message-box-http.yaml:184-205](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/messaging/message-box-http.yaml#L184-L205).
 
-Sources: [specs/messaging/message-box-http.yaml:91-138](), [packages/messaging/message-box-server/package.json:66-66]()
+Sources: [specs/messaging/message-box-http.yaml:91-138](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/messaging/message-box-http.yaml#L91-L138), [packages/messaging/message-box-server/package.json:66-66](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/message-box-server/package.json#L66-L66)
 
 ---

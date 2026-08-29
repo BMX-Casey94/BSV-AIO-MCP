@@ -1,0 +1,6 @@
+{
+  "name": "mini-svc",
+  "version": "0.1.0",
+  "description": "Mini service fixture for Tier 1 refresh tests.",
+  "type": "module"
+}

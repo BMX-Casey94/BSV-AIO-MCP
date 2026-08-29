@@ -1,0 +1,61 @@
+{
+  "generated": "2026-08-29",
+  "policy": "BRC numbers cited by each repo's own snapshotted README/docs/examples. The only BRC-to-package edges the capability graph trusts.",
+  "mentions": {
+    "@bsv/sdk": [
+      29,
+      30,
+      42,
+      62,
+      95,
+      98,
+      100
+    ],
+    "go-sdk": [
+      8,
+      42,
+      43,
+      77,
+      100,
+      103
+    ],
+    "ts-stack": [
+      2,
+      14,
+      20,
+      26,
+      29,
+      31,
+      42,
+      43,
+      48,
+      62,
+      74,
+      77,
+      95,
+      100,
+      102,
+      103,
+      104,
+      105,
+      121,
+      136,
+      141,
+      225
+    ],
+    "@bsv/wallet-toolbox": [
+      100
+    ],
+    "go-wallet-toolbox": [
+      29,
+      62,
+      67,
+      100,
+      104,
+      114
+    ],
+    "runar": [
+      100
+    ]
+  }
+}

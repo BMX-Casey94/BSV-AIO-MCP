@@ -1,0 +1,626 @@
+{
+  "revision": "deb324df58f4",
+  "symbols": [
+    {
+      "name": "AddOrUpdatePeer",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "method",
+      "locator": "peer_cache.go:132",
+      "exported": true
+    },
+    {
+      "name": "BlockMessage",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "type",
+      "locator": "message_types.go:36",
+      "exported": true
+    },
+    {
+      "name": "BlockPeer",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "method",
+      "locator": "connection_gater.go:37",
+      "exported": true
+    },
+    {
+      "name": "BlockSubnet",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "method",
+      "locator": "connection_gater.go:51",
+      "exported": true
+    },
+    {
+      "name": "BytesReceived",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "method",
+      "locator": "mocks/mock_p2pnode.go:131",
+      "exported": true
+    },
+    {
+      "name": "BytesSent",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "method",
+      "locator": "mocks/mock_p2pnode.go:125",
+      "exported": true
+    },
+    {
+      "name": "CachedPeer",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "type",
+      "locator": "peer_cache.go:25",
+      "exported": true
+    },
+    {
+      "name": "Config",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "type",
+      "locator": "types.go:88",
+      "exported": true
+    },
+    {
+      "name": "ConnectedPeers",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "method",
+      "locator": "mocks/mock_p2pnode.go:67",
+      "exported": true
+    },
+    {
+      "name": "ConnectionGater",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "type",
+      "locator": "connection_gater.go:16",
+      "exported": true
+    },
+    {
+      "name": "ConnectToPeer",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "method",
+      "locator": "mocks/mock_p2pnode.go:85",
+      "exported": true
+    },
+    {
+      "name": "Count",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "method",
+      "locator": "peer_cache.go:255",
+      "exported": true
+    },
+    {
+      "name": "CurrentlyConnectedPeers",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "method",
+      "locator": "mocks/mock_p2pnode.go:76",
+      "exported": true
+    },
+    {
+      "name": "Debugf",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "method",
+      "locator": "test_common.go:18",
+      "exported": true
+    },
+    {
+      "name": "DisconnectPeer",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "method",
+      "locator": "mocks/mock_p2pnode.go:91",
+      "exported": true
+    },
+    {
+      "name": "Errorf",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "method",
+      "locator": "test_common.go:33",
+      "exported": true
+    },
+    {
+      "name": "ExtractIPFromMultiaddr",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "function",
+      "locator": "node.go:1444",
+      "exported": true
+    },
+    {
+      "name": "Fatalf",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "method",
+      "locator": "test_common.go:38",
+      "exported": true
+    },
+    {
+      "name": "GetBestPeers",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "method",
+      "locator": "peer_cache.go:180",
+      "exported": true
+    },
+    {
+      "name": "GetIPFromMultiaddr",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "function",
+      "locator": "node.go:1415",
+      "exported": true
+    },
+    {
+      "name": "GetPeerIPs",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "method",
+      "locator": "mocks/mock_p2pnode.go:153",
+      "exported": true
+    },
+    {
+      "name": "GetPeerStartingHeight",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "method",
+      "locator": "node.go:1404",
+      "exported": true
+    },
+    {
+      "name": "GetProcessName",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "method",
+      "locator": "mocks/mock_p2pnode.go:137",
+      "exported": true
+    },
+    {
+      "name": "GetPublicIP",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "function",
+      "locator": "helpers.go:12",
+      "exported": true
+    },
+    {
+      "name": "GetTopic",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "method",
+      "locator": "mocks/mock_p2pnode.go:46",
+      "exported": true
+    },
+    {
+      "name": "Handler",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "type",
+      "locator": "types.go:83",
+      "exported": true
+    },
+    {
+      "name": "HostID",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "method",
+      "locator": "mocks/mock_p2pnode.go:61",
+      "exported": true
+    },
+    {
+      "name": "Infof",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "method",
+      "locator": "test_common.go:23",
+      "exported": true
+    },
+    {
+      "name": "InterceptAccept",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "method",
+      "locator": "connection_gater.go:108",
+      "exported": true
+    },
+    {
+      "name": "InterceptAddrDial",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "method",
+      "locator": "connection_gater.go:82",
+      "exported": true
+    },
+    {
+      "name": "InterceptPeerDial",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "method",
+      "locator": "connection_gater.go:73",
+      "exported": true
+    },
+    {
+      "name": "InterceptSecured",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "method",
+      "locator": "connection_gater.go:131",
+      "exported": true
+    },
+    {
+      "name": "InterceptUpgraded",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "method",
+      "locator": "connection_gater.go:154",
+      "exported": true
+    },
+    {
+      "name": "IsPrivateIP",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "function",
+      "locator": "node.go:1504",
+      "exported": true
+    },
+    {
+      "name": "IsPrivateIPString",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "function",
+      "locator": "node.go:1535",
+      "exported": true
+    },
+    {
+      "name": "LastRecv",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "method",
+      "locator": "mocks/mock_p2pnode.go:119",
+      "exported": true
+    },
+    {
+      "name": "LastSend",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "method",
+      "locator": "mocks/mock_p2pnode.go:113",
+      "exported": true
+    },
+    {
+      "name": "LoadPeerCache",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "function",
+      "locator": "peer_cache.go:51",
+      "exported": true
+    },
+    {
+      "name": "Logger",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "type",
+      "locator": "types.go:124",
+      "exported": true
+    },
+    {
+      "name": "MockLogger",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "type",
+      "locator": "test_common.go:13",
+      "exported": true
+    },
+    {
+      "name": "MockP2PNode",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "type",
+      "locator": "mocks/mock_p2pnode.go:23",
+      "exported": true
+    },
+    {
+      "name": "NewConnectionGater",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "function",
+      "locator": "connection_gater.go:26",
+      "exported": true
+    },
+    {
+      "name": "NewMockP2PNode",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "function",
+      "locator": "mocks/mock_p2pnode.go:162",
+      "exported": true
+    },
+    {
+      "name": "NewNode",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "function",
+      "locator": "node.go:131",
+      "exported": true
+    },
+    {
+      "name": "NewPeerCache",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "function",
+      "locator": "peer_cache.go:43",
+      "exported": true
+    },
+    {
+      "name": "Node",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "type",
+      "locator": "types.go:46",
+      "exported": true
+    },
+    {
+      "name": "NodeI",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "type",
+      "locator": "interface.go:20",
+      "exported": true
+    },
+    {
+      "name": "NodeStatusMessage",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "type",
+      "locator": "message_types.go:4",
+      "exported": true
+    },
+    {
+      "name": "PeerCache",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "type",
+      "locator": "peer_cache.go:36",
+      "exported": true
+    },
+    {
+      "name": "PeerInfo",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "type",
+      "locator": "mocks/mock_p2pnode.go:15",
+      "exported": true
+    },
+    {
+      "name": "Prune",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "method",
+      "locator": "peer_cache.go:223",
+      "exported": true
+    },
+    {
+      "name": "Publish",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "method",
+      "locator": "mocks/mock_p2pnode.go:55",
+      "exported": true
+    },
+    {
+      "name": "RejectedTxMessage",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "type",
+      "locator": "message_types.go:71",
+      "exported": true
+    },
+    {
+      "name": "RemovePeer",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "method",
+      "locator": "peer_cache.go:262",
+      "exported": true
+    },
+    {
+      "name": "Save",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "method",
+      "locator": "peer_cache.go:89",
+      "exported": true
+    },
+    {
+      "name": "SendToPeer",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "method",
+      "locator": "mocks/mock_p2pnode.go:97",
+      "exported": true
+    },
+    {
+      "name": "SetPeerConnectedCallback",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "method",
+      "locator": "mocks/mock_p2pnode.go:103",
+      "exported": true
+    },
+    {
+      "name": "SetPeerStartingHeight",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "method",
+      "locator": "node.go:1398",
+      "exported": true
+    },
+    {
+      "name": "SetTopicHandler",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "method",
+      "locator": "mocks/mock_p2pnode.go:40",
+      "exported": true
+    },
+    {
+      "name": "Start",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "method",
+      "locator": "mocks/mock_p2pnode.go:28",
+      "exported": true
+    },
+    {
+      "name": "Stop",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "method",
+      "locator": "mocks/mock_p2pnode.go:34",
+      "exported": true
+    },
+    {
+      "name": "SubtreeMessage",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "type",
+      "locator": "message_types.go:56",
+      "exported": true
+    },
+    {
+      "name": "UnblockPeer",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "method",
+      "locator": "connection_gater.go:44",
+      "exported": true
+    },
+    {
+      "name": "UpdateBytesReceived",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "method",
+      "locator": "mocks/mock_p2pnode.go:143",
+      "exported": true
+    },
+    {
+      "name": "UpdateLastReceived",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "method",
+      "locator": "mocks/mock_p2pnode.go:148",
+      "exported": true
+    },
+    {
+      "name": "UpdatePeerHeight",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "method",
+      "locator": "mocks/mock_p2pnode.go:108",
+      "exported": true
+    },
+    {
+      "name": "Warnf",
+      "repo": "bsv-blockchain/go-p2p",
+      "package": "go-p2p",
+      "language": "go",
+      "kind": "method",
+      "locator": "test_common.go:28",
+      "exported": true
+    },
+    {
+      "name": "Img",
+      "repo": "bsv-blockchain/uhrp-react",
+      "package": "@bsv/uhrp-react",
+      "language": "ts",
+      "kind": "symbol",
+      "locator": "src/index.ts:1",
+      "exported": true
+    },
+    {
+      "name": "Source",
+      "repo": "bsv-blockchain/uhrp-react",
+      "package": "@bsv/uhrp-react",
+      "language": "ts",
+      "kind": "symbol",
+      "locator": "src/index.ts:2",
+      "exported": true
+    }
+  ]
+}

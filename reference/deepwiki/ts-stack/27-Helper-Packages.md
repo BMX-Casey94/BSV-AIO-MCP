@@ -7,12 +7,12 @@
 
 The following files were used as context for generating this wiki page:
 
-- [packages/helpers/amountinator/package.json](packages/helpers/amountinator/package.json)
-- [packages/helpers/bsv-wallet-helper/package.json](packages/helpers/bsv-wallet-helper/package.json)
-- [packages/helpers/fund-metanet/BASELINE.md](packages/helpers/fund-metanet/BASELINE.md)
-- [packages/helpers/fund-metanet/package.json](packages/helpers/fund-metanet/package.json)
-- [packages/helpers/simple/package.json](packages/helpers/simple/package.json)
-- [packages/helpers/ts-paymail/package.json](packages/helpers/ts-paymail/package.json)
+- [packages/helpers/amountinator/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/amountinator/package.json)
+- [packages/helpers/bsv-wallet-helper/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/bsv-wallet-helper/package.json)
+- [packages/helpers/fund-metanet/BASELINE.md](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/fund-metanet/BASELINE.md)
+- [packages/helpers/fund-metanet/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/fund-metanet/package.json)
+- [packages/helpers/simple/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/simple/package.json)
+- [packages/helpers/ts-paymail/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/ts-paymail/package.json)
 
 </details>
 
@@ -53,7 +53,7 @@ graph TD
   Amountinator --> SDK
   FundMetanet --> Toolbox
 ```
-Sources: [packages/helpers/simple/package.json:45-50](), [packages/helpers/ts-paymail/package.json:104-105](), [packages/helpers/bsv-wallet-helper/package.json:34-37](), [packages/helpers/amountinator/package.json:34-37](), [packages/helpers/fund-metanet/package.json:20-22]()
+Sources: [packages/helpers/simple/package.json:45-50](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/simple/package.json#L45-L50), [packages/helpers/ts-paymail/package.json:104-105](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/ts-paymail/package.json#L104-L105), [packages/helpers/bsv-wallet-helper/package.json:34-37](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/bsv-wallet-helper/package.json#L34-L37), [packages/helpers/amountinator/package.json:34-37](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/amountinator/package.json#L34-L37), [packages/helpers/fund-metanet/package.json:20-22](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/fund-metanet/package.json#L20-L22)
 
 ---
 
@@ -64,9 +64,9 @@ Sources: [packages/helpers/simple/package.json:45-50](), [packages/helpers/ts-pa
 *   **Payments & Tokens**: Simplified `wallet.pay()` and `wallet.createToken()` methods.
 *   **Inscriptions**: High-level `wallet.inscribeText()` for Ordinal-style data.
 *   **Identity**: Built-in support for DID generation and Verifiable Credential (VC) issuance.
-*   **Environment Switching**: Specific entry points for `browser` and `server` environments [packages/helpers/simple/package.json:11-24]().
+*   **Environment Switching**: Specific entry points for `browser` and `server` environments [packages/helpers/simple/package.json:11-24](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/simple/package.json#L11-L24).
 
-For details on the high-level API, see [@bsv/simple: High-Level Application API](#8.1).
+For details on the high-level API, see [@bsv/simple: High-Level Application API](28-bsv-simple--High-Level-Application-API.md).
 
 ---
 
@@ -78,10 +78,10 @@ This sub-domain contains the protocol-specific implementations and mathematical 
 
 | Package | Purpose | Primary Features |
 |:---|:---|:---|
-| `@bsv/paymail` | Identity & P2P | PKI lookups, P2P transaction delivery, and BEEF-based `sendP2P` [packages/helpers/ts-paymail/package.json:81-83](). |
-| `@bsv/wallet-helper` | Script Templates | Pre-defined templates for P2PKH and OrdLock scripts [packages/helpers/bsv-wallet-helper/package.json:2-5](). |
-| `@bsv/amountinator` | Conversion | Mathematical utilities for converting between satoshis and various fiat/unit representations [packages/helpers/amountinator/package.json:2-4](). |
-| `@bsv/fund-metanet` | CLI Utility | A Tier-3 developer tool for funding Metanet-compatible wallets with BSV [packages/helpers/fund-metanet/BASELINE.md:12-13](). |
+| `@bsv/paymail` | Identity & P2P | PKI lookups, P2P transaction delivery, and BEEF-based `sendP2P` [packages/helpers/ts-paymail/package.json:81-83](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/ts-paymail/package.json#L81-L83). |
+| `@bsv/wallet-helper` | Script Templates | Pre-defined templates for P2PKH and OrdLock scripts [packages/helpers/bsv-wallet-helper/package.json:2-5](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/bsv-wallet-helper/package.json#L2-L5). |
+| `@bsv/amountinator` | Conversion | Mathematical utilities for converting between satoshis and various fiat/unit representations [packages/helpers/amountinator/package.json:2-4](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/amountinator/package.json#L2-L4). |
+| `@bsv/fund-metanet` | CLI Utility | A Tier-3 developer tool for funding Metanet-compatible wallets with BSV [packages/helpers/fund-metanet/BASELINE.md:12-13](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/fund-metanet/BASELINE.md#L12-L13). |
 
 #### Protocol Interaction Flow
 ```mermaid
@@ -98,9 +98,9 @@ sequenceDiagram
     App->>Paymail: sendP2P(transaction)
     Paymail->>Remote: POST /receive-transaction
 ```
-Sources: [packages/helpers/ts-paymail/package.json:29-48](), [packages/helpers/ts-paymail/package.json:83-84]()
+Sources: [packages/helpers/ts-paymail/package.json:29-48](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/ts-paymail/package.json#L29-L48), [packages/helpers/ts-paymail/package.json:83-84](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/ts-paymail/package.json#L83-L84)
 
-For detailed documentation on these utilities and the Paymail client, see [Paymail, Wallet Helper & Utility Packages](#8.2).
+For detailed documentation on these utilities and the Paymail client, see [Paymail, Wallet Helper & Utility Packages](29-Paymail--Wallet-Helper---Utility-Packages.md).
 
 ---
 
@@ -115,6 +115,6 @@ The helper domain contains a mix of production-critical libraries and internal d
 | `@bsv/amountinator` | Tier 2 | RL1 | `tsc` |
 | `@bsv/fund-metanet` | Tier 3 | RL0 | `tsc` |
 
-Sources: [packages/helpers/fund-metanet/BASELINE.md:11-13](), [packages/helpers/ts-paymail/package.json:77-77](), [packages/helpers/bsv-wallet-helper/package.json:28-28]()
+Sources: [packages/helpers/fund-metanet/BASELINE.md:11-13](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/fund-metanet/BASELINE.md#L11-L13), [packages/helpers/ts-paymail/package.json:77-77](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/ts-paymail/package.json#L77-L77), [packages/helpers/bsv-wallet-helper/package.json:28-28](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/bsv-wallet-helper/package.json#L28-L28)
 
 ---

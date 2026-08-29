@@ -5,13 +5,13 @@
 
 The following files were used as context for generating this wiki page:
 
-- [packages/middleware/402-pay/package.json](packages/middleware/402-pay/package.json)
-- [specs/merkle/merkle-service-http.yaml](specs/merkle/merkle-service-http.yaml)
-- [specs/payments/brc121.yaml](specs/payments/brc121.yaml)
-- [specs/payments/brc29-payment-protocol.yaml](specs/payments/brc29-payment-protocol.yaml)
-- [specs/storage/uhrp-http.yaml](specs/storage/uhrp-http.yaml)
-- [specs/sync/gasp-asyncapi.yaml](specs/sync/gasp-asyncapi.yaml)
-- [specs/wallet/storage-adapter.yaml](specs/wallet/storage-adapter.yaml)
+- [packages/middleware/402-pay/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/middleware/402-pay/package.json)
+- [specs/merkle/merkle-service-http.yaml](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/merkle/merkle-service-http.yaml)
+- [specs/payments/brc121.yaml](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/payments/brc121.yaml)
+- [specs/payments/brc29-payment-protocol.yaml](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/payments/brc29-payment-protocol.yaml)
+- [specs/storage/uhrp-http.yaml](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/storage/uhrp-http.yaml)
+- [specs/sync/gasp-asyncapi.yaml](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/sync/gasp-asyncapi.yaml)
+- [specs/wallet/storage-adapter.yaml](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/wallet/storage-adapter.yaml)
 
 </details>
 
@@ -21,15 +21,15 @@ The `@bsv/402-pay` package provides a standardized implementation of **BRC-121 S
 
 ## Overview and Protocol Flow
 
-BRC-121 monetizes resources by leveraging the HTTP 402 status code and a set of `x-bsv-*` headers to facilitate peer-to-peer BSV payments between a client and a server [specs/payments/brc121.yaml:9-17]().
+BRC-121 monetizes resources by leveraging the HTTP 402 status code and a set of `x-bsv-*` headers to facilitate peer-to-peer BSV payments between a client and a server [specs/payments/brc121.yaml:9-17](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/payments/brc121.yaml#L9-L17).
 
 ### The Negotiation Cycle
 
 1.  **Initial Request**: The client requests a protected resource without payment headers.
-2.  **Challenge**: The server responds with `402 Payment Required`, including `x-bsv-sats` (price) and `x-bsv-server` (server identity public key) [specs/payments/brc121.yaml:11-12]().
-3.  **Payment Construction**: The client uses the server's identity key to derive a P2PKH locking script (via BRC-42/BRC-29) and constructs an Atomic BEEF (BRC-95) transaction [specs/payments/brc121.yaml:13-14]().
-4.  **Paid Request**: The client re-sends the original request with five `x-bsv-*` headers containing the BEEF transaction and derivation metadata [specs/payments/brc121.yaml:14-15]().
-5.  **Validation & Service**: The server validates the transaction, checks for replays, and if valid, serves the resource (200 OK) [specs/payments/brc121.yaml:16-17]().
+2.  **Challenge**: The server responds with `402 Payment Required`, including `x-bsv-sats` (price) and `x-bsv-server` (server identity public key) [specs/payments/brc121.yaml:11-12](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/payments/brc121.yaml#L11-L12).
+3.  **Payment Construction**: The client uses the server's identity key to derive a P2PKH locking script (via BRC-42/BRC-29) and constructs an Atomic BEEF (BRC-95) transaction [specs/payments/brc121.yaml:13-14](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/payments/brc121.yaml#L13-L14).
+4.  **Paid Request**: The client re-sends the original request with five `x-bsv-*` headers containing the BEEF transaction and derivation metadata [specs/payments/brc121.yaml:14-15](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/payments/brc121.yaml#L14-L15).
+5.  **Validation & Service**: The server validates the transaction, checks for replays, and if valid, serves the resource (200 OK) [specs/payments/brc121.yaml:16-17](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/payments/brc121.yaml#L16-L17).
 
 ### Data Flow Diagram: BRC-121 Negotiation
 
@@ -59,37 +59,37 @@ sequenceDiagram
         S-->>C: 402 Payment Required
     end
 ```
-Sources: [specs/payments/brc121.yaml:9-18](), [packages/middleware/402-pay/package.json:13-20]()
+Sources: [specs/payments/brc121.yaml:9-18](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/payments/brc121.yaml#L9-L18), [packages/middleware/402-pay/package.json:13-20](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/middleware/402-pay/package.json#L13-L20)
 
 ## Key Implementation Components
 
-The package is split into two primary entry points: `/server` and `/client` [packages/middleware/402-pay/package.json:13-20]().
+The package is split into two primary entry points: `/server` and `/client` [packages/middleware/402-pay/package.json:13-20](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/middleware/402-pay/package.json#L13-L20).
 
 ### Server Middleware: `createPaymentMiddleware`
 
 The server-side implementation is an Express-compatible middleware that intercepts requests to protected routes. It performs the following logic:
 
-*   **Payment Verification**: If the `x-bsv-beef` header is present, it extracts the transaction and calls `internalizeAction` on the server's wallet [specs/payments/brc121.yaml:16-17]().
+*   **Payment Verification**: If the `x-bsv-beef` header is present, it extracts the transaction and calls `internalizeAction` on the server's wallet [specs/payments/brc121.yaml:16-17](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/payments/brc121.yaml#L16-L17).
 *   **Replay Protection**:
-    *   **Timestamp Freshness**: It checks the `x-bsv-time` header. The request is rejected if the timestamp is more than ±30 seconds from the server's current time [specs/payments/brc121.yaml:33-34]().
-    *   **TXID Tracking**: It relies on the wallet's `isMerge` check. If `internalizeAction` returns `isMerge: true`, it indicates the transaction has been seen before, and the middleware returns 402 [specs/payments/brc121.yaml:35-36]().
-*   **Challenge Generation**: If no payment is present or valid, it attaches the required headers (`x-bsv-sats`, `x-bsv-server`) and sends the 402 response [specs/payments/brc121.yaml:11-12]().
+    *   **Timestamp Freshness**: It checks the `x-bsv-time` header. The request is rejected if the timestamp is more than ±30 seconds from the server's current time [specs/payments/brc121.yaml:33-34](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/payments/brc121.yaml#L33-L34).
+    *   **TXID Tracking**: It relies on the wallet's `isMerge` check. If `internalizeAction` returns `isMerge: true`, it indicates the transaction has been seen before, and the middleware returns 402 [specs/payments/brc121.yaml:35-36](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/payments/brc121.yaml#L35-L36).
+*   **Challenge Generation**: If no payment is present or valid, it attaches the required headers (`x-bsv-sats`, `x-bsv-server`) and sends the 402 response [specs/payments/brc121.yaml:11-12](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/payments/brc121.yaml#L11-L12).
 
 ### Client Wrapper: `create402Fetch`
 
 The client-side provides a wrapper around the standard `fetch` API.
 
-*   **Automatic Retries**: If a request returns 402, the wrapper automatically handles the BRC-29 payment construction using the provided wallet instance and retries the request with the correct headers [specs/payments/brc121.yaml:13-15]().
+*   **Automatic Retries**: If a request returns 402, the wrapper automatically handles the BRC-29 payment construction using the provided wallet instance and retries the request with the correct headers [specs/payments/brc121.yaml:13-15](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/payments/brc121.yaml#L13-L15).
 *   **Header Management**: It populates the following headers for the paid request:
-    *   `x-bsv-beef`: The base64-encoded Atomic BEEF transaction [specs/payments/brc121.yaml:111-120]().
-    *   `x-bsv-sender`: The client's identity public key [specs/payments/brc121.yaml:122-132]().
-    *   `x-bsv-nonce`: The BRC-29 derivation prefix [specs/payments/brc121.yaml:134-143]().
-    *   `x-bsv-time`: The millisecond Unix timestamp [specs/payments/brc121.yaml:145-159]().
-    *   `x-bsv-vout`: The index of the payment output in the BEEF transaction [specs/payments/brc121.yaml:161-171]().
+    *   `x-bsv-beef`: The base64-encoded Atomic BEEF transaction [specs/payments/brc121.yaml:111-120](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/payments/brc121.yaml#L111-L120).
+    *   `x-bsv-sender`: The client's identity public key [specs/payments/brc121.yaml:122-132](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/payments/brc121.yaml#L122-L132).
+    *   `x-bsv-nonce`: The BRC-29 derivation prefix [specs/payments/brc121.yaml:134-143](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/payments/brc121.yaml#L134-L143).
+    *   `x-bsv-time`: The millisecond Unix timestamp [specs/payments/brc121.yaml:145-159](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/payments/brc121.yaml#L145-L159).
+    *   `x-bsv-vout`: The index of the payment output in the BEEF transaction [specs/payments/brc121.yaml:161-171](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/payments/brc121.yaml#L161-L171).
 
 ## Key Derivation (BRC-29 & BRC-42)
 
-Payments in BRC-121 use a specific BRC-42 invoice number format to derive the recipient's P2PKH locking script [specs/payments/brc121.yaml:21-25]():
+Payments in BRC-121 use a specific BRC-42 invoice number format to derive the recipient's P2PKH locking script [specs/payments/brc121.yaml:21-25](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/payments/brc121.yaml#L21-L25):
 
 ```
 2-3241645161d8-<x-bsv-nonce> <base64(x-bsv-time)>
@@ -97,10 +97,10 @@ Payments in BRC-121 use a specific BRC-42 invoice number format to derive the re
 
 | Component | Description | Source |
 | :--- | :--- | :--- |
-| `2` | Security level (BRC-43) | [specs/payments/brc29-payment-protocol.yaml:169]() |
-| `3241645161d8` | BRC-29 Protocol Magic Number | [specs/payments/brc29-payment-protocol.yaml:170]() |
-| `x-bsv-nonce` | Derivation Prefix (Random per payment) | [specs/payments/brc121.yaml:24]() |
-| `x-bsv-time` | Derivation Suffix (Base64 encoded timestamp) | [specs/payments/brc121.yaml:24]() |
+| `2` | Security level (BRC-43) | [specs/payments/brc29-payment-protocol.yaml:169](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/payments/brc29-payment-protocol.yaml#L169) |
+| `3241645161d8` | BRC-29 Protocol Magic Number | [specs/payments/brc29-payment-protocol.yaml:170](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/payments/brc29-payment-protocol.yaml#L170) |
+| `x-bsv-nonce` | Derivation Prefix (Random per payment) | [specs/payments/brc121.yaml:24](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/payments/brc121.yaml#L24) |
+| `x-bsv-time` | Derivation Suffix (Base64 encoded timestamp) | [specs/payments/brc121.yaml:24](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/payments/brc121.yaml#L24) |
 
 ## Code Entity Map
 
@@ -140,17 +140,17 @@ classDiagram
     ServerMiddleware --> WalletProvider : calls internalizeAction
     ClientFetch --> WalletProvider : calls createAction
 ```
-Sources: [specs/payments/brc121.yaml:106-171](), [specs/wallet/storage-adapter.yaml:120-151](), [packages/middleware/402-pay/package.json:8-21]()
+Sources: [specs/payments/brc121.yaml:106-171](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/payments/brc121.yaml#L106-L171), [specs/wallet/storage-adapter.yaml:120-151](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/wallet/storage-adapter.yaml#L120-L151), [packages/middleware/402-pay/package.json:8-21](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/middleware/402-pay/package.json#L8-L21)
 
 ## Summary of Replay Protection Mechanisms
 
 | Mechanism | Implementation | Requirement |
 | :--- | :--- | :--- |
-| **Timestamp Freshness** | Server checks `|serverTime - x-bsv-time|` | Must be < 30 seconds [specs/payments/brc121.yaml:33-34]() |
-| **Double Spend / Replay** | Wallet `internalizeAction` checks `isMerge` | Must be `false` (new transaction) [specs/payments/brc121.yaml:35-36]() |
-| **Uniqueness** | `x-bsv-nonce` + `x-bsv-time` | Forms a unique BRC-42 derivation path [specs/payments/brc121.yaml:21-28]() |
+| **Timestamp Freshness** | Server checks `|serverTime - x-bsv-time|` | Must be < 30 seconds [specs/payments/brc121.yaml:33-34](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/payments/brc121.yaml#L33-L34) |
+| **Double Spend / Replay** | Wallet `internalizeAction` checks `isMerge` | Must be `false` (new transaction) [specs/payments/brc121.yaml:35-36](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/payments/brc121.yaml#L35-L36) |
+| **Uniqueness** | `x-bsv-nonce` + `x-bsv-time` | Forms a unique BRC-42 derivation path [specs/payments/brc121.yaml:21-28](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/payments/brc121.yaml#L21-L28) |
 
-Sources: [specs/payments/brc121.yaml:30-37]()
+Sources: [specs/payments/brc121.yaml:30-37](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/payments/brc121.yaml#L30-L37)
 
 ---
 
@@ -163,18 +163,18 @@ Sources: [specs/payments/brc121.yaml:30-37]()
 
 The following files were used as context for generating this wiki page:
 
-- [packages/helpers/amountinator/tsconfig.json](packages/helpers/amountinator/tsconfig.json)
-- [packages/helpers/bsv-wallet-helper/src/script-templates/ordlock.ts](packages/helpers/bsv-wallet-helper/src/script-templates/ordlock.ts)
-- [packages/helpers/bsv-wallet-helper/src/script-templates/p2pkh.ts](packages/helpers/bsv-wallet-helper/src/script-templates/p2pkh.ts)
-- [packages/helpers/bsv-wallet-helper/src/utils/derivation.ts](packages/helpers/bsv-wallet-helper/src/utils/derivation.ts)
-- [packages/messaging/message-box-client/tsconfig.base.json](packages/messaging/message-box-client/tsconfig.base.json)
-- [packages/messaging/message-box-server/src/swagger.ts](packages/messaging/message-box-server/src/swagger.ts)
-- [packages/messaging/messagebox-services/backend/tsconfig.base.json](packages/messaging/messagebox-services/backend/tsconfig.base.json)
-- [packages/network/chaintracks-server/package.json](packages/network/chaintracks-server/package.json)
-- [packages/network/ts-p2p/package.json](packages/network/ts-p2p/package.json)
-- [packages/overlays/overlay-express/package.json](packages/overlays/overlay-express/package.json)
-- [packages/wallet/wab/package.json](packages/wallet/wab/package.json)
-- [packages/wallet/wallet-toolbox/package.json](packages/wallet/wallet-toolbox/package.json)
+- [packages/helpers/amountinator/tsconfig.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/amountinator/tsconfig.json)
+- [packages/helpers/bsv-wallet-helper/src/script-templates/ordlock.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/bsv-wallet-helper/src/script-templates/ordlock.ts)
+- [packages/helpers/bsv-wallet-helper/src/script-templates/p2pkh.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/bsv-wallet-helper/src/script-templates/p2pkh.ts)
+- [packages/helpers/bsv-wallet-helper/src/utils/derivation.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/bsv-wallet-helper/src/utils/derivation.ts)
+- [packages/messaging/message-box-client/tsconfig.base.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/message-box-client/tsconfig.base.json)
+- [packages/messaging/message-box-server/src/swagger.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/message-box-server/src/swagger.ts)
+- [packages/messaging/messagebox-services/backend/tsconfig.base.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/messagebox-services/backend/tsconfig.base.json)
+- [packages/network/chaintracks-server/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/chaintracks-server/package.json)
+- [packages/network/ts-p2p/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/ts-p2p/package.json)
+- [packages/overlays/overlay-express/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/overlay-express/package.json)
+- [packages/wallet/wab/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wab/package.json)
+- [packages/wallet/wallet-toolbox/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wallet-toolbox/package.json)
 
 </details>
 
@@ -202,7 +202,7 @@ graph TD
     TL -->|Uses libp2p| SDK
     WT --> SDK
 ```
-Sources: [@bsv/chaintracks-server:29-33](), [@bsv/teranode-listener:16-32]()
+Sources: [@bsv/chaintracks-server:29-33](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/chaintracks-server), [@bsv/teranode-listener:16-32](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/teranode-listener)
 
 ---
 
@@ -219,9 +219,9 @@ The server supports multiple entry points and configuration modes via the `CHAIN
 | **Network Modes** | Mainnet, Testnet (via `CHAIN` env) |
 | **Entry Points** | `server.ts`, `server-custom.ts`, `server-with-prefix.ts` |
 
-For details, see [Chaintracks Server](#7.1).
+For details, see [Chaintracks Server](25-Chaintracks-Server.md).
 
-**Sources:** [@bsv/chaintracks-server:1-42](), [@bsv/chaintracks-server:5-6](), [@bsv/chaintracks-server:11-13]()
+**Sources:** [@bsv/chaintracks-server:1-42](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/chaintracks-server), [@bsv/chaintracks-server:5-6](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/chaintracks-server), [@bsv/chaintracks-server:11-13](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/chaintracks-server)
 
 ---
 
@@ -261,9 +261,9 @@ graph LR
 | **Private Network** | `@libp2p/pnet` (PSK-based access) |
 | **Peer Discovery** | `@libp2p/bootstrap` & `@libp2p/pubsub-peer-discovery` |
 
-For details, see [Teranode P2P Listener](#7.2).
+For details, see [Teranode P2P Listener](26-Teranode-P2P-Listener.md).
 
-**Sources:** [@bsv/teranode-listener:1-60](), [@bsv/teranode-listener:18-32](), [@bsv/teranode-listener:39-45]()
+**Sources:** [@bsv/teranode-listener:1-60](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/teranode-listener), [@bsv/teranode-listener:18-32](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/teranode-listener), [@bsv/teranode-listener:39-45](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/teranode-listener)
 
 ---
 
@@ -284,7 +284,7 @@ sequenceDiagram
     CT-->>App: Header Data + Merkle Proof
 ```
 
-**Sources:** [@bsv/chaintracks-server:5-6](), [@bsv/teranode-listener:39-44]()
+**Sources:** [@bsv/chaintracks-server:5-6](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/chaintracks-server), [@bsv/teranode-listener:39-44](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/teranode-listener)
 
 ---
 
@@ -297,10 +297,10 @@ sequenceDiagram
 
 The following files were used as context for generating this wiki page:
 
-- [packages/network/chaintracks-server/package.json](packages/network/chaintracks-server/package.json)
-- [packages/overlays/overlay-express/package.json](packages/overlays/overlay-express/package.json)
-- [packages/wallet/wab/package.json](packages/wallet/wab/package.json)
-- [packages/wallet/wallet-toolbox/package.json](packages/wallet/wallet-toolbox/package.json)
+- [packages/network/chaintracks-server/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/chaintracks-server/package.json)
+- [packages/overlays/overlay-express/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/overlay-express/package.json)
+- [packages/wallet/wab/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wab/package.json)
+- [packages/wallet/wallet-toolbox/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wallet-toolbox/package.json)
 
 </details>
 
@@ -318,7 +318,7 @@ The primary role of the `@bsv/chaintracks-server` is to maintain an up-to-date v
 - **Express API**: Provides a RESTful interface for external applications to query the current chain state.
 - **Modular Entrypoints**: Supports standard, custom, and prefixed routing configurations.
 
-Sources: [packages/network/chaintracks-server/package.json:5-13](), [packages/network/chaintracks-server/package.json:29-34]()
+Sources: [packages/network/chaintracks-server/package.json:5-13](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/chaintracks-server/package.json#L5-L13), [packages/network/chaintracks-server/package.json:29-34](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/chaintracks-server/package.json#L29-L34)
 
 ---
 
@@ -356,7 +356,7 @@ graph TD
     style S2 stroke-dasharray: 5 5
     style S3 stroke-dasharray: 5 5
 ```
-Sources: [packages/network/chaintracks-server/package.json:5-15](), [packages/wallet/wallet-toolbox/package.json:41-44]()
+Sources: [packages/network/chaintracks-server/package.json:5-15](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/chaintracks-server/package.json#L5-L15), [packages/wallet/wallet-toolbox/package.json:41-44](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wallet-toolbox/package.json#L41-L44)
 
 ---
 
@@ -376,7 +376,7 @@ The `package.json` defines several scripts for different deployment scenarios:
 - `npm run start:custom`: Uses the `server-custom.ts` entrypoint for specialized configurations.
 - `npm run start:prefix`: Uses `server-with-prefix.ts` to host the API under a specific URL path.
 
-Sources: [packages/network/chaintracks-server/package.json:8-15]()
+Sources: [packages/network/chaintracks-server/package.json:8-15](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/chaintracks-server/package.json#L8-L15)
 
 ---
 
@@ -416,7 +416,7 @@ graph LR
     B --- B1
     C --- C1
 ```
-Sources: [packages/network/chaintracks-server/package.json:5-6](), [packages/network/chaintracks-server/package.json:29-34](), [packages/wallet/wallet-toolbox/package.json:46-46]()
+Sources: [packages/network/chaintracks-server/package.json:5-6](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/chaintracks-server/package.json#L5-L6), [packages/network/chaintracks-server/package.json:29-34](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/chaintracks-server/package.json#L29-L34), [packages/wallet/wallet-toolbox/package.json:46-46](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wallet-toolbox/package.json#L46-L46)
 
 ---
 
@@ -429,7 +429,7 @@ The `chaintracks-server` is a "leaf" package in the network domain, depending on
 - **express**: The web framework used to expose the service over HTTP.
 - **dotenv**: Used to load configuration from `.env` files.
 
-Sources: [packages/network/chaintracks-server/package.json:29-34](), [packages/wallet/wallet-toolbox/package.json:41-44]()
+Sources: [packages/network/chaintracks-server/package.json:29-34](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/chaintracks-server/package.json#L29-L34), [packages/wallet/wallet-toolbox/package.json:41-44](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wallet-toolbox/package.json#L41-L44)
 
 ---
 
@@ -442,14 +442,14 @@ Sources: [packages/network/chaintracks-server/package.json:29-34](), [packages/w
 
 The following files were used as context for generating this wiki page:
 
-- [packages/helpers/amountinator/tsconfig.json](packages/helpers/amountinator/tsconfig.json)
-- [packages/helpers/bsv-wallet-helper/src/script-templates/ordlock.ts](packages/helpers/bsv-wallet-helper/src/script-templates/ordlock.ts)
-- [packages/helpers/bsv-wallet-helper/src/script-templates/p2pkh.ts](packages/helpers/bsv-wallet-helper/src/script-templates/p2pkh.ts)
-- [packages/helpers/bsv-wallet-helper/src/utils/derivation.ts](packages/helpers/bsv-wallet-helper/src/utils/derivation.ts)
-- [packages/messaging/message-box-client/tsconfig.base.json](packages/messaging/message-box-client/tsconfig.base.json)
-- [packages/messaging/message-box-server/src/swagger.ts](packages/messaging/message-box-server/src/swagger.ts)
-- [packages/messaging/messagebox-services/backend/tsconfig.base.json](packages/messaging/messagebox-services/backend/tsconfig.base.json)
-- [packages/network/ts-p2p/package.json](packages/network/ts-p2p/package.json)
+- [packages/helpers/amountinator/tsconfig.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/amountinator/tsconfig.json)
+- [packages/helpers/bsv-wallet-helper/src/script-templates/ordlock.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/bsv-wallet-helper/src/script-templates/ordlock.ts)
+- [packages/helpers/bsv-wallet-helper/src/script-templates/p2pkh.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/bsv-wallet-helper/src/script-templates/p2pkh.ts)
+- [packages/helpers/bsv-wallet-helper/src/utils/derivation.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/bsv-wallet-helper/src/utils/derivation.ts)
+- [packages/messaging/message-box-client/tsconfig.base.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/message-box-client/tsconfig.base.json)
+- [packages/messaging/message-box-server/src/swagger.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/message-box-server/src/swagger.ts)
+- [packages/messaging/messagebox-services/backend/tsconfig.base.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/messagebox-services/backend/tsconfig.base.json)
+- [packages/network/ts-p2p/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/ts-p2p/package.json)
 
 </details>
 
@@ -462,10 +462,10 @@ The `@bsv/teranode-listener` (also known as `ts-p2p`) package provides a special
 The primary role of the Teranode P2P Listener is to allow services to receive real-time updates from Teranode instances. Unlike public Bitcoin P2P protocols, this listener is designed for a **private network** environment using a Pre-Shared Key (PSK) for network-level access control.
 
 Key capabilities include:
-*   **Private DHT Network**: Access is restricted via a 32-byte PSK [packages/network/ts-p2p/package.json:28-28]().
-*   **Gossipsub Support**: Uses `@chainsafe/libp2p-gossipsub` for efficient message routing [packages/network/ts-p2p/package.json:18-18]().
+*   **Private DHT Network**: Access is restricted via a 32-byte PSK [packages/network/ts-p2p/package.json:28-28](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/ts-p2p/package.json#L28-L28).
+*   **Gossipsub Support**: Uses `@chainsafe/libp2p-gossipsub` for efficient message routing [packages/network/ts-p2p/package.json:18-18](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/ts-p2p/package.json#L18-L18).
 *   **Topic Subscriptions**: Specialized handlers for blockchain-specific topics like blocks and subtrees.
-*   **Peer Discovery**: Implements bootstrap nodes and PubSub-based peer discovery [packages/network/ts-p2p/package.json:21-29]().
+*   **Peer Discovery**: Implements bootstrap nodes and PubSub-based peer discovery [packages/network/ts-p2p/package.json:21-29](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/ts-p2p/package.json#L21-L29).
 
 ## System Architecture
 
@@ -498,7 +498,7 @@ graph TD
     GS -- "Topic: 'block'" --> TL
     TL -- "Decoded Data" --> CB
 ```
-Sources: [packages/network/ts-p2p/package.json:18-32]()
+Sources: [packages/network/ts-p2p/package.json:18-32](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/ts-p2p/package.json#L18-L32)
 
 ## Code Entity Map
 
@@ -530,23 +530,23 @@ classDiagram
     Libp2pStack --> Discovery : uses
     Libp2pStack ..> Gossipsub : "via @chainsafe/libp2p-gossipsub"
 ```
-Sources: [packages/network/ts-p2p/package.json:16-33]()
+Sources: [packages/network/ts-p2p/package.json:16-33](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/ts-p2p/package.json#L16-L33)
 
 ## Implementation Details
 
 ### Dependency Stack
 The listener relies on a modern `libp2p` configuration:
-*   **Transport**: TCP (`@libp2p/tcp`) [packages/network/ts-p2p/package.json:30-30]().
-*   **Security**: Noise encryption (`@chainsafe/libp2p-noise`) [packages/network/ts-p2p/package.json:19-19]().
-*   **Multiplexing**: Yamux (`@chainsafe/libp2p-yamux`) [packages/network/ts-p2p/package.json:20-20]().
-*   **Private Networking**: PNET using a PSK (`@libp2p/pnet`) [packages/network/ts-p2p/package.json:28-28]().
-*   **Peer ID**: Uses `@libp2p/peer-id` for node identity [packages/network/ts-p2p/package.json:26-26]().
+*   **Transport**: TCP (`@libp2p/tcp`) [packages/network/ts-p2p/package.json:30-30](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/ts-p2p/package.json#L30-L30).
+*   **Security**: Noise encryption (`@chainsafe/libp2p-noise`) [packages/network/ts-p2p/package.json:19-19](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/ts-p2p/package.json#L19-L19).
+*   **Multiplexing**: Yamux (`@chainsafe/libp2p-yamux`) [packages/network/ts-p2p/package.json:20-20](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/ts-p2p/package.json#L20-L20).
+*   **Private Networking**: PNET using a PSK (`@libp2p/pnet`) [packages/network/ts-p2p/package.json:28-28](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/ts-p2p/package.json#L28-L28).
+*   **Peer ID**: Uses `@libp2p/peer-id` for node identity [packages/network/ts-p2p/package.json:26-26](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/ts-p2p/package.json#L26-L26).
 
 ### Peer Discovery and DHT
 To maintain connectivity in the private network, the listener employs multiple discovery strategies:
-1.  **Bootstrap Nodes**: Initial entry points into the network defined during initialization [packages/network/ts-p2p/package.json:21-21]().
-2.  **Kademlia DHT**: Used for routing and finding peers in the private DHT (`@libp2p/kad-dht`) [packages/network/ts-p2p/package.json:25-25]().
-3.  **PubSub Discovery**: Peers can discover each other via dedicated PubSub channels [packages/network/ts-p2p/package.json:29-29]().
+1.  **Bootstrap Nodes**: Initial entry points into the network defined during initialization [packages/network/ts-p2p/package.json:21-21](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/ts-p2p/package.json#L21-L21).
+2.  **Kademlia DHT**: Used for routing and finding peers in the private DHT (`@libp2p/kad-dht`) [packages/network/ts-p2p/package.json:25-25](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/ts-p2p/package.json#L25-L25).
+3.  **PubSub Discovery**: Peers can discover each other via dedicated PubSub channels [packages/network/ts-p2p/package.json:29-29](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/ts-p2p/package.json#L29-L29).
 
 ### Topic Subscriptions
 The `TeranodeListener` class provides a high-level abstraction over the Gossipsub implementation. It typically handles:
@@ -571,7 +571,7 @@ While the internal implementation is encapsulated, the listener configuration fo
 | **Ping** | `@libp2p/ping` |
 | **Addressing** | `@multiformats/multiaddr` |
 
-Sources: [packages/network/ts-p2p/package.json:18-32]()
+Sources: [packages/network/ts-p2p/package.json:18-32](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/ts-p2p/package.json#L18-L32)
 
 ---
 
@@ -584,12 +584,12 @@ Sources: [packages/network/ts-p2p/package.json:18-32]()
 
 The following files were used as context for generating this wiki page:
 
-- [packages/helpers/amountinator/package.json](packages/helpers/amountinator/package.json)
-- [packages/helpers/bsv-wallet-helper/package.json](packages/helpers/bsv-wallet-helper/package.json)
-- [packages/helpers/fund-metanet/BASELINE.md](packages/helpers/fund-metanet/BASELINE.md)
-- [packages/helpers/fund-metanet/package.json](packages/helpers/fund-metanet/package.json)
-- [packages/helpers/simple/package.json](packages/helpers/simple/package.json)
-- [packages/helpers/ts-paymail/package.json](packages/helpers/ts-paymail/package.json)
+- [packages/helpers/amountinator/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/amountinator/package.json)
+- [packages/helpers/bsv-wallet-helper/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/bsv-wallet-helper/package.json)
+- [packages/helpers/fund-metanet/BASELINE.md](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/fund-metanet/BASELINE.md)
+- [packages/helpers/fund-metanet/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/fund-metanet/package.json)
+- [packages/helpers/simple/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/simple/package.json)
+- [packages/helpers/ts-paymail/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/ts-paymail/package.json)
 
 </details>
 
@@ -630,7 +630,7 @@ graph TD
   Amountinator --> SDK
   FundMetanet --> Toolbox
 ```
-Sources: [packages/helpers/simple/package.json:45-50](), [packages/helpers/ts-paymail/package.json:104-105](), [packages/helpers/bsv-wallet-helper/package.json:34-37](), [packages/helpers/amountinator/package.json:34-37](), [packages/helpers/fund-metanet/package.json:20-22]()
+Sources: [packages/helpers/simple/package.json:45-50](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/simple/package.json#L45-L50), [packages/helpers/ts-paymail/package.json:104-105](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/ts-paymail/package.json#L104-L105), [packages/helpers/bsv-wallet-helper/package.json:34-37](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/bsv-wallet-helper/package.json#L34-L37), [packages/helpers/amountinator/package.json:34-37](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/amountinator/package.json#L34-L37), [packages/helpers/fund-metanet/package.json:20-22](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/fund-metanet/package.json#L20-L22)
 
 ---
 
@@ -641,9 +641,9 @@ Sources: [packages/helpers/simple/package.json:45-50](), [packages/helpers/ts-pa
 *   **Payments & Tokens**: Simplified `wallet.pay()` and `wallet.createToken()` methods.
 *   **Inscriptions**: High-level `wallet.inscribeText()` for Ordinal-style data.
 *   **Identity**: Built-in support for DID generation and Verifiable Credential (VC) issuance.
-*   **Environment Switching**: Specific entry points for `browser` and `server` environments [packages/helpers/simple/package.json:11-24]().
+*   **Environment Switching**: Specific entry points for `browser` and `server` environments [packages/helpers/simple/package.json:11-24](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/simple/package.json#L11-L24).
 
-For details on the high-level API, see [@bsv/simple: High-Level Application API](#8.1).
+For details on the high-level API, see [@bsv/simple: High-Level Application API](28-bsv-simple--High-Level-Application-API.md).
 
 ---
 
@@ -655,10 +655,10 @@ This sub-domain contains the protocol-specific implementations and mathematical 
 
 | Package | Purpose | Primary Features |
 |:---|:---|:---|
-| `@bsv/paymail` | Identity & P2P | PKI lookups, P2P transaction delivery, and BEEF-based `sendP2P` [packages/helpers/ts-paymail/package.json:81-83](). |
-| `@bsv/wallet-helper` | Script Templates | Pre-defined templates for P2PKH and OrdLock scripts [packages/helpers/bsv-wallet-helper/package.json:2-5](). |
-| `@bsv/amountinator` | Conversion | Mathematical utilities for converting between satoshis and various fiat/unit representations [packages/helpers/amountinator/package.json:2-4](). |
-| `@bsv/fund-metanet` | CLI Utility | A Tier-3 developer tool for funding Metanet-compatible wallets with BSV [packages/helpers/fund-metanet/BASELINE.md:12-13](). |
+| `@bsv/paymail` | Identity & P2P | PKI lookups, P2P transaction delivery, and BEEF-based `sendP2P` [packages/helpers/ts-paymail/package.json:81-83](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/ts-paymail/package.json#L81-L83). |
+| `@bsv/wallet-helper` | Script Templates | Pre-defined templates for P2PKH and OrdLock scripts [packages/helpers/bsv-wallet-helper/package.json:2-5](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/bsv-wallet-helper/package.json#L2-L5). |
+| `@bsv/amountinator` | Conversion | Mathematical utilities for converting between satoshis and various fiat/unit representations [packages/helpers/amountinator/package.json:2-4](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/amountinator/package.json#L2-L4). |
+| `@bsv/fund-metanet` | CLI Utility | A Tier-3 developer tool for funding Metanet-compatible wallets with BSV [packages/helpers/fund-metanet/BASELINE.md:12-13](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/fund-metanet/BASELINE.md#L12-L13). |
 
 #### Protocol Interaction Flow
 ```mermaid
@@ -675,9 +675,9 @@ sequenceDiagram
     App->>Paymail: sendP2P(transaction)
     Paymail->>Remote: POST /receive-transaction
 ```
-Sources: [packages/helpers/ts-paymail/package.json:29-48](), [packages/helpers/ts-paymail/package.json:83-84]()
+Sources: [packages/helpers/ts-paymail/package.json:29-48](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/ts-paymail/package.json#L29-L48), [packages/helpers/ts-paymail/package.json:83-84](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/ts-paymail/package.json#L83-L84)
 
-For detailed documentation on these utilities and the Paymail client, see [Paymail, Wallet Helper & Utility Packages](#8.2).
+For detailed documentation on these utilities and the Paymail client, see [Paymail, Wallet Helper & Utility Packages](29-Paymail--Wallet-Helper---Utility-Packages.md).
 
 ---
 
@@ -692,7 +692,7 @@ The helper domain contains a mix of production-critical libraries and internal d
 | `@bsv/amountinator` | Tier 2 | RL1 | `tsc` |
 | `@bsv/fund-metanet` | Tier 3 | RL0 | `tsc` |
 
-Sources: [packages/helpers/fund-metanet/BASELINE.md:11-13](), [packages/helpers/ts-paymail/package.json:77-77](), [packages/helpers/bsv-wallet-helper/package.json:28-28]()
+Sources: [packages/helpers/fund-metanet/BASELINE.md:11-13](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/fund-metanet/BASELINE.md#L11-L13), [packages/helpers/ts-paymail/package.json:77-77](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/ts-paymail/package.json#L77-L77), [packages/helpers/bsv-wallet-helper/package.json:28-28](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/bsv-wallet-helper/package.json#L28-L28)
 
 ---
 
@@ -705,10 +705,10 @@ Sources: [packages/helpers/fund-metanet/BASELINE.md:11-13](), [packages/helpers/
 
 The following files were used as context for generating this wiki page:
 
-- [packages/helpers/amountinator/package.json](packages/helpers/amountinator/package.json)
-- [packages/helpers/bsv-wallet-helper/package.json](packages/helpers/bsv-wallet-helper/package.json)
-- [packages/helpers/simple/package.json](packages/helpers/simple/package.json)
-- [packages/helpers/ts-paymail/package.json](packages/helpers/ts-paymail/package.json)
+- [packages/helpers/amountinator/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/amountinator/package.json)
+- [packages/helpers/bsv-wallet-helper/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/bsv-wallet-helper/package.json)
+- [packages/helpers/simple/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/simple/package.json)
+- [packages/helpers/ts-paymail/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/ts-paymail/package.json)
 
 </details>
 
@@ -727,15 +727,15 @@ The package uses a modular structure with environment-specific exports. This all
 
 ### Environment-Specific Exports
 The package defines three primary entry points in its `package.json`:
-1.  **General (`.`):** Default export for common utilities [packages/helpers/simple/package.json:12-15]().
-2.  **Browser (`./browser`):** Optimized for client-side environments, likely utilizing `StorageIdb` (IndexedDB) from the toolbox [packages/helpers/simple/package.json:16-19]().
-3.  **Server (`./server`):** Optimized for Node.js, supporting filesystem or database-backed storage like `StorageKnex` [packages/helpers/simple/package.json:20-23]().
+1.  **General (`.`):** Default export for common utilities [packages/helpers/simple/package.json:12-15](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/simple/package.json#L12-L15).
+2.  **Browser (`./browser`):** Optimized for client-side environments, likely utilizing `StorageIdb` (IndexedDB) from the toolbox [packages/helpers/simple/package.json:16-19](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/simple/package.json#L16-L19).
+3.  **Server (`./server`):** Optimized for Node.js, supporting filesystem or database-backed storage like `StorageKnex` [packages/helpers/simple/package.json:20-23](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/simple/package.json#L20-L23).
 
 ### Dependency Hierarchy
 `@bsv/simple` acts as a glue layer for several core domains:
-*   **@bsv/sdk:** For transaction construction, script templates, and cryptographic primitives [packages/helpers/simple/package.json:47]().
-*   **@bsv/wallet-toolbox:** For wallet state management, UTXO tracking, and storage [packages/helpers/simple/package.json:48]().
-*   **@bsv/message-box-client:** For peer-to-peer communication and notification handling [packages/helpers/simple/package.json:46]().
+*   **@bsv/sdk:** For transaction construction, script templates, and cryptographic primitives [packages/helpers/simple/package.json:47](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/simple/package.json#L47).
+*   **@bsv/wallet-toolbox:** For wallet state management, UTXO tracking, and storage [packages/helpers/simple/package.json:48](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/simple/package.json#L48).
+*   **@bsv/message-box-client:** For peer-to-peer communication and notification handling [packages/helpers/simple/package.json:46](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/simple/package.json#L46).
 
 ### Data Flow: Application to Blockchain
 The following diagram illustrates how a call to a high-level function in `@bsv/simple` flows through the underlying stack.
@@ -764,7 +764,7 @@ graph TD
     C -.-> H["StorageProvider (Knex/Idb)"]
     H -.-> B
 ```
-Sources: [packages/helpers/simple/package.json:45-50](), [packages/helpers/simple/package.json:11-24]()
+Sources: [packages/helpers/simple/package.json:45-50](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/simple/package.json#L45-L50), [packages/helpers/simple/package.json:11-24](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/simple/package.json#L11-L24)
 
 ---
 
@@ -830,7 +830,7 @@ classDiagram
     SimpleWallet --> SDK_Transaction : "Constructs TXs"
     SimpleWallet --> MessageBox : "Sends P2P Notifications"
 ```
-Sources: [packages/helpers/simple/package.json:45-50](), [packages/helpers/simple/package.json:33-42]()
+Sources: [packages/helpers/simple/package.json:45-50](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/simple/package.json#L45-L50), [packages/helpers/simple/package.json:33-42](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/simple/package.json#L33-L42)
 
 ---
 
@@ -840,11 +840,11 @@ Sources: [packages/helpers/simple/package.json:45-50](), [packages/helpers/simpl
 
 | Package | Integration Role |
 | :--- | :--- |
-| **@bsv/paymail** | Used for looking up public keys and delivery targets via human-readable handles during `wallet.pay()` [packages/helpers/ts-paymail/package.json:2-4](). |
-| **@bsv/amountinator** | Used for converting fiat values to Satoshis before passing them to the wallet API [packages/helpers/amountinator/package.json:2-4](). |
-| **@bsv/wallet-helper** | Provides specific script templates (like `OrdLock`) used for inscriptions [packages/helpers/bsv-wallet-helper/package.json:2-3](). |
+| **@bsv/paymail** | Used for looking up public keys and delivery targets via human-readable handles during `wallet.pay()` [packages/helpers/ts-paymail/package.json:2-4](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/ts-paymail/package.json#L2-L4). |
+| **@bsv/amountinator** | Used for converting fiat values to Satoshis before passing them to the wallet API [packages/helpers/amountinator/package.json:2-4](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/amountinator/package.json#L2-L4). |
+| **@bsv/wallet-helper** | Provides specific script templates (like `OrdLock`) used for inscriptions [packages/helpers/bsv-wallet-helper/package.json:2-3](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/bsv-wallet-helper/package.json#L2-L3). |
 
-Sources: [packages/helpers/ts-paymail/package.json:104-105](), [packages/helpers/amountinator/package.json:34-36](), [packages/helpers/bsv-wallet-helper/package.json:34-36]()
+Sources: [packages/helpers/ts-paymail/package.json:104-105](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/ts-paymail/package.json#L104-L105), [packages/helpers/amountinator/package.json:34-36](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/amountinator/package.json#L34-L36), [packages/helpers/bsv-wallet-helper/package.json:34-36](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/bsv-wallet-helper/package.json#L34-L36)
 
 ---
 
@@ -857,29 +857,29 @@ Sources: [packages/helpers/ts-paymail/package.json:104-105](), [packages/helpers
 
 The following files were used as context for generating this wiki page:
 
-- [conformance/runner/ts/jest.config.mjs](conformance/runner/ts/jest.config.mjs)
-- [conformance/runner/ts/package.json](conformance/runner/ts/package.json)
-- [conformance/runner/ts/runner.test.ts](conformance/runner/ts/runner.test.ts)
-- [conformance/runner/ts/tsconfig.json](conformance/runner/ts/tsconfig.json)
-- [packages/helpers/amountinator/BASELINE.md](packages/helpers/amountinator/BASELINE.md)
-- [packages/helpers/amountinator/tsconfig.json](packages/helpers/amountinator/tsconfig.json)
-- [packages/helpers/bsv-wallet-helper/BASELINE.md](packages/helpers/bsv-wallet-helper/BASELINE.md)
-- [packages/helpers/bsv-wallet-helper/src/script-templates/ordlock.ts](packages/helpers/bsv-wallet-helper/src/script-templates/ordlock.ts)
-- [packages/helpers/bsv-wallet-helper/src/script-templates/p2pkh.ts](packages/helpers/bsv-wallet-helper/src/script-templates/p2pkh.ts)
-- [packages/helpers/bsv-wallet-helper/src/utils/derivation.ts](packages/helpers/bsv-wallet-helper/src/utils/derivation.ts)
-- [packages/helpers/fund-metanet/BASELINE.md](packages/helpers/fund-metanet/BASELINE.md)
-- [packages/helpers/fund-metanet/package.json](packages/helpers/fund-metanet/package.json)
-- [packages/helpers/simple/BASELINE.md](packages/helpers/simple/BASELINE.md)
-- [packages/helpers/ts-paymail/BASELINE.md](packages/helpers/ts-paymail/BASELINE.md)
-- [packages/helpers/ts-paymail/docs/examples/package.json](packages/helpers/ts-paymail/docs/examples/package.json)
-- [packages/messaging/authsocket-client/BASELINE.md](packages/messaging/authsocket-client/BASELINE.md)
-- [packages/messaging/authsocket/BASELINE.md](packages/messaging/authsocket/BASELINE.md)
-- [packages/messaging/message-box-client/BASELINE.md](packages/messaging/message-box-client/BASELINE.md)
-- [packages/messaging/message-box-client/tsconfig.base.json](packages/messaging/message-box-client/tsconfig.base.json)
-- [packages/messaging/message-box-server/src/swagger.ts](packages/messaging/message-box-server/src/swagger.ts)
-- [packages/messaging/messagebox-services/backend/tsconfig.base.json](packages/messaging/messagebox-services/backend/tsconfig.base.json)
-- [packages/network/ts-p2p/package.json](packages/network/ts-p2p/package.json)
-- [pnpm-lock.yaml](pnpm-lock.yaml)
+- [conformance/runner/ts/jest.config.mjs](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/ts/jest.config.mjs)
+- [conformance/runner/ts/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/ts/package.json)
+- [conformance/runner/ts/runner.test.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/ts/runner.test.ts)
+- [conformance/runner/ts/tsconfig.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/ts/tsconfig.json)
+- [packages/helpers/amountinator/BASELINE.md](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/amountinator/BASELINE.md)
+- [packages/helpers/amountinator/tsconfig.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/amountinator/tsconfig.json)
+- [packages/helpers/bsv-wallet-helper/BASELINE.md](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/bsv-wallet-helper/BASELINE.md)
+- [packages/helpers/bsv-wallet-helper/src/script-templates/ordlock.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/bsv-wallet-helper/src/script-templates/ordlock.ts)
+- [packages/helpers/bsv-wallet-helper/src/script-templates/p2pkh.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/bsv-wallet-helper/src/script-templates/p2pkh.ts)
+- [packages/helpers/bsv-wallet-helper/src/utils/derivation.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/bsv-wallet-helper/src/utils/derivation.ts)
+- [packages/helpers/fund-metanet/BASELINE.md](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/fund-metanet/BASELINE.md)
+- [packages/helpers/fund-metanet/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/fund-metanet/package.json)
+- [packages/helpers/simple/BASELINE.md](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/simple/BASELINE.md)
+- [packages/helpers/ts-paymail/BASELINE.md](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/ts-paymail/BASELINE.md)
+- [packages/helpers/ts-paymail/docs/examples/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/ts-paymail/docs/examples/package.json)
+- [packages/messaging/authsocket-client/BASELINE.md](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/authsocket-client/BASELINE.md)
+- [packages/messaging/authsocket/BASELINE.md](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/authsocket/BASELINE.md)
+- [packages/messaging/message-box-client/BASELINE.md](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/message-box-client/BASELINE.md)
+- [packages/messaging/message-box-client/tsconfig.base.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/message-box-client/tsconfig.base.json)
+- [packages/messaging/message-box-server/src/swagger.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/message-box-server/src/swagger.ts)
+- [packages/messaging/messagebox-services/backend/tsconfig.base.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/messagebox-services/backend/tsconfig.base.json)
+- [packages/network/ts-p2p/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/ts-p2p/package.json)
+- [pnpm-lock.yaml](https://github.com/bsv-blockchain/ts-stack/blob/main/pnpm-lock.yaml)
 
 </details>
 
@@ -920,13 +920,13 @@ sequenceDiagram
     S-->>C: TXID
     end
 ```
-**Sources:** [packages/helpers/ts-paymail/docs/examples/package.json:14-15](), [pnpm-lock.yaml:154-196]()
+**Sources:** [packages/helpers/ts-paymail/docs/examples/package.json:14-15](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/ts-paymail/docs/examples/package.json#L14-L15), [pnpm-lock.yaml:154-196](https://github.com/bsv-blockchain/ts-stack/blob/main/pnpm-lock.yaml#L154-L196)
 
 ### Key Implementation Details
 *   **Capability Discovery**: Clients resolve the `.well-known/bsvalias` endpoint to determine supported features (e.g., PKI, Profile, BEEF).
 *   **BEEF Support**: Includes scripts for sending transactions in BEEF format, which includes the transaction and its necessary Merkle proofs/ancestors for SPV validation.
 
-**Sources:** [packages/helpers/ts-paymail/docs/examples/package.json:15](), [packages/helpers/ts-paymail/docs/examples/src/client/sendP2PBeef.js:1-20]() (inferred from scripts)
+**Sources:** [packages/helpers/ts-paymail/docs/examples/package.json:15](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/ts-paymail/docs/examples/package.json#L15), [packages/helpers/ts-paymail/docs/examples/src/client/sendP2PBeef.js:1-20](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/ts-paymail/docs/examples/src/client/sendP2PBeef.js#L1-L20) (inferred from scripts)
 
 ---
 
@@ -954,14 +954,14 @@ graph TD
         H --> I["PublicKey.toAddress()"]
     end
 ```
-**Sources:** [packages/helpers/bsv-wallet-helper/src/utils/derivation.ts:4-11](), [packages/helpers/bsv-wallet-helper/src/utils/derivation.ts:22-56]()
+**Sources:** [packages/helpers/bsv-wallet-helper/src/utils/derivation.ts:4-11](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/bsv-wallet-helper/src/utils/derivation.ts#L4-L11), [packages/helpers/bsv-wallet-helper/src/utils/derivation.ts:22-56](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/bsv-wallet-helper/src/utils/derivation.ts#L22-L56)
 
 ### Script Templates
 The package includes templates for common Bitcoin script patterns:
 *   **P2PKH**: Standard Pay-to-Public-Key-Hash scripts.
 *   **OrdLock**: Specialized scripts for Ordinal locking/unlocking.
 
-**Sources:** [packages/helpers/bsv-wallet-helper/src/script-templates/p2pkh.ts:1-10](), [packages/helpers/bsv-wallet-helper/src/script-templates/ordlock.ts:1-10]()
+**Sources:** [packages/helpers/bsv-wallet-helper/src/script-templates/p2pkh.ts:1-10](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/bsv-wallet-helper/src/script-templates/p2pkh.ts#L1-L10), [packages/helpers/bsv-wallet-helper/src/script-templates/ordlock.ts:1-10](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/bsv-wallet-helper/src/script-templates/ordlock.ts#L1-L10)
 
 ---
 
@@ -970,7 +970,7 @@ The package includes templates for common Bitcoin script patterns:
 ### 3.1 Amountinator (@bsv/amountinator)
 A utility for currency and unit conversion within the BSV ecosystem. It depends on `@bsv/sdk` for transaction-related value handling and `@bsv/wallet-toolbox-client` for retrieving exchange rates or wallet balances.
 
-**Sources:** [packages/helpers/amountinator/package.json:42-49](), [pnpm-lock.yaml:42-63]()
+**Sources:** [packages/helpers/amountinator/package.json:42-49](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/amountinator/package.json#L42-L49), [pnpm-lock.yaml:42-63](https://github.com/bsv-blockchain/ts-stack/blob/main/pnpm-lock.yaml#L42-L63)
 
 ### 3.2 Fund Metanet (@bsv/fund-metanet)
 A CLI tool and library designed to fund Metanet-compatible wallets. It integrates `@bsv/wallet-toolbox` to manage storage and signing for the funding process.
@@ -980,7 +980,7 @@ A CLI tool and library designed to fund Metanet-compatible wallets. It integrate
 *   **Interactive CLI**: Utilizes `readline` and `chalk` for user interaction.
 *   **Wallet Integration**: Leverages `WalletToolbox` for transaction signing and broadcast.
 
-**Sources:** [packages/helpers/fund-metanet/package.json:20-27](), [packages/helpers/fund-metanet/package.json:10-12]()
+**Sources:** [packages/helpers/fund-metanet/package.json:20-27](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/fund-metanet/package.json#L20-L27), [packages/helpers/fund-metanet/package.json:10-12](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/fund-metanet/package.json#L10-L12)
 
 ---
 
@@ -1021,7 +1021,7 @@ graph LR
 
     FUND --> FUND_I
 ```
-**Sources:** [packages/helpers/ts-paymail/docs/examples/package.json:15](), [packages/helpers/bsv-wallet-helper/src/utils/derivation.ts:4-56](), [packages/helpers/fund-metanet/package.json:11]()
+**Sources:** [packages/helpers/ts-paymail/docs/examples/package.json:15](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/ts-paymail/docs/examples/package.json#L15), [packages/helpers/bsv-wallet-helper/src/utils/derivation.ts:4-56](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/bsv-wallet-helper/src/utils/derivation.ts#L4-L56), [packages/helpers/fund-metanet/package.json:11](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/fund-metanet/package.json#L11)
 
 ## Summary of Package Roles
 
@@ -1032,7 +1032,7 @@ graph LR
 | `@bsv/amountinator` | Unit conversion and currency math | `@bsv/sdk` |
 | `@bsv/fund-metanet` | CLI-based wallet funding | `@bsv/wallet-toolbox` |
 
-**Sources:** [pnpm-lock.yaml:42-196](), [packages/helpers/fund-metanet/package.json:20-27]()
+**Sources:** [pnpm-lock.yaml:42-196](https://github.com/bsv-blockchain/ts-stack/blob/main/pnpm-lock.yaml#L42-L196), [packages/helpers/fund-metanet/package.json:20-27](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/fund-metanet/package.json#L20-L27)
 
 ---
 
@@ -1045,14 +1045,14 @@ graph LR
 
 The following files were used as context for generating this wiki page:
 
-- [conformance/META.json](conformance/META.json)
-- [conformance/VECTOR-FORMAT.md](conformance/VECTOR-FORMAT.md)
-- [conformance/runner/package.json](conformance/runner/package.json)
-- [conformance/runner/src/runner.js](conformance/runner/src/runner.js)
-- [conformance/schema/vector.schema.json](conformance/schema/vector.schema.json)
-- [conformance/vectors/sdk/crypto/ecdsa.json](conformance/vectors/sdk/crypto/ecdsa.json)
-- [conformance/vectors/sdk/crypto/ecies.json](conformance/vectors/sdk/crypto/ecies.json)
-- [conformance/vectors/sdk/crypto/hmac.json](conformance/vectors/sdk/crypto/hmac.json)
+- [conformance/META.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/META.json)
+- [conformance/VECTOR-FORMAT.md](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/VECTOR-FORMAT.md)
+- [conformance/runner/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/package.json)
+- [conformance/runner/src/runner.js](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/src/runner.js)
+- [conformance/schema/vector.schema.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/schema/vector.schema.json)
+- [conformance/vectors/sdk/crypto/ecdsa.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/sdk/crypto/ecdsa.json)
+- [conformance/vectors/sdk/crypto/ecies.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/sdk/crypto/ecies.json)
+- [conformance/vectors/sdk/crypto/hmac.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/sdk/crypto/hmac.json)
 
 </details>
 
@@ -1102,30 +1102,30 @@ graph TD
     TSRunner -->|JUnit XML| CI["GitHub Actions CI"]
     GoRunner -->|JUnit XML| CI
 ```
-**Sources:** [conformance/VECTOR-FORMAT.md:1-150](), [conformance/META.json:1-32]()
+**Sources:** [conformance/VECTOR-FORMAT.md:1-150](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/VECTOR-FORMAT.md#L1-L150), [conformance/META.json:1-32](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/META.json#L1-L32)
 
 ---
 
 ### Core Components
 
 #### 1. Conformance Vector Corpus
-The corpus is a collection of 27 JSON files containing 238+ test vectors [conformance/META.json:14-15](). These vectors cover critical cryptographic and protocol logic, including:
+The corpus is a collection of 27 JSON files containing 238+ test vectors [conformance/META.json:14-15](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/META.json#L14-L15). These vectors cover critical cryptographic and protocol logic, including:
 *   **sdk.crypto**: AES, ECDSA, ECIES, HMAC, SHA256, RIPEMD160.
 *   **sdk.keys**: BRC-42 key derivation, Private/Public key operations.
 *   **sdk.transactions**: Merkle Path (BRC-74) and serialization.
 *   **sdk.compat**: BSM (Bitcoin Signed Messages).
 
-For details on the vector format and coverage, see [Conformance Vector Corpus](#9.1).
+For details on the vector format and coverage, see [Conformance Vector Corpus](31-Conformance-Vector-Corpus.md).
 
 #### 2. The Regression Queue
-The framework tracks known cross-language bugs and edge cases via the `regression_index` in `conformance/META.json` [conformance/META.json:18-31](). Each entry maps a specific vector ID to a GitHub issue (e.g., `beef-v2-txid-panic` mapping to `go-sdk#306`). This ensures that once a bug is fixed in one language, it never regresses in another.
+The framework tracks known cross-language bugs and edge cases via the `regression_index` in `conformance/META.json` [conformance/META.json:18-31](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/META.json#L18-L31). Each entry maps a specific vector ID to a GitHub issue (e.g., `beef-v2-txid-panic` mapping to `go-sdk#306`). This ensures that once a bug is fixed in one language, it never regresses in another.
 
 #### 3. Conformance Runners
 Runners are responsible for loading the JSON vectors, dispatching the `input` to the local SDK functions, and asserting that the output matches the `expected` field.
-*   **TypeScript Runner**: Integrated into the monorepo using Jest; it uses dispatch functions to map vector IDs to `ts-sdk` classes like `ECDSA` [conformance/vectors/sdk/crypto/ecdsa.json:7]() or `ECIES`.
+*   **TypeScript Runner**: Integrated into the monorepo using Jest; it uses dispatch functions to map vector IDs to `ts-sdk` classes like `ECDSA` [conformance/vectors/sdk/crypto/ecdsa.json:7](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/sdk/crypto/ecdsa.json#L7) or `ECIES`.
 *   **Go Runner**: A standalone CLI tool that generates JUnit XML reports for CI consumption.
 
-For details on runner implementation, see [TypeScript & Go Conformance Runners](#9.2).
+For details on runner implementation, see [TypeScript & Go Conformance Runners](32-TypeScript---Go-Conformance-Runners.md).
 
 ---
 
@@ -1164,19 +1164,19 @@ classDiagram
 | `input` | Domain-specific arguments (hex encoded) | `privkey_hex`, `message_hex` |
 | `expected` | Expected result or behavior | `verify: true`, `hmac: "..."` |
 
-**Sources:** [conformance/schema/vector.schema.json:1-52](), [conformance/VECTOR-FORMAT.md:80-132]()
+**Sources:** [conformance/schema/vector.schema.json:1-52](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/schema/vector.schema.json#L1-L52), [conformance/VECTOR-FORMAT.md:80-132](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/VECTOR-FORMAT.md#L80-L132)
 
 ---
 
 ### CI Integration & Codegen
 
-The conformance suite is executed on every Pull Request. The `conformance/runner/src/runner.js` script provides a reference implementation for validating the corpus structure [conformance/runner/src/runner.js:1-15]().
+The conformance suite is executed on every Pull Request. The `conformance/runner/src/runner.js` script provides a reference implementation for validating the corpus structure [conformance/runner/src/runner.js:1-15](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/src/runner.js#L1-L15).
 
-*   **Validation**: The runner checks for required fields like `id`, `input`, and `expected` [conformance/runner/src/runner.js:80-117]().
-*   **Reporting**: Runners emit JUnit XML [conformance/runner/src/runner.js:141-173]() which is parsed by GitHub Actions to provide a dashboard of cross-language compatibility.
+*   **Validation**: The runner checks for required fields like `id`, `input`, and `expected` [conformance/runner/src/runner.js:80-117](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/src/runner.js#L80-L117).
+*   **Reporting**: Runners emit JUnit XML [conformance/runner/src/runner.js:141-173](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/src/runner.js#L141-L173) which is parsed by GitHub Actions to provide a dashboard of cross-language compatibility.
 *   **Codegen**: While vectors provide behavioral truth, service boundaries (OpenAPI/AsyncAPI) are used to generate the boilerplate code that these runners eventually test.
 
-**Sources:** [conformance/runner/package.json:7-11](), [conformance/runner/src/runner.js:179-220]()
+**Sources:** [conformance/runner/package.json:7-11](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/package.json#L7-L11), [conformance/runner/src/runner.js:179-220](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/src/runner.js#L179-L220)
 
 ---
 
@@ -1189,32 +1189,32 @@ The conformance suite is executed on every Pull Request. The `conformance/runner
 
 The following files were used as context for generating this wiki page:
 
-- [conformance/META.json](conformance/META.json)
-- [conformance/REGRESSION_QUEUE.md](conformance/REGRESSION_QUEUE.md)
-- [conformance/VECTOR-FORMAT.md](conformance/VECTOR-FORMAT.md)
-- [conformance/runner/package.json](conformance/runner/package.json)
-- [conformance/runner/src/runner.js](conformance/runner/src/runner.js)
-- [conformance/schema/vector.schema.json](conformance/schema/vector.schema.json)
-- [conformance/vectors/regressions/beef-isvalid-hydration.json](conformance/vectors/regressions/beef-isvalid-hydration.json)
-- [conformance/vectors/regressions/beef-v2-txid-panic.json](conformance/vectors/regressions/beef-v2-txid-panic.json)
-- [conformance/vectors/regressions/bip276-hex-decode.json](conformance/vectors/regressions/bip276-hex-decode.json)
-- [conformance/vectors/regressions/fee-model-mismatch.json](conformance/vectors/regressions/fee-model-mismatch.json)
-- [conformance/vectors/regressions/merkle-path-odd-node.json](conformance/vectors/regressions/merkle-path-odd-node.json)
-- [conformance/vectors/regressions/privatekey-modular-reduction.json](conformance/vectors/regressions/privatekey-modular-reduction.json)
-- [conformance/vectors/regressions/script-fromasm-numeric-token.json](conformance/vectors/regressions/script-fromasm-numeric-token.json)
-- [conformance/vectors/regressions/script-lshift-truncation.json](conformance/vectors/regressions/script-lshift-truncation.json)
-- [conformance/vectors/regressions/script-shift-endianness.json](conformance/vectors/regressions/script-shift-endianness.json)
-- [conformance/vectors/regressions/script-writebin-empty.json](conformance/vectors/regressions/script-writebin-empty.json)
-- [conformance/vectors/regressions/tx-sequence-zero-sighash.json](conformance/vectors/regressions/tx-sequence-zero-sighash.json)
-- [conformance/vectors/regressions/uhrp-url-parity.json](conformance/vectors/regressions/uhrp-url-parity.json)
-- [conformance/vectors/sdk/crypto/aes.json](conformance/vectors/sdk/crypto/aes.json)
-- [conformance/vectors/sdk/crypto/ecdsa.json](conformance/vectors/sdk/crypto/ecdsa.json)
-- [conformance/vectors/sdk/crypto/ecies.json](conformance/vectors/sdk/crypto/ecies.json)
-- [conformance/vectors/sdk/crypto/hash160.json](conformance/vectors/sdk/crypto/hash160.json)
-- [conformance/vectors/sdk/crypto/hmac.json](conformance/vectors/sdk/crypto/hmac.json)
-- [conformance/vectors/sdk/crypto/ripemd160.json](conformance/vectors/sdk/crypto/ripemd160.json)
-- [conformance/vectors/sdk/crypto/sha256.json](conformance/vectors/sdk/crypto/sha256.json)
-- [conformance/vectors/sdk/scripts/evaluation.json](conformance/vectors/sdk/scripts/evaluation.json)
+- [conformance/META.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/META.json)
+- [conformance/REGRESSION_QUEUE.md](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/REGRESSION_QUEUE.md)
+- [conformance/VECTOR-FORMAT.md](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/VECTOR-FORMAT.md)
+- [conformance/runner/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/package.json)
+- [conformance/runner/src/runner.js](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/src/runner.js)
+- [conformance/schema/vector.schema.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/schema/vector.schema.json)
+- [conformance/vectors/regressions/beef-isvalid-hydration.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/regressions/beef-isvalid-hydration.json)
+- [conformance/vectors/regressions/beef-v2-txid-panic.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/regressions/beef-v2-txid-panic.json)
+- [conformance/vectors/regressions/bip276-hex-decode.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/regressions/bip276-hex-decode.json)
+- [conformance/vectors/regressions/fee-model-mismatch.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/regressions/fee-model-mismatch.json)
+- [conformance/vectors/regressions/merkle-path-odd-node.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/regressions/merkle-path-odd-node.json)
+- [conformance/vectors/regressions/privatekey-modular-reduction.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/regressions/privatekey-modular-reduction.json)
+- [conformance/vectors/regressions/script-fromasm-numeric-token.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/regressions/script-fromasm-numeric-token.json)
+- [conformance/vectors/regressions/script-lshift-truncation.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/regressions/script-lshift-truncation.json)
+- [conformance/vectors/regressions/script-shift-endianness.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/regressions/script-shift-endianness.json)
+- [conformance/vectors/regressions/script-writebin-empty.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/regressions/script-writebin-empty.json)
+- [conformance/vectors/regressions/tx-sequence-zero-sighash.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/regressions/tx-sequence-zero-sighash.json)
+- [conformance/vectors/regressions/uhrp-url-parity.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/regressions/uhrp-url-parity.json)
+- [conformance/vectors/sdk/crypto/aes.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/sdk/crypto/aes.json)
+- [conformance/vectors/sdk/crypto/ecdsa.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/sdk/crypto/ecdsa.json)
+- [conformance/vectors/sdk/crypto/ecies.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/sdk/crypto/ecies.json)
+- [conformance/vectors/sdk/crypto/hash160.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/sdk/crypto/hash160.json)
+- [conformance/vectors/sdk/crypto/hmac.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/sdk/crypto/hmac.json)
+- [conformance/vectors/sdk/crypto/ripemd160.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/sdk/crypto/ripemd160.json)
+- [conformance/vectors/sdk/crypto/sha256.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/sdk/crypto/sha256.json)
+- [conformance/vectors/sdk/scripts/evaluation.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/sdk/scripts/evaluation.json)
 
 </details>
 
@@ -1222,22 +1222,22 @@ The following files were used as context for generating this wiki page:
 
 The **Conformance Vector Corpus** is a language-agnostic collection of test vectors designed to ensure functional parity across different implementations of the BSV blockchain stack (primarily TypeScript and Go). It provides a single source of truth for cryptographic operations, transaction serialization, and script evaluation, alongside a dedicated regression suite for documented bugs.
 
-The corpus is located in the `conformance/vectors/` directory and is governed by a strict JSON schema to facilitate automated parsing by multiple language runners [conformance/META.json:1-4]().
+The corpus is located in the `conformance/vectors/` directory and is governed by a strict JSON schema to facilitate automated parsing by multiple language runners [conformance/META.json:1-4](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/META.json#L1-L4).
 
 ## Vector File Schema
 
 Each vector file follows a standardized structure defined in the `vector.schema.json`. This ensures that runners can predictably dispatch tests based on the `id` and `parity_class`.
 
 ### Top-Level Envelope
-A standard vector file contains metadata and an array of individual test cases [conformance/runner/src/runner.js:78-80]():
+A standard vector file contains metadata and an array of individual test cases [conformance/runner/src/runner.js:78-80](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/src/runner.js#L78-L80):
 *   `id`: A unique dot-notated string (e.g., `sdk.crypto.sha256`).
 *   `name`: Human-readable title of the test suite.
-*   `brc`: Associated BRC standards (e.g., `BRC-42`, `BRC-74`) [conformance/META.json:5-12]().
+*   `brc`: Associated BRC standards (e.g., `BRC-42`, `BRC-74`) [conformance/META.json:5-12](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/META.json#L5-L12).
 *   `parity_class`: Categorization for runners to filter tests (e.g., `required`, `scripts`, `optional`).
 *   `vectors`: An array of objects containing the actual test data.
 
 ### Individual Vector Structure
-Each entry in the `vectors` array must contain [conformance/runner/src/runner.js:119-127]():
+Each entry in the `vectors` array must contain [conformance/runner/src/runner.js:119-127](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/src/runner.js#L119-L127):
 *   `id`: Unique identifier for the specific case (e.g., `sdk.crypto.sha256.1`).
 *   `input`: An object containing the parameters for the function under test.
 *   `expected`: The anticipated result, typically hex-encoded strings or boolean flags.
@@ -1276,21 +1276,21 @@ graph TD
     GoRunner -- "calls" --> GoSDK
     META -- "configures" --> TSRunner
 ```
-Sources: [conformance/META.json:1-31](), [conformance/runner/src/runner.js:1-15](), [conformance/runner/package.json:1-10]()
+Sources: [conformance/META.json:1-31](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/META.json#L1-L31), [conformance/runner/src/runner.js:1-15](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/src/runner.js#L1-L15), [conformance/runner/package.json:1-10](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/package.json#L1-L10)
 
 ## Corpus Coverage
 
-The corpus is divided into domains and categories reflecting the `ts-stack` architecture [conformance/META.json:4]().
+The corpus is divided into domains and categories reflecting the `ts-stack` architecture [conformance/META.json:4](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/META.json#L4).
 
 ### Cryptographic Primitives (`sdk.crypto`)
 These vectors cover foundational hashing and encryption algorithms used throughout the stack.
 
 | Category | Vector File | Description |
 | :--- | :--- | :--- |
-| **AES** | `sdk/crypto/aes.json` | AES-GCM 128/192/256 encryption/decryption based on NIST FIPS 197 [conformance/vectors/sdk/crypto/aes.json:1-42](). |
-| **SHA256** | `sdk/crypto/sha256.json` | Single and Double SHA-256 (hash256) of strings and binary data [conformance/vectors/sdk/crypto/sha256.json:1-51](). |
-| **RIPEMD160** | `sdk/crypto/ripemd160.json` | RIPEMD-160 hashing for address generation [conformance/vectors/sdk/crypto/ripemd160.json:1-23](). |
-| **Hash160** | `sdk/crypto/hash160.json` | SHA-256 followed by RIPEMD-160, covering P2PKH pubkey hashes [conformance/vectors/sdk/crypto/hash160.json:1-19](). |
+| **AES** | `sdk/crypto/aes.json` | AES-GCM 128/192/256 encryption/decryption based on NIST FIPS 197 [conformance/vectors/sdk/crypto/aes.json:1-42](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/sdk/crypto/aes.json#L1-L42). |
+| **SHA256** | `sdk/crypto/sha256.json` | Single and Double SHA-256 (hash256) of strings and binary data [conformance/vectors/sdk/crypto/sha256.json:1-51](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/sdk/crypto/sha256.json#L1-L51). |
+| **RIPEMD160** | `sdk/crypto/ripemd160.json` | RIPEMD-160 hashing for address generation [conformance/vectors/sdk/crypto/ripemd160.json:1-23](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/sdk/crypto/ripemd160.json#L1-L23). |
+| **Hash160** | `sdk/crypto/hash160.json` | SHA-256 followed by RIPEMD-160, covering P2PKH pubkey hashes [conformance/vectors/sdk/crypto/hash160.json:1-19](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/sdk/crypto/hash160.json#L1-L19). |
 | **ECDSA** | `sdk/crypto/ecdsa.json` | Secp256k1 signing and verification. |
 | **ECIES** | `sdk/crypto/ecies.json` | Integrated Encryption Scheme for public-key encryption. |
 | **HMAC** | `sdk/crypto/hmac.json` | Keyed-hash message authentication codes. |
@@ -1298,27 +1298,27 @@ These vectors cover foundational hashing and encryption algorithms used througho
 ### Keys and Signatures (`sdk.keys`)
 Covers the lifecycle of cryptographic keys and hierarchical derivation.
 *   **Private/Public Keys**: Validation of WIF, Hex, and DER formats.
-*   **Key Derivation**: BRC-42 hierarchical derivation vectors [conformance/META.json:6]().
-*   **BSM**: Bitcoin Signed Message (BRC-77) compatibility [conformance/META.json:8]().
+*   **Key Derivation**: BRC-42 hierarchical derivation vectors [conformance/META.json:6](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/META.json#L6).
+*   **BSM**: Bitcoin Signed Message (BRC-77) compatibility [conformance/META.json:8](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/META.json#L8).
 
 ### Transactions and Scripts (`sdk.transactions`, `sdk.scripts`)
 Covers the complex logic of transaction serialization and the Bitcoin script engine.
 *   **Serialization**: Transaction hex encoding and decoding.
-*   **Merkle Path**: BRC-74 Merkle path validation and BUMP (Bitcoin Universal Merkle Path) formats [conformance/META.json:7]().
-*   **Evaluation**: Script opcode parsing (e.g., `OP_0`, `OP_CHECKMULTISIG`) and P2PKH template generation [conformance/vectors/sdk/scripts/evaluation.json:10-64]().
+*   **Merkle Path**: BRC-74 Merkle path validation and BUMP (Bitcoin Universal Merkle Path) formats [conformance/META.json:7](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/META.json#L7).
+*   **Evaluation**: Script opcode parsing (e.g., `OP_0`, `OP_CHECKMULTISIG`) and P2PKH template generation [conformance/vectors/sdk/scripts/evaluation.json:10-64](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/sdk/scripts/evaluation.json#L10-L64).
 
 ## Regression Suite
 
-The `conformance/vectors/regressions/` directory contains vectors specifically designed to prevent the reintroduction of known bugs. Each regression vector includes a `regression` metadata block referencing the original issue [conformance/vectors/regressions/beef-v2-txid-panic.json:6-11]().
+The `conformance/vectors/regressions/` directory contains vectors specifically designed to prevent the reintroduction of known bugs. Each regression vector includes a `regression` metadata block referencing the original issue [conformance/vectors/regressions/beef-v2-txid-panic.json:6-11](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/regressions/beef-v2-txid-panic.json#L6-L11).
 
 ### Key Regression Vectors
 
 | Issue ID | Domain | Symptom | Fix Version |
 | :--- | :--- | :--- | :--- |
-| `go-sdk#306` | Transactions | Panic when calling `TxID()` on parsed BEEF_V2 data [conformance/vectors/regressions/beef-v2-txid-panic.json:7-10](). | Go v1.2.21 |
-| `ts-sdk#493` | Script | `OP_LSHIFT` failed to truncate results to original byte length [conformance/vectors/regressions/script-lshift-truncation.json:7-11](). | TS v2.0.6 |
-| `ts-sdk#377` | Script | Endianness swap during `OP_RSHIFT` and `OP_LSHIFT` operations [conformance/vectors/regressions/script-shift-endianness.json:7-10](). | TS v1.1.0 |
-| `ts-sdk#42` | Script | `Script.fromASM()` misidentified hex strings as opcodes (e.g., '76' as `OP_DUP`) [conformance/vectors/regressions/script-fromasm-numeric-token.json:7-11](). | TS v1.0.0 |
+| `go-sdk#306` | Transactions | Panic when calling `TxID()` on parsed BEEF_V2 data [conformance/vectors/regressions/beef-v2-txid-panic.json:7-10](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/regressions/beef-v2-txid-panic.json#L7-L10). | Go v1.2.21 |
+| `ts-sdk#493` | Script | `OP_LSHIFT` failed to truncate results to original byte length [conformance/vectors/regressions/script-lshift-truncation.json:7-11](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/regressions/script-lshift-truncation.json#L7-L11). | TS v2.0.6 |
+| `ts-sdk#377` | Script | Endianness swap during `OP_RSHIFT` and `OP_LSHIFT` operations [conformance/vectors/regressions/script-shift-endianness.json:7-10](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/regressions/script-shift-endianness.json#L7-L10). | TS v1.1.0 |
+| `ts-sdk#42` | Script | `Script.fromASM()` misidentified hex strings as opcodes (e.g., '76' as `OP_DUP`) [conformance/vectors/regressions/script-fromasm-numeric-token.json:7-11](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/regressions/script-fromasm-numeric-token.json#L7-L11). | TS v1.0.0 |
 
 ### Regression Logic Association
 This diagram maps the regression vectors to the specific code entities they protect.
@@ -1342,21 +1342,21 @@ graph LR
     R_ASM -- "validates" --> Script
     R_BEEF -- "validates" --> Transaction
 ```
-Sources: [conformance/vectors/regressions/script-lshift-truncation.json:10-11](), [conformance/vectors/regressions/script-fromasm-numeric-token.json:7-8](), [conformance/vectors/regressions/beef-v2-txid-panic.json:5-10]()
+Sources: [conformance/vectors/regressions/script-lshift-truncation.json:10-11](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/regressions/script-lshift-truncation.json#L10-L11), [conformance/vectors/regressions/script-fromasm-numeric-token.json:7-8](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/regressions/script-fromasm-numeric-token.json#L7-L8), [conformance/vectors/regressions/beef-v2-txid-panic.json:5-10](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/regressions/beef-v2-txid-panic.json#L5-L10)
 
 ## Validation and Reporting
 
 The `conformance/runner/src/runner.js` script is the primary tool for validating the integrity of the corpus. It performs the following tasks:
-1.  **Discovery**: Recursively finds all `.json` files in the `vectors/` directory [conformance/runner/src/runner.js:54-72]().
-2.  **Schema Validation**: Ensures all required fields (`id`, `input`, `expected`) are present in every vector [conformance/runner/src/runner.js:119-127]().
-3.  **JUnit Generation**: Emits reports in JUnit XML format for integration with CI/CD pipelines [conformance/runner/src/runner.js:141-173]().
+1.  **Discovery**: Recursively finds all `.json` files in the `vectors/` directory [conformance/runner/src/runner.js:54-72](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/src/runner.js#L54-L72).
+2.  **Schema Validation**: Ensures all required fields (`id`, `input`, `expected`) are present in every vector [conformance/runner/src/runner.js:119-127](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/src/runner.js#L119-L127).
+3.  **JUnit Generation**: Emits reports in JUnit XML format for integration with CI/CD pipelines [conformance/runner/src/runner.js:141-173](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/src/runner.js#L141-L173).
 
 Usage:
 ```bash
 # Run validation and generate report
 npm run report -- --report ./conformance/reports/results.xml
 ```
-Sources: [conformance/runner/package.json:7-10](), [conformance/runner/src/runner.js:1-15]()
+Sources: [conformance/runner/package.json:7-10](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/package.json#L7-L10), [conformance/runner/src/runner.js:1-15](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/src/runner.js#L1-L15)
 
 ---
 
@@ -1369,23 +1369,23 @@ Sources: [conformance/runner/package.json:7-10](), [conformance/runner/src/runne
 
 The following files were used as context for generating this wiki page:
 
-- [conformance/GO_PLAN.md](conformance/GO_PLAN.md)
-- [conformance/runner/go/go.mod](conformance/runner/go/go.mod)
-- [conformance/runner/go/go.sum](conformance/runner/go/go.sum)
-- [conformance/runner/go/main.go](conformance/runner/go/main.go)
-- [conformance/runner/package.json](conformance/runner/package.json)
-- [conformance/runner/scripts/dashboard.mjs](conformance/runner/scripts/dashboard.mjs)
-- [conformance/runner/src/runner.js](conformance/runner/src/runner.js)
-- [conformance/runner/ts/jest.config.mjs](conformance/runner/ts/jest.config.mjs)
-- [conformance/runner/ts/package.json](conformance/runner/ts/package.json)
-- [conformance/runner/ts/runner.test.ts](conformance/runner/ts/runner.test.ts)
-- [conformance/runner/ts/tsconfig.json](conformance/runner/ts/tsconfig.json)
-- [conformance/vectors/sdk/crypto/ecdsa.json](conformance/vectors/sdk/crypto/ecdsa.json)
-- [conformance/vectors/sdk/crypto/ecies.json](conformance/vectors/sdk/crypto/ecies.json)
-- [conformance/vectors/sdk/crypto/hmac.json](conformance/vectors/sdk/crypto/hmac.json)
-- [packages/helpers/ts-paymail/docs/examples/package.json](packages/helpers/ts-paymail/docs/examples/package.json)
-- [pnpm-lock.yaml](pnpm-lock.yaml)
-- [specs/observability/conformance-dashboard.json](specs/observability/conformance-dashboard.json)
+- [conformance/GO_PLAN.md](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/GO_PLAN.md)
+- [conformance/runner/go/go.mod](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/go/go.mod)
+- [conformance/runner/go/go.sum](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/go/go.sum)
+- [conformance/runner/go/main.go](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/go/main.go)
+- [conformance/runner/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/package.json)
+- [conformance/runner/scripts/dashboard.mjs](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/scripts/dashboard.mjs)
+- [conformance/runner/src/runner.js](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/src/runner.js)
+- [conformance/runner/ts/jest.config.mjs](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/ts/jest.config.mjs)
+- [conformance/runner/ts/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/ts/package.json)
+- [conformance/runner/ts/runner.test.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/ts/runner.test.ts)
+- [conformance/runner/ts/tsconfig.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/ts/tsconfig.json)
+- [conformance/vectors/sdk/crypto/ecdsa.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/sdk/crypto/ecdsa.json)
+- [conformance/vectors/sdk/crypto/ecies.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/sdk/crypto/ecies.json)
+- [conformance/vectors/sdk/crypto/hmac.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/sdk/crypto/hmac.json)
+- [packages/helpers/ts-paymail/docs/examples/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/ts-paymail/docs/examples/package.json)
+- [pnpm-lock.yaml](https://github.com/bsv-blockchain/ts-stack/blob/main/pnpm-lock.yaml)
+- [specs/observability/conformance-dashboard.json](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/observability/conformance-dashboard.json)
 
 </details>
 
@@ -1436,7 +1436,7 @@ graph TD
   GOR --> JSN
   JSN --> DSH
 ```
-Sources: [conformance/runner/src/runner.js:1-15](), [conformance/runner/ts/runner.test.ts:1-13](), [conformance/runner/go/main.go:31-61]()
+Sources: [conformance/runner/src/runner.js:1-15](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/src/runner.js#L1-L15), [conformance/runner/ts/runner.test.ts:1-13](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/ts/runner.test.ts#L1-L13), [conformance/runner/go/main.go:31-61](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/go/main.go#L31-L61)
 
 ---
 
@@ -1445,22 +1445,22 @@ Sources: [conformance/runner/src/runner.js:1-15](), [conformance/runner/ts/runne
 The TypeScript runner is implemented as a Jest test suite located in `conformance/runner/ts`. It dynamically generates tests by crawling the vector corpus.
 
 ### Implementation Details
-The runner uses `readdirSync` to recursively find all JSON files in the `conformance/vectors` directory [conformance/runner/ts/runner.test.ts:94-105](). For each file, it creates a Jest `describe` block, and for each vector within that file, it creates a `test` block [conformance/runner/ts/runner.test.ts:4-7]().
+The runner uses `readdirSync` to recursively find all JSON files in the `conformance/vectors` directory [conformance/runner/ts/runner.test.ts:94-105](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/ts/runner.test.ts#L94-L105). For each file, it creates a Jest `describe` block, and for each vector within that file, it creates a `test` block [conformance/runner/ts/runner.test.ts:4-7](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/ts/runner.test.ts#L4-L7).
 
 ### Dispatch Pattern
 The runner uses a dispatch pattern where vectors are routed to specific handler functions based on the filename or category:
-*   **SHA256**: `dispatchSHA256` [conformance/runner/ts/runner.test.ts:113-125]()
-*   **RIPEMD160**: `dispatchRIPEMD160` [conformance/runner/ts/runner.test.ts:127-136]()
-*   **HMAC**: `dispatchHMAC` [conformance/runner/ts/runner.test.ts:155-180]()
-*   **ECDSA**: `dispatchECDSA` [conformance/runner/ts/runner.test.ts:182-243]()
+*   **SHA256**: `dispatchSHA256` [conformance/runner/ts/runner.test.ts:113-125](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/ts/runner.test.ts#L113-L125)
+*   **RIPEMD160**: `dispatchRIPEMD160` [conformance/runner/ts/runner.test.ts:127-136](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/ts/runner.test.ts#L127-L136)
+*   **HMAC**: `dispatchHMAC` [conformance/runner/ts/runner.test.ts:155-180](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/ts/runner.test.ts#L155-L180)
+*   **ECDSA**: `dispatchECDSA` [conformance/runner/ts/runner.test.ts:182-243](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/ts/runner.test.ts#L182-L243)
 
 ### Skip Logic
 The runner implements specific logic to handle gaps in implementation or vectors intended for other languages:
-*   **Parity Class**: If `parity_class` is set to `"intended"`, the test is skipped as it represents a documented gap rather than a bug [conformance/runner/ts/runner.test.ts:9]().
-*   **Explicit Skip**: Vectors with `skip: true` are bypassed [conformance/runner/ts/runner.test.ts:10]().
-*   **Unimplemented Features**: If a category or SDK function is not recognized, the test passes vacuously to avoid breaking CI on new vector additions [conformance/runner/ts/runner.test.ts:11-12]().
+*   **Parity Class**: If `parity_class` is set to `"intended"`, the test is skipped as it represents a documented gap rather than a bug [conformance/runner/ts/runner.test.ts:9](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/ts/runner.test.ts#L9).
+*   **Explicit Skip**: Vectors with `skip: true` are bypassed [conformance/runner/ts/runner.test.ts:10](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/ts/runner.test.ts#L10).
+*   **Unimplemented Features**: If a category or SDK function is not recognized, the test passes vacuously to avoid breaking CI on new vector additions [conformance/runner/ts/runner.test.ts:11-12](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/ts/runner.test.ts#L11-L12).
 
-Sources: [conformance/runner/ts/runner.test.ts:1-243](), [conformance/runner/ts/package.json:1-16]()
+Sources: [conformance/runner/ts/runner.test.ts:1-243](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/ts/runner.test.ts#L1-L243), [conformance/runner/ts/package.json:1-16](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/ts/package.json#L1-L16)
 
 ---
 
@@ -1479,18 +1479,18 @@ The Go runner explicitly tracks implementation status using a `Status` type:
 *   `StatusPass`: Test succeeded.
 *   `StatusFail`: Test failed (mismatch or error).
 *   `StatusSkip`: Test was explicitly skipped.
-*   `StatusNotImplemented`: The Go SDK lacks the required feature [conformance/runner/go/main.go:48-53]().
+*   `StatusNotImplemented`: The Go SDK lacks the required feature [conformance/runner/go/main.go:48-53](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/go/main.go#L48-L53).
 
 ### Dispatcher Mapping
 The `main.go` file contains a suite of dispatch functions that map JSON vector inputs to `go-sdk` primitives:
 
 | Function | Go SDK Entity |
 | :--- | :--- |
-| `dispatchSHA256` | `primhash.Sha256`, `primhash.Sha256d` [conformance/runner/go/main.go:200-223]() |
-| `dispatchRIPEMD160` | `primhash.Ripemd160` [conformance/runner/go/main.go:226-243]() |
-| `dispatchHMAC` | `primhash.Sha256hmac`, `primhash.Sha512hmac` [conformance/runner/go/main.go:271-301]() |
-| `dispatchAESGCM` | `primaesgcm.Encrypt`, `primaesgcm.Decrypt` [conformance/runner/go/main.go:304-350]() |
-| `dispatchBSM` | `gobsm.VerifyMessage`, `gobsm.SignMessage` [conformance/runner/go/main.go:577-620]() |
+| `dispatchSHA256` | `primhash.Sha256`, `primhash.Sha256d` [conformance/runner/go/main.go:200-223](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/go/main.go#L200-L223) |
+| `dispatchRIPEMD160` | `primhash.Ripemd160` [conformance/runner/go/main.go:226-243](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/go/main.go#L226-L243) |
+| `dispatchHMAC` | `primhash.Sha256hmac`, `primhash.Sha512hmac` [conformance/runner/go/main.go:271-301](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/go/main.go#L271-L301) |
+| `dispatchAESGCM` | `primaesgcm.Encrypt`, `primaesgcm.Decrypt` [conformance/runner/go/main.go:304-350](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/go/main.go#L304-L350) |
+| `dispatchBSM` | `gobsm.VerifyMessage`, `gobsm.SignMessage` [conformance/runner/go/main.go:577-620](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/go/main.go#L577-L620) |
 
 Title: Go Runner Entity Mapping
 ```mermaid
@@ -1513,7 +1513,7 @@ graph LR
   DS -- "calls" --> G2
   DS -- "calls" --> G3
 ```
-Sources: [conformance/runner/go/main.go:1-620](), [conformance/runner/go/go.mod:1-16]()
+Sources: [conformance/runner/go/main.go:1-620](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/go/main.go#L1-L620), [conformance/runner/go/go.mod:1-16](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/go/go.mod#L1-L16)
 
 ---
 
@@ -1522,17 +1522,17 @@ Sources: [conformance/runner/go/main.go:1-620](), [conformance/runner/go/go.mod:
 The conformance system produces standardized outputs to allow for cross-language comparison.
 
 ### JUnit XML Schema
-Both runners generate JUnit-compatible XML, allowing integration with standard CI tools like GitHub Actions. The Go runner implements this via `JUnitSuites`, `JUnitSuite`, and `JUnitCase` structs [conformance/runner/go/main.go:65-94]().
+Both runners generate JUnit-compatible XML, allowing integration with standard CI tools like GitHub Actions. The Go runner implements this via `JUnitSuites`, `JUnitSuite`, and `JUnitCase` structs [conformance/runner/go/main.go:65-94](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/go/main.go#L65-L94).
 
 ### JSON Reports
 In addition to XML, the runners generate JSON summaries used for the Grafana dashboard. These summaries include:
-*   `pass_rate`: Percentage of passing vectors [specs/observability/conformance-dashboard.json:117]().
-*   `total`/`passed`/`failed`/`skipped`: Raw counts [specs/observability/conformance-dashboard.json:160-164]().
+*   `pass_rate`: Percentage of passing vectors [specs/observability/conformance-dashboard.json:117](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/observability/conformance-dashboard.json#L117).
+*   `total`/`passed`/`failed`/`skipped`: Raw counts [specs/observability/conformance-dashboard.json:160-164](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/observability/conformance-dashboard.json#L160-L164).
 
 ### Dashboard Script
 The `conformance/runner/src/runner.js` script serves as a general-purpose utility for:
-1.  **Validation**: Checking that vector files follow the required schema (requiring `id`, `input`, and `expected` fields) [conformance/runner/src/runner.js:80-117]().
-2.  **Report Aggregation**: Combining results into the final output directory [conformance/runner/src/runner.js:29]().
+1.  **Validation**: Checking that vector files follow the required schema (requiring `id`, `input`, and `expected` fields) [conformance/runner/src/runner.js:80-117](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/src/runner.js#L80-L117).
+2.  **Report Aggregation**: Combining results into the final output directory [conformance/runner/src/runner.js:29](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/src/runner.js#L29).
 
 Title: Dashboard Integration
 ```mermaid
@@ -1554,19 +1554,19 @@ classDiagram
   RunnerScript ..> JSON_API_Datasource : generates
   JSON_API_Datasource ..> ConformanceDashboard : populates
 ```
-Sources: [conformance/runner/src/runner.js:132-173](), [specs/observability/conformance-dashboard.json:1-124]()
+Sources: [conformance/runner/src/runner.js:132-173](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/src/runner.js#L132-L173), [specs/observability/conformance-dashboard.json:1-124](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/observability/conformance-dashboard.json#L1-L124)
 
 ---
 
 ## CI Integration
 
 The runners are executed as part of the GitHub Actions CI pipeline. 
-*   The TypeScript runner is triggered via `pnpm test` in the `conformance/runner/ts` directory [conformance/runner/ts/package.json:6]().
-*   The Go runner is executed using `go run main.go` with appropriate flags to point at the shared `conformance/vectors` directory [conformance/runner/go/main.go:9-15]().
+*   The TypeScript runner is triggered via `pnpm test` in the `conformance/runner/ts` directory [conformance/runner/ts/package.json:6](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/ts/package.json#L6).
+*   The Go runner is executed using `go run main.go` with appropriate flags to point at the shared `conformance/vectors` directory [conformance/runner/go/main.go:9-15](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/go/main.go#L9-L15).
 
-Failure in any conformance vector (that is not marked as `skip` or `intended` parity gap) results in a non-zero exit code, blocking the PR [conformance/runner/src/runner.js:12-15]().
+Failure in any conformance vector (that is not marked as `skip` or `intended` parity gap) results in a non-zero exit code, blocking the PR [conformance/runner/src/runner.js:12-15](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/src/runner.js#L12-L15).
 
-Sources: [conformance/runner/package.json:7-11](), [conformance/runner/ts/package.json:5-7](), [conformance/runner/src/runner.js:179-225]()
+Sources: [conformance/runner/package.json:7-11](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/package.json#L7-L11), [conformance/runner/ts/package.json:5-7](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/ts/package.json#L5-L7), [conformance/runner/src/runner.js:179-225](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/src/runner.js#L179-L225)
 
 ---
 
@@ -1579,55 +1579,55 @@ Sources: [conformance/runner/package.json:7-11](), [conformance/runner/ts/packag
 
 The following files were used as context for generating this wiki page:
 
-- [.github/workflows/codegen.yml](.github/workflows/codegen.yml)
-- [conformance/generated/broadcast/types.rs.TODO](conformance/generated/broadcast/types.rs.TODO)
-- [conformance/generated/messaging/types.rs.TODO](conformance/generated/messaging/types.rs.TODO)
-- [conformance/generated/overlay/types.rs.TODO](conformance/generated/overlay/types.rs.TODO)
-- [specs/EXCEPTIONS.md](specs/EXCEPTIONS.md)
-- [specs/README.md](specs/README.md)
-- [specs/auth/brc31-handshake.yaml](specs/auth/brc31-handshake.yaml)
-- [specs/messaging/authsocket-asyncapi.yaml](specs/messaging/authsocket-asyncapi.yaml)
-- [specs/messaging/message-box-http.yaml](specs/messaging/message-box-http.yaml)
+- [.github/workflows/codegen.yml](https://github.com/bsv-blockchain/ts-stack/blob/main/.github/workflows/codegen.yml)
+- [conformance/generated/broadcast/types.rs.TODO](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/generated/broadcast/types.rs.TODO)
+- [conformance/generated/messaging/types.rs.TODO](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/generated/messaging/types.rs.TODO)
+- [conformance/generated/overlay/types.rs.TODO](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/generated/overlay/types.rs.TODO)
+- [specs/EXCEPTIONS.md](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/EXCEPTIONS.md)
+- [specs/README.md](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/README.md)
+- [specs/auth/brc31-handshake.yaml](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/auth/brc31-handshake.yaml)
+- [specs/messaging/authsocket-asyncapi.yaml](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/messaging/authsocket-asyncapi.yaml)
+- [specs/messaging/message-box-http.yaml](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/messaging/message-box-http.yaml)
 
 </details>
 
 
 
-This section documents the machine-readable contracts that define the service boundaries for the BSV Distributed Applications Stack. The `specs/` directory serves as the single source of truth for all Tier-1 interfaces [specs/README.md:1-5](). By using formal specifications (OpenAPI, AsyncAPI, and JSON Schema), the repository enforces cross-language consistency and enables an automated pipeline for code generation and contract testing [specs/README.md:12-18]().
+This section documents the machine-readable contracts that define the service boundaries for the BSV Distributed Applications Stack. The `specs/` directory serves as the single source of truth for all Tier-1 interfaces [specs/README.md:1-5](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/README.md#L1-L5). By using formal specifications (OpenAPI, AsyncAPI, and JSON Schema), the repository enforces cross-language consistency and enables an automated pipeline for code generation and contract testing [specs/README.md:12-18](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/README.md#L12-L18).
 
 ## Service Boundary Specifications
 
-The `specs/` directory contains the definitions for all critical system boundaries. These specifications move the codebase away from "read the source" documentation toward stable, explicit contracts [specs/README.md:14]().
+The `specs/` directory contains the definitions for all critical system boundaries. These specifications move the codebase away from "read the source" documentation toward stable, explicit contracts [specs/README.md:14](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/README.md#L14).
 
 ### Core Specification Inventory
 
 | Domain | Spec File | Format | Boundary Description |
 |:-------|:----------|:-------|:---------------------|
-| **Wallet** | `sdk/brc-100-wallet.json` | JSON Schema | BRC-100 wallet interface methods [specs/README.md:68](). |
-| **Overlay** | `overlay/overlay-http.yaml` | OpenAPI 3.1 | Submit, lookup, discovery, and admin [specs/README.md:69](). |
-| **Broadcast** | `broadcast/arc.yaml` | OpenAPI 3.1 | ARC submit, status, batch, and callback [specs/README.md:70](). |
-| **Messaging** | `messaging/message-box-http.yaml` | OpenAPI 3.1 | REST endpoints for message-box-server [specs/README.md:73](). |
-| **Auth** | `auth/brc31-handshake.yaml` | AsyncAPI 3.0 | BRC-31 mutual auth handshake [specs/README.md:75](). |
-| **Payments** | `payments/brc121.yaml` | OpenAPI 3.1 | BRC-121 HTTP 402 payment middleware [specs/README.md:77](). |
-| **Sync** | `sync/gasp-asyncapi.yaml` | AsyncAPI 3.0 | GASP cross-node sync protocol [specs/README.md:78](). |
+| **Wallet** | `sdk/brc-100-wallet.json` | JSON Schema | BRC-100 wallet interface methods [specs/README.md:68](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/README.md#L68). |
+| **Overlay** | `overlay/overlay-http.yaml` | OpenAPI 3.1 | Submit, lookup, discovery, and admin [specs/README.md:69](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/README.md#L69). |
+| **Broadcast** | `broadcast/arc.yaml` | OpenAPI 3.1 | ARC submit, status, batch, and callback [specs/README.md:70](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/README.md#L70). |
+| **Messaging** | `messaging/message-box-http.yaml` | OpenAPI 3.1 | REST endpoints for message-box-server [specs/README.md:73](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/README.md#L73). |
+| **Auth** | `auth/brc31-handshake.yaml` | AsyncAPI 3.0 | BRC-31 mutual auth handshake [specs/README.md:75](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/README.md#L75). |
+| **Payments** | `payments/brc121.yaml` | OpenAPI 3.1 | BRC-121 HTTP 402 payment middleware [specs/README.md:77](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/README.md#L77). |
+| **Sync** | `sync/gasp-asyncapi.yaml` | AsyncAPI 3.0 | GASP cross-node sync protocol [specs/README.md:78](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/README.md#L78). |
 
-For a full list of all 13+ specifications and the error taxonomy, see **[Service Boundary Specifications](#10.1)**.
+For a full list of all 13+ specifications and the error taxonomy, see **[Service Boundary Specifications](34-Service-Boundary-Specifications.md)**.
 
-**Sources:** [specs/README.md:21-60](), [specs/README.md:66-81](), [specs/EXCEPTIONS.md:22-30]()
+**Sources:** [specs/README.md:21-60](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/README.md#L21-L60), [specs/README.md:66-81](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/README.md#L66-L81), [specs/EXCEPTIONS.md:22-30](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/EXCEPTIONS.md#L22-L30)
 
 ---
 
 ## Automated Code Generation
 
-The repository utilizes a GitHub Actions workflow defined in `.github/workflows/codegen.yml` to ensure that types across TypeScript, Go, and Python remain synchronized with the specifications [codegen.yml:1-5]().
+The repository utilizes a GitHub Actions workflow defined in `.github/workflows/codegen.yml` to ensure that types across TypeScript, Go, and Python remain synchronized with the specifications [codegen.yml:1-5](https://github.com/bsv-blockchain/ts-stack/blob/main/codegen.yml#L1-L5).
 
 ### Codegen Pipeline Architecture
 
-The pipeline follows a strict rule: **hand-rolled types for spec-defined shapes are a CI failure** [specs/README.md:7-8](). When a specification changes, the following tools are invoked:
+The pipeline follows a strict rule: **hand-rolled types for spec-defined shapes are a CI failure** [specs/README.md:7-8](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/README.md#L7-L8). When a specification changes, the following tools are invoked:
 
-*   **TypeScript:** `openapi-typescript` generates definition files (`.d.ts`) [codegen.yml:53-54]().
-*   **Go:** `oapi-codegen` generates type structures and package-level definitions [codegen.yml:22-24]().
-*   **Python:** `datamodel-code-generator` produces Pydantic v2 models [codegen.yml:82-86]().
+*   **TypeScript:** `openapi-typescript` generates definition files (`.d.ts`) [codegen.yml:53-54](https://github.com/bsv-blockchain/ts-stack/blob/main/codegen.yml#L53-L54).
+*   **Go:** `oapi-codegen` generates type structures and package-level definitions [codegen.yml:22-24](https://github.com/bsv-blockchain/ts-stack/blob/main/codegen.yml#L22-L24).
+*   **Python:** `datamodel-code-generator` produces Pydantic v2 models [codegen.yml:82-86](https://github.com/bsv-blockchain/ts-stack/blob/main/codegen.yml#L82-L86).
 
 ### Code Entity Mapping
 
@@ -1664,13 +1664,13 @@ graph TD
     C -- "openapi-typescript" --> TS_M
     C -- "oapi-codegen" --> GO_M
 ```
-**Sources:** [codegen.yml:19-36](), [codegen.yml:50-64](), [codegen.yml:79-102](), [specs/README.md:137-142]()
+**Sources:** [codegen.yml:19-36](https://github.com/bsv-blockchain/ts-stack/blob/main/codegen.yml#L19-L36), [codegen.yml:50-64](https://github.com/bsv-blockchain/ts-stack/blob/main/codegen.yml#L50-L64), [codegen.yml:79-102](https://github.com/bsv-blockchain/ts-stack/blob/main/codegen.yml#L79-L102), [specs/README.md:137-142](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/README.md#L137-L142)
 
 ---
 
 ## Contract Testing
 
-Contract tests verify that a running implementation (regardless of the language it is written in) conforms to the published specification [specs/README.md:160-162](). These tests are written in TypeScript using Vitest and can be pointed at local or remote endpoints [specs/README.md:165-168]().
+Contract tests verify that a running implementation (regardless of the language it is written in) conforms to the published specification [specs/README.md:160-162](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/README.md#L160-L162). These tests are written in TypeScript using Vitest and can be pointed at local or remote endpoints [specs/README.md:165-168](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/README.md#L165-L168).
 
 ### Testing Flow
 
@@ -1699,9 +1699,9 @@ graph LR
     T -- "HTTP POST/GET" --> GO_S
 ```
 
-For details on running these suites and the `schemathesis` integration, see **[Automated Code Generation & Contract Tests](#10.2)**.
+For details on running these suites and the `schemathesis` integration, see **[Automated Code Generation & Contract Tests](35-Automated-Code-Generation---Contract-Tests.md)**.
 
-**Sources:** [specs/README.md:158-183](), [codegen.yml:52-54](), [specs/overlay/overlay-http.yaml:1-10]()
+**Sources:** [specs/README.md:158-183](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/README.md#L158-L183), [codegen.yml:52-54](https://github.com/bsv-blockchain/ts-stack/blob/main/codegen.yml#L52-L54), [specs/overlay/overlay-http.yaml:1-10](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/overlay/overlay-http.yaml#L1-L10)
 
 ---
 
@@ -1714,27 +1714,27 @@ For details on running these suites and the `schemathesis` integration, see **[A
 
 The following files were used as context for generating this wiki page:
 
-- [specs/EXCEPTIONS.md](specs/EXCEPTIONS.md)
-- [specs/README.md](specs/README.md)
-- [specs/auth/brc31-handshake.yaml](specs/auth/brc31-handshake.yaml)
-- [specs/broadcast/arc.yaml](specs/broadcast/arc.yaml)
-- [specs/errors.md](specs/errors.md)
-- [specs/merkle/merkle-service-http.yaml](specs/merkle/merkle-service-http.yaml)
-- [specs/messaging/authsocket-asyncapi.yaml](specs/messaging/authsocket-asyncapi.yaml)
-- [specs/messaging/message-box-http.yaml](specs/messaging/message-box-http.yaml)
-- [specs/overlay/overlay-http.yaml](specs/overlay/overlay-http.yaml)
-- [specs/payments/brc121.yaml](specs/payments/brc121.yaml)
-- [specs/payments/brc29-payment-protocol.yaml](specs/payments/brc29-payment-protocol.yaml)
-- [specs/sdk/brc-100-wallet.json](specs/sdk/brc-100-wallet.json)
-- [specs/storage/uhrp-http.yaml](specs/storage/uhrp-http.yaml)
-- [specs/sync/gasp-asyncapi.yaml](specs/sync/gasp-asyncapi.yaml)
-- [specs/wallet/storage-adapter.yaml](specs/wallet/storage-adapter.yaml)
+- [specs/EXCEPTIONS.md](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/EXCEPTIONS.md)
+- [specs/README.md](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/README.md)
+- [specs/auth/brc31-handshake.yaml](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/auth/brc31-handshake.yaml)
+- [specs/broadcast/arc.yaml](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/broadcast/arc.yaml)
+- [specs/errors.md](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/errors.md)
+- [specs/merkle/merkle-service-http.yaml](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/merkle/merkle-service-http.yaml)
+- [specs/messaging/authsocket-asyncapi.yaml](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/messaging/authsocket-asyncapi.yaml)
+- [specs/messaging/message-box-http.yaml](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/messaging/message-box-http.yaml)
+- [specs/overlay/overlay-http.yaml](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/overlay/overlay-http.yaml)
+- [specs/payments/brc121.yaml](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/payments/brc121.yaml)
+- [specs/payments/brc29-payment-protocol.yaml](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/payments/brc29-payment-protocol.yaml)
+- [specs/sdk/brc-100-wallet.json](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/sdk/brc-100-wallet.json)
+- [specs/storage/uhrp-http.yaml](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/storage/uhrp-http.yaml)
+- [specs/sync/gasp-asyncapi.yaml](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/sync/gasp-asyncapi.yaml)
+- [specs/wallet/storage-adapter.yaml](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/wallet/storage-adapter.yaml)
 
 </details>
 
 
 
-This page documents the machine-readable contracts for every Tier 1 service boundary in the BSV Distributed Applications Stack. These specifications serve as the single source of truth for the repository; all language-specific types (TypeScript, Go, Python, Rust) and client stubs are derived from these files via automated codegen pipelines [specs/README.md:1-9]().
+This page documents the machine-readable contracts for every Tier 1 service boundary in the BSV Distributed Applications Stack. These specifications serve as the single source of truth for the repository; all language-specific types (TypeScript, Go, Python, Rust) and client stubs are derived from these files via automated codegen pipelines [specs/README.md:1-9](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/README.md#L1-L9).
 
 ## Overview of Specification Types
 
@@ -1746,18 +1746,18 @@ The stack utilizes three primary formats to define boundaries based on the commu
 | **WebSocket / Events** | AsyncAPI 3.0 | AuthSocket, BRC-31 Handshake, GASP Sync, BRC-29 Payments |
 | **Language Interfaces** | JSON Schema (2020-12) | BRC-100 Wallet Interface |
 
-Sources: [specs/README.md:64-81](), [specs/README.md:87-110]()
+Sources: [specs/README.md:64-81](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/README.md#L64-L81), [specs/README.md:87-110](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/README.md#L87-L110)
 
 ## Core Wallet & Identity Specs
 
 ### BRC-100 Wallet Interface
 The `brc-100-wallet.json` schema defines the standard API surface for a BSV wallet. It uses `$defs` to specify request and response pairs for methods like `createAction`, `listActions`, and `encrypt`.
 
-*   **Key Primitives**: Defines `TXIDHexString` (64 chars), `PubKeyHex` (66 chars), and `SatoshiValue` (max 2.1 quadrillion) [specs/sdk/brc-100-wallet.json:14-46]().
-*   **Security Levels**: Implements BRC-43 security levels: `0` (Silent), `1` (App), and `2` (Counterparty) [specs/sdk/brc-100-wallet.json:117-121]().
+*   **Key Primitives**: Defines `TXIDHexString` (64 chars), `PubKeyHex` (66 chars), and `SatoshiValue` (max 2.1 quadrillion) [specs/sdk/brc-100-wallet.json:14-46](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/sdk/brc-100-wallet.json#L14-L46).
+*   **Security Levels**: Implements BRC-43 security levels: `0` (Silent), `1` (App), and `2` (Counterparty) [specs/sdk/brc-100-wallet.json:117-121](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/sdk/brc-100-wallet.json#L117-L121).
 
 ### BRC-31 Mutual Authentication Handshake
-Defined in `brc31-handshake.yaml`, this protocol establishes a shared, forward-secret session between two parties using ECDH-derived keys [specs/auth/brc31-handshake.yaml:18-20]().
+Defined in `brc31-handshake.yaml`, this protocol establishes a shared, forward-secret session between two parties using ECDH-derived keys [specs/auth/brc31-handshake.yaml:18-20](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/auth/brc31-handshake.yaml#L18-L20).
 
 **Handshake Flow Diagram**
 ```mermaid
@@ -1775,28 +1775,28 @@ sequenceDiagram
     C->>S: general (x-bsv-auth-request-id, signature over payload)
     S-->>C: general (signature over response)
 ```
-Sources: [specs/auth/brc31-handshake.yaml:22-78]()
+Sources: [specs/auth/brc31-handshake.yaml:22-78](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/auth/brc31-handshake.yaml#L22-L78)
 
 ## Messaging & Communication
 
 ### MessageBox & AuthSocket
 The Messaging layer is split between a RESTful store-and-forward API and a real-time WebSocket layer.
 
-*   **MessageBox HTTP**: 9 endpoints for sending and retrieving messages. All require `x-bsv-auth-*` headers [specs/messaging/message-box-http.yaml:7-13]().
-*   **AuthSocket**: An AsyncAPI spec for the `AuthSocketServer`. It wraps Socket.IO events (like `joinRoom`, `sendMessage`, and `message`) inside BRC-103 `general` envelopes for end-to-end authentication [specs/messaging/authsocket-asyncapi.yaml:19-34]().
+*   **MessageBox HTTP**: 9 endpoints for sending and retrieving messages. All require `x-bsv-auth-*` headers [specs/messaging/message-box-http.yaml:7-13](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/messaging/message-box-http.yaml#L7-L13).
+*   **AuthSocket**: An AsyncAPI spec for the `AuthSocketServer`. It wraps Socket.IO events (like `joinRoom`, `sendMessage`, and `message`) inside BRC-103 `general` envelopes for end-to-end authentication [specs/messaging/authsocket-asyncapi.yaml:19-34](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/messaging/authsocket-asyncapi.yaml#L19-L34).
 
 ### GASP Sync Protocol
-The Graph Aware Sync Protocol (`gasp-asyncapi.yaml`) facilitates cross-node UTXO synchronization. It uses a request/response pattern to walk the transaction graph, ensuring nodes only transfer missing data [specs/sync/gasp-asyncapi.yaml:11-15]().
+The Graph Aware Sync Protocol (`gasp-asyncapi.yaml`) facilitates cross-node UTXO synchronization. It uses a request/response pattern to walk the transaction graph, ensuring nodes only transfer missing data [specs/sync/gasp-asyncapi.yaml:11-15](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/sync/gasp-asyncapi.yaml#L11-L15).
 
-Sources: [specs/sync/gasp-asyncapi.yaml:19-34](), [specs/messaging/authsocket-asyncapi.yaml:152-205]()
+Sources: [specs/sync/gasp-asyncapi.yaml:19-34](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/sync/gasp-asyncapi.yaml#L19-L34), [specs/messaging/authsocket-asyncapi.yaml:152-205](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/messaging/authsocket-asyncapi.yaml#L152-L205)
 
 ## Payment Protocols
 
 ### BRC-29 & BRC-121
 These specs define how payments are negotiated and delivered between peers.
 
-*   **BRC-29**: Defines the `PaymentMessage` containing Atomic BEEF (BRC-95) and BRC-42 key derivation parameters (`derivationPrefix` and `derivationSuffix`) [specs/payments/brc29-payment-protocol.yaml:74-79]().
-*   **BRC-121 (HTTP 402)**: Monetizes HTTP resources. If a request lacks payment, the server returns `402 Payment Required` with `x-bsv-sats` and `x-bsv-server` headers [specs/payments/brc121.yaml:9-18]().
+*   **BRC-29**: Defines the `PaymentMessage` containing Atomic BEEF (BRC-95) and BRC-42 key derivation parameters (`derivationPrefix` and `derivationSuffix`) [specs/payments/brc29-payment-protocol.yaml:74-79](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/payments/brc29-payment-protocol.yaml#L74-L79).
+*   **BRC-121 (HTTP 402)**: Monetizes HTTP resources. If a request lacks payment, the server returns `402 Payment Required` with `x-bsv-sats` and `x-bsv-server` headers [specs/payments/brc121.yaml:9-18](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/payments/brc121.yaml#L9-L18).
 
 **BRC-121 Payment Flow**
 ```mermaid
@@ -1811,16 +1811,16 @@ sequenceDiagram
     S->>S: internalizeAction() + Freshness Check
     S-->>C: 200 OK (Protected Content)
 ```
-Sources: [specs/payments/brc121.yaml:9-36]()
+Sources: [specs/payments/brc121.yaml:9-36](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/payments/brc121.yaml#L9-L36)
 
 ## Storage & Merkle Infrastructure
 
 ### Wallet Storage Adapter
-Documents the HTTP boundary between `wallet-toolbox` and a remote storage provider. It maps the `StorageProvider` TypeScript interface to REST endpoints like `/actions`, `/migrate`, and `/settings` [specs/wallet/storage-adapter.yaml:12-33]().
+Documents the HTTP boundary between `wallet-toolbox` and a remote storage provider. It maps the `StorageProvider` TypeScript interface to REST endpoints like `/actions`, `/migrate`, and `/settings` [specs/wallet/storage-adapter.yaml:12-33](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/wallet/storage-adapter.yaml#L12-L33).
 
 ### UHRP & Merkle Service
-*   **UHRP (BRC-26)**: Content-addressed storage resolution. Resolves `uhrp://` URLs (Base58Check SHA-256 hashes) to download URLs via the `ls_uhrp` lookup service [specs/storage/uhrp-http.yaml:13-30]().
-*   **Merkle Service**: A Go microservice that monitors `txids` and POSTs BUMP proofs to a `callbackUrl` upon confirmation [specs/merkle/merkle-service-http.yaml:9-12]().
+*   **UHRP (BRC-26)**: Content-addressed storage resolution. Resolves `uhrp://` URLs (Base58Check SHA-256 hashes) to download URLs via the `ls_uhrp` lookup service [specs/storage/uhrp-http.yaml:13-30](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/storage/uhrp-http.yaml#L13-L30).
+*   **Merkle Service**: A Go microservice that monitors `txids` and POSTs BUMP proofs to a `callbackUrl` upon confirmation [specs/merkle/merkle-service-http.yaml:9-12](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/merkle/merkle-service-http.yaml#L9-L12).
 
 ## Code Entity Mapping
 
@@ -1853,12 +1853,12 @@ graph TD
     style BRC121 stroke-dasharray: 5 5
     style STORAGE stroke-dasharray: 5 5
 ```
-Sources: [specs/auth/brc31-handshake.yaml:10-15](), [specs/wallet/storage-adapter.yaml:28-32](), [specs/payments/brc121.yaml:38-40]()
+Sources: [specs/auth/brc31-handshake.yaml:10-15](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/auth/brc31-handshake.yaml#L10-L15), [specs/wallet/storage-adapter.yaml:28-32](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/wallet/storage-adapter.yaml#L28-L32), [specs/payments/brc121.yaml:38-40](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/payments/brc121.yaml#L38-L40)
 
 ## Error Taxonomy
-The `errors.md` file (referenced by all OpenAPI/AsyncAPI specs) provides the canonical error taxonomy. Implementations are required to use these machine-readable codes (e.g., `ERR_AUTH_REQUIRED`) rather than ad-hoc strings to ensure cross-language consistency [specs/README.md:187-194]().
+The `errors.md` file (referenced by all OpenAPI/AsyncAPI specs) provides the canonical error taxonomy. Implementations are required to use these machine-readable codes (e.g., `ERR_AUTH_REQUIRED`) rather than ad-hoc strings to ensure cross-language consistency [specs/README.md:187-194](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/README.md#L187-L194).
 
-Sources: [specs/README.md:26](), [specs/messaging/message-box-http.yaml:79-83]()
+Sources: [specs/README.md:26](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/README.md#L26), [specs/messaging/message-box-http.yaml:79-83](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/messaging/message-box-http.yaml#L79-L83)
 
 ---
 
@@ -1871,25 +1871,25 @@ Sources: [specs/README.md:26](), [specs/messaging/message-box-http.yaml:79-83]()
 
 The following files were used as context for generating this wiki page:
 
-- [.github/workflows/codegen.yml](.github/workflows/codegen.yml)
-- [conformance/generated/.gitkeep](conformance/generated/.gitkeep)
-- [conformance/generated/README.md](conformance/generated/README.md)
-- [conformance/generated/broadcast/types.rs.TODO](conformance/generated/broadcast/types.rs.TODO)
-- [conformance/generated/messaging/types.rs.TODO](conformance/generated/messaging/types.rs.TODO)
-- [conformance/generated/overlay/types.rs.TODO](conformance/generated/overlay/types.rs.TODO)
-- [specs/broadcast/contract-tests/README.md](specs/broadcast/contract-tests/README.md)
-- [specs/broadcast/contract-tests/schemathesis.sh](specs/broadcast/contract-tests/schemathesis.sh)
-- [specs/messaging/contract-tests/README.md](specs/messaging/contract-tests/README.md)
-- [specs/messaging/contract-tests/schemathesis.sh](specs/messaging/contract-tests/schemathesis.sh)
-- [specs/overlay/contract-tests/README.md](specs/overlay/contract-tests/README.md)
-- [specs/overlay/contract-tests/schemathesis.sh](specs/overlay/contract-tests/schemathesis.sh)
-- [specs/reliability/README.md](specs/reliability/README.md)
-- [specs/reliability/arc.md](specs/reliability/arc.md)
-- [specs/reliability/go-sdk.md](specs/reliability/go-sdk.md)
-- [specs/reliability/message-box-server.md](specs/reliability/message-box-server.md)
-- [specs/reliability/overlay-express.md](specs/reliability/overlay-express.md)
-- [specs/reliability/ts-sdk.md](specs/reliability/ts-sdk.md)
-- [specs/reliability/wallet-toolbox.md](specs/reliability/wallet-toolbox.md)
+- [.github/workflows/codegen.yml](https://github.com/bsv-blockchain/ts-stack/blob/main/.github/workflows/codegen.yml)
+- [conformance/generated/.gitkeep](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/generated/.gitkeep)
+- [conformance/generated/README.md](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/generated/README.md)
+- [conformance/generated/broadcast/types.rs.TODO](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/generated/broadcast/types.rs.TODO)
+- [conformance/generated/messaging/types.rs.TODO](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/generated/messaging/types.rs.TODO)
+- [conformance/generated/overlay/types.rs.TODO](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/generated/overlay/types.rs.TODO)
+- [specs/broadcast/contract-tests/README.md](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/broadcast/contract-tests/README.md)
+- [specs/broadcast/contract-tests/schemathesis.sh](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/broadcast/contract-tests/schemathesis.sh)
+- [specs/messaging/contract-tests/README.md](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/messaging/contract-tests/README.md)
+- [specs/messaging/contract-tests/schemathesis.sh](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/messaging/contract-tests/schemathesis.sh)
+- [specs/overlay/contract-tests/README.md](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/overlay/contract-tests/README.md)
+- [specs/overlay/contract-tests/schemathesis.sh](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/overlay/contract-tests/schemathesis.sh)
+- [specs/reliability/README.md](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/reliability/README.md)
+- [specs/reliability/arc.md](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/reliability/arc.md)
+- [specs/reliability/go-sdk.md](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/reliability/go-sdk.md)
+- [specs/reliability/message-box-server.md](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/reliability/message-box-server.md)
+- [specs/reliability/overlay-express.md](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/reliability/overlay-express.md)
+- [specs/reliability/ts-sdk.md](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/reliability/ts-sdk.md)
+- [specs/reliability/wallet-toolbox.md](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/reliability/wallet-toolbox.md)
 
 </details>
 
@@ -1899,7 +1899,7 @@ This page documents the automated pipeline for maintaining consistency between t
 
 ## Automated Codegen Workflow
 
-The repository employs a GitHub Actions workflow, `codegen.yml`, which monitors changes to OpenAPI specifications and automatically regenerates type definitions across supported languages [.github/workflows/codegen.yml:1-7](). This ensures that the `conformance/generated/` directory always reflects the latest service definitions.
+The repository employs a GitHub Actions workflow, `codegen.yml`, which monitors changes to OpenAPI specifications and automatically regenerates type definitions across supported languages [.github/workflows/codegen.yml:1-7](https://github.com/bsv-blockchain/ts-stack/blob/main/.github/workflows/codegen.yml#L1-L7). This ensures that the `conformance/generated/` directory always reflects the latest service definitions.
 
 ### Multi-Language Implementation
 The workflow is divided into jobs for each target language:
@@ -1943,25 +1943,25 @@ graph TD
     TS_JOB -- "openapi-typescript" --> TS_OUT
     PY_JOB -- "datamodel-code-generator" --> PY_OUT
 ```
-**Sources:** [.github/workflows/codegen.yml:10-106](), [conformance/generated/README.md:1-15]()
+**Sources:** [.github/workflows/codegen.yml:10-106](https://github.com/bsv-blockchain/ts-stack/blob/main/.github/workflows/codegen.yml#L10-L106), [conformance/generated/README.md:1-15](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/generated/README.md#L1-L15)
 
 ---
 
 ## Output Structure
 
-Generated code is organized by domain within the `conformance/generated/` directory. This directory acts as a shared resource for conformance runners and cross-language validation [.github/workflows/codegen.yml:41]().
+Generated code is organized by domain within the `conformance/generated/` directory. This directory acts as a shared resource for conformance runners and cross-language validation [.github/workflows/codegen.yml:41](https://github.com/bsv-blockchain/ts-stack/blob/main/.github/workflows/codegen.yml#L41).
 
 ### Domain Mappings
 The pipeline targets three primary service domains:
 
-1.  **Overlay**: Based on `specs/overlay/overlay-http.yaml` [.github/workflows/codegen.yml:23]().
-2.  **Broadcast (ARC)**: Based on `specs/broadcast/arc.yaml` [.github/workflows/codegen.yml:29]().
-3.  **Messaging**: Based on `specs/messaging/message-box-http.yaml` [.github/workflows/codegen.yml:35]().
+1.  **Overlay**: Based on `specs/overlay/overlay-http.yaml` [.github/workflows/codegen.yml:23](https://github.com/bsv-blockchain/ts-stack/blob/main/.github/workflows/codegen.yml#L23).
+2.  **Broadcast (ARC)**: Based on `specs/broadcast/arc.yaml` [.github/workflows/codegen.yml:29](https://github.com/bsv-blockchain/ts-stack/blob/main/.github/workflows/codegen.yml#L29).
+3.  **Messaging**: Based on `specs/messaging/message-box-http.yaml` [.github/workflows/codegen.yml:35](https://github.com/bsv-blockchain/ts-stack/blob/main/.github/workflows/codegen.yml#L35).
 
 ### Rust Generation
-Rust support is currently handled via placeholders due to the requirement for a `Cargo` workspace context. The workflow creates `.TODO` files containing the necessary `typify` commands for manual execution within a Rust project [.github/workflows/codegen.yml:112-137]().
+Rust support is currently handled via placeholders due to the requirement for a `Cargo` workspace context. The workflow creates `.TODO` files containing the necessary `typify` commands for manual execution within a Rust project [.github/workflows/codegen.yml:112-137](https://github.com/bsv-blockchain/ts-stack/blob/main/.github/workflows/codegen.yml#L112-L137).
 
-**Sources:** [conformance/generated/overlay/types.rs.TODO:1-4](), [conformance/generated/broadcast/types.rs.TODO:1-4](), [conformance/generated/messaging/types.rs.TODO:1-4]()
+**Sources:** [conformance/generated/overlay/types.rs.TODO:1-4](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/generated/overlay/types.rs.TODO#L1-L4), [conformance/generated/broadcast/types.rs.TODO:1-4](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/generated/broadcast/types.rs.TODO#L1-L4), [conformance/generated/messaging/types.rs.TODO:1-4](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/generated/messaging/types.rs.TODO#L1-L4)
 
 ---
 
@@ -1971,10 +1971,10 @@ To ensure that running services (Overlay, Messaging, ARC) strictly adhere to the
 
 ### Testing Strategy
 The contract tests perform the following actions:
-*   **Spec Validation**: Reads the local `.yaml` specification file [specs/overlay/contract-tests/schemathesis.sh:7]().
-*   **Property-Based Fuzzing**: Generates a wide range of valid and invalid inputs to test edge cases (`--checks all`) [specs/messaging/contract-tests/schemathesis.sh:9]().
-*   **Stateful Testing**: Follows OpenAPI response links to verify state transitions across multiple requests (`--stateful=links`) [specs/broadcast/contract-tests/schemathesis.sh:10]().
-*   **Reporting**: Outputs JUnit-compatible XML results for CI integration [specs/overlay/contract-tests/schemathesis.sh:11]().
+*   **Spec Validation**: Reads the local `.yaml` specification file [specs/overlay/contract-tests/schemathesis.sh:7](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/overlay/contract-tests/schemathesis.sh#L7).
+*   **Property-Based Fuzzing**: Generates a wide range of valid and invalid inputs to test edge cases (`--checks all`) [specs/messaging/contract-tests/schemathesis.sh:9](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/messaging/contract-tests/schemathesis.sh#L9).
+*   **Stateful Testing**: Follows OpenAPI response links to verify state transitions across multiple requests (`--stateful=links`) [specs/broadcast/contract-tests/schemathesis.sh:10](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/broadcast/contract-tests/schemathesis.sh#L10).
+*   **Reporting**: Outputs JUnit-compatible XML results for CI integration [specs/overlay/contract-tests/schemathesis.sh:11](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/overlay/contract-tests/schemathesis.sh#L11).
 
 ### Contract Test Execution
 The tests are executed via `schemathesis.sh` scripts located in the `contract-tests` subdirectory of each domain.
@@ -2013,7 +2013,7 @@ To run contract tests against a local Messaging server:
 BASE_URL=http://localhost:3001 bash specs/messaging/contract-tests/schemathesis.sh
 ```
 
-**Sources:** [specs/overlay/contract-tests/README.md:1-27](), [specs/messaging/contract-tests/schemathesis.sh:1-12](), [specs/broadcast/contract-tests/schemathesis.sh:1-12]()
+**Sources:** [specs/overlay/contract-tests/README.md:1-27](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/overlay/contract-tests/README.md#L1-L27), [specs/messaging/contract-tests/schemathesis.sh:1-12](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/messaging/contract-tests/schemathesis.sh#L1-L12), [specs/broadcast/contract-tests/schemathesis.sh:1-12](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/broadcast/contract-tests/schemathesis.sh#L1-L12)
 
 ---
 
@@ -2026,38 +2026,38 @@ BASE_URL=http://localhost:3001 bash specs/messaging/contract-tests/schemathesis.
 
 The following files were used as context for generating this wiki page:
 
-- [.editorconfig](.editorconfig)
-- [.gitignore](.gitignore)
-- [.npmrc](.npmrc)
-- [README.md](README.md)
-- [conformance/runner/go/go.mod](conformance/runner/go/go.mod)
-- [conformance/runner/go/go.sum](conformance/runner/go/go.sum)
-- [conformance/runner/go/main.go](conformance/runner/go/main.go)
-- [conformance/runner/package.json](conformance/runner/package.json)
-- [conformance/runner/src/runner.js](conformance/runner/src/runner.js)
-- [conformance/vectors/README.md](conformance/vectors/README.md)
-- [conformance/vectors/sdk/crypto/ecdsa.json](conformance/vectors/sdk/crypto/ecdsa.json)
-- [conformance/vectors/sdk/crypto/ecies.json](conformance/vectors/sdk/crypto/ecies.json)
-- [conformance/vectors/sdk/crypto/hmac.json](conformance/vectors/sdk/crypto/hmac.json)
-- [package.json](package.json)
-- [packages/messaging/message-box-server/package.json](packages/messaging/message-box-server/package.json)
-- [packages/overlays/topics/BASELINE.md](packages/overlays/topics/BASELINE.md)
-- [packages/overlays/topics/src/__tests__/desktopintegrity.test.ts](packages/overlays/topics/src/__tests__/desktopintegrity.test.ts)
-- [packages/overlays/topics/src/__tests__/monsterbattle.test.ts](packages/overlays/topics/src/__tests__/monsterbattle.test.ts)
-- [packages/overlays/topics/src/__tests__/utility-tokens.test.ts](packages/overlays/topics/src/__tests__/utility-tokens.test.ts)
-- [packages/wallet/btms/README.md](packages/wallet/btms/README.md)
-- [packages/wallet/btms/index.ts](packages/wallet/btms/index.ts)
-- [packages/wallet/btms/jest.config.js](packages/wallet/btms/jest.config.js)
-- [packages/wallet/btms/package-lock.json](packages/wallet/btms/package-lock.json)
-- [packages/wallet/btms/package.json](packages/wallet/btms/package.json)
-- [packages/wallet/btms/src/BTMS.ts](packages/wallet/btms/src/BTMS.ts)
-- [packages/wallet/btms/src/BTMSAdvanced.ts](packages/wallet/btms/src/BTMSAdvanced.ts)
-- [specs/EXCEPTIONS.md](specs/EXCEPTIONS.md)
-- [specs/README.md](specs/README.md)
-- [specs/auth/brc31-handshake.yaml](specs/auth/brc31-handshake.yaml)
-- [specs/messaging/authsocket-asyncapi.yaml](specs/messaging/authsocket-asyncapi.yaml)
-- [specs/messaging/message-box-http.yaml](specs/messaging/message-box-http.yaml)
-- [tsconfig.base.json](tsconfig.base.json)
+- [.editorconfig](https://github.com/bsv-blockchain/ts-stack/blob/main/.editorconfig)
+- [.gitignore](https://github.com/bsv-blockchain/ts-stack/blob/main/.gitignore)
+- [.npmrc](https://github.com/bsv-blockchain/ts-stack/blob/main/.npmrc)
+- [README.md](https://github.com/bsv-blockchain/ts-stack/blob/main/README.md)
+- [conformance/runner/go/go.mod](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/go/go.mod)
+- [conformance/runner/go/go.sum](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/go/go.sum)
+- [conformance/runner/go/main.go](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/go/main.go)
+- [conformance/runner/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/package.json)
+- [conformance/runner/src/runner.js](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/src/runner.js)
+- [conformance/vectors/README.md](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/README.md)
+- [conformance/vectors/sdk/crypto/ecdsa.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/sdk/crypto/ecdsa.json)
+- [conformance/vectors/sdk/crypto/ecies.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/sdk/crypto/ecies.json)
+- [conformance/vectors/sdk/crypto/hmac.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/sdk/crypto/hmac.json)
+- [package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/package.json)
+- [packages/messaging/message-box-server/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/message-box-server/package.json)
+- [packages/overlays/topics/BASELINE.md](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/topics/BASELINE.md)
+- [packages/overlays/topics/src/__tests__/desktopintegrity.test.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/topics/src/__tests__/desktopintegrity.test.ts)
+- [packages/overlays/topics/src/__tests__/monsterbattle.test.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/topics/src/__tests__/monsterbattle.test.ts)
+- [packages/overlays/topics/src/__tests__/utility-tokens.test.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/topics/src/__tests__/utility-tokens.test.ts)
+- [packages/wallet/btms/README.md](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/README.md)
+- [packages/wallet/btms/index.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/index.ts)
+- [packages/wallet/btms/jest.config.js](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/jest.config.js)
+- [packages/wallet/btms/package-lock.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/package-lock.json)
+- [packages/wallet/btms/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/package.json)
+- [packages/wallet/btms/src/BTMS.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/src/BTMS.ts)
+- [packages/wallet/btms/src/BTMSAdvanced.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/src/BTMSAdvanced.ts)
+- [specs/EXCEPTIONS.md](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/EXCEPTIONS.md)
+- [specs/README.md](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/README.md)
+- [specs/auth/brc31-handshake.yaml](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/auth/brc31-handshake.yaml)
+- [specs/messaging/authsocket-asyncapi.yaml](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/messaging/authsocket-asyncapi.yaml)
+- [specs/messaging/message-box-http.yaml](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/messaging/message-box-http.yaml)
+- [tsconfig.base.json](https://github.com/bsv-blockchain/ts-stack/blob/main/tsconfig.base.json)
 
 </details>
 
@@ -2070,17 +2070,17 @@ This page provides a comprehensive glossary of domain-specific terms, Bitcoin Re
 ### BEEF (Bitcoin Enveloped Evidence Format)
 A serialized format for Bitcoin transactions that includes all necessary Merkle paths and ancestor transactions required for autonomous verification by a recipient without querying a centralized indexer.
 *   **Implementation:** `Beef` and `BeefTx` classes in the SDK.
-*   **Code Pointer:** [packages/sdk/ts-sdk/src/transaction/Beef.ts]()
+*   **Code Pointer:** [packages/sdk/ts-sdk/src/transaction/Beef.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/sdk/ts-sdk/src/transaction/Beef.ts)
 
 ### BUMP (BSV Unified Merkle Path)
 A standardized format for representing Merkle proofs, allowing a transaction to be proven against a block header. BUMPs are more efficient than traditional Merkle proofs and support batching.
 *   **Implementation:** `MerklePath` class in the SDK.
-*   **Code Pointer:** [packages/sdk/ts-sdk/src/transaction/MerklePath.ts]()
+*   **Code Pointer:** [packages/sdk/ts-sdk/src/transaction/MerklePath.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/sdk/ts-sdk/src/transaction/MerklePath.ts)
 
 ### Script Template
 A high-level abstraction over Bitcoin Script that simplifies the creation and unlocking of common UTXO patterns (e.g., P2PKH, PushDrop).
 *   **Implementation:** `ScriptTemplate` abstract class.
-*   **Code Pointer:** [packages/sdk/ts-sdk/src/templates/ScriptTemplate.ts]()
+*   **Code Pointer:** [packages/sdk/ts-sdk/src/templates/ScriptTemplate.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/sdk/ts-sdk/src/templates/ScriptTemplate.ts)
 
 ---
 
@@ -2097,7 +2097,7 @@ The following table defines the BRC (Bitcoin Request for Comment) standards impl
 | **BRC-103** | AuthSocket | Authenticated WebSocket protocol for secure event exchange. | `AuthSocketServer` |
 | **BRC-121** | HTTP 402 Payments | Middleware for handling "Payment Required" responses and tx-based access. | `402-pay` package |
 
-**Sources:** [specs/README.md:66-81](), [README.md:82-84]()
+**Sources:** [specs/README.md:66-81](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/README.md#L66-L81), [README.md:82-84](https://github.com/bsv-blockchain/ts-stack/blob/main/README.md#L82-L84)
 
 ---
 
@@ -2106,22 +2106,22 @@ The following table defines the BRC (Bitcoin Request for Comment) standards impl
 ### GASP (Graph-based Asynchronous Sync Protocol)
 A protocol used by Overlay Services to synchronize transaction graphs between nodes, ensuring that all participants in a specific topic have a consistent view of the data.
 *   **Implementation:** `OverlayGASPStorage`, `OverlayGASPRemote`.
-*   **Spec:** [specs/sync/gasp-asyncapi.yaml]()
+*   **Spec:** [specs/sync/gasp-asyncapi.yaml](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/sync/gasp-asyncapi.yaml)
 
 ### Topic Manager (TM)
 A component responsible for validating incoming transactions for a specific overlay topic. It determines if a transaction "belongs" to the topic and satisfies its business logic.
 *   **Implementation:** `TopicManager` interface.
-*   **Code Pointer:** [packages/overlays/overlay-services/src/TopicManager.ts]()
+*   **Code Pointer:** [packages/overlays/overlay-services/src/TopicManager.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/overlay-services/src/TopicManager.ts)
 
 ### Lookup Service (LS)
 A query engine that provides an interface to retrieve data from an overlay's indexed storage.
 *   **Implementation:** `LookupService` interface.
-*   **Code Pointer:** [packages/overlays/overlay-services/src/LookupService.ts]()
+*   **Code Pointer:** [packages/overlays/overlay-services/src/LookupService.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/overlay-services/src/LookupService.ts)
 
 ### UHRP (Universal Hash Resolution Protocol)
 A content-addressable storage protocol used for locating and retrieving data based on its hash rather than its location.
 *   **Implementation:** `uhrp-storage-server`, `tm_uhrp`.
-*   **Sources:** [packages/overlays/topics/BASELINE.md:44-44](), [README.md:57-57]()
+*   **Sources:** [packages/overlays/topics/BASELINE.md:44-44](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/topics/BASELINE.md#L44-L44), [README.md:57-57](https://github.com/bsv-blockchain/ts-stack/blob/main/README.md#L57-L57)
 
 ---
 
@@ -2151,7 +2151,7 @@ graph TD
         E1 --- F2["WalletStorageManager (wallet-toolbox)"]
     end
 ```
-**Sources:** [README.md:29-35](), [specs/README.md:68-68]()
+**Sources:** [README.md:29-35](https://github.com/bsv-blockchain/ts-stack/blob/main/README.md#L29-L35), [specs/README.md:68-68](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/README.md#L68-L68)
 
 ### From Concept to Code: Overlays & Messaging
 This diagram associates overlay and messaging concepts with their respective service implementations and specifications.
@@ -2175,7 +2175,7 @@ graph LR
         H1 --- K2["tm_identity (overlay-topics)"]
     end
 ```
-**Sources:** [packages/overlays/topics/BASELINE.md:27-47](), [specs/README.md:73-78]()
+**Sources:** [packages/overlays/topics/BASELINE.md:27-47](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/topics/BASELINE.md#L27-L47), [specs/README.md:73-78](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/README.md#L73-L78)
 
 ---
 
@@ -2183,11 +2183,11 @@ graph LR
 
 | Term | Domain | Definition |
 | :--- | :--- | :--- |
-| **BTMS** | Wallet | Basic Token Management System. Handles UTXO-based tokens using PushDrop scripts. [packages/wallet/btms/src/BTMS.ts]() |
-| **Chaintracks** | Network | A service for tracking blockchain headers and verifying Merkle proofs against the longest chain. [packages/network/chaintracks-server]() |
-| **WAB** | Wallet | Wallet Authentication Backend. Manages user sessions, MFA, and identity linking. [packages/wallet/wab]() |
+| **BTMS** | Wallet | Basic Token Management System. Handles UTXO-based tokens using PushDrop scripts. [packages/wallet/btms/src/BTMS.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/src/BTMS.ts) |
+| **Chaintracks** | Network | A service for tracking blockchain headers and verifying Merkle proofs against the longest chain. [packages/network/chaintracks-server](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/chaintracks-server) |
+| **WAB** | Wallet | Wallet Authentication Backend. Manages user sessions, MFA, and identity linking. [packages/wallet/wab](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wab) |
 | **PushDrop** | SDK | A script template pattern used to "push" data into a locking script and "drop" it during unlocking. |
-| **AuthSocket** | Messaging | A WebSocket implementation using BRC-103 for mutual authentication. [packages/messaging/authsocket]() |
-| **Teranode Listener** | Network | A P2P listener that subscribes to Teranode topics (blocks, subtrees) over a private DHT. [packages/network/ts-p2p]() |
+| **AuthSocket** | Messaging | A WebSocket implementation using BRC-103 for mutual authentication. [packages/messaging/authsocket](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/messaging/authsocket) |
+| **Teranode Listener** | Network | A P2P listener that subscribes to Teranode topics (blocks, subtrees) over a private DHT. [packages/network/ts-p2p](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/ts-p2p) |
 
-**Sources:** [README.md:39-47](), [specs/README.md:74-74]()
+**Sources:** [README.md:39-47](https://github.com/bsv-blockchain/ts-stack/blob/main/README.md#L39-L47), [specs/README.md:74-74](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/README.md#L74-L74)

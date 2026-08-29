@@ -6,6 +6,7 @@ import { createKnowledgeStore, type KnowledgeStore } from "./store/knowledgeStor
 import { registerCodeTools } from "./tools/codeTools.js";
 import { registerInvestigateTools } from "./tools/investigateTools.js";
 import { registerKnowledgeTools } from "./tools/knowledgeTools.js";
+import { registerPolicyTools } from "./tools/policyTools.js";
 import { buildIndexStatus } from "./tools/statusTools.js";
 
 export type CreatedServer = {
@@ -20,7 +21,7 @@ export function createServer(config: ServerConfig): McpServer {
 export function createServerWithStore(config: ServerConfig): CreatedServer {
   const ingestDb = openDatabase(config.dbPath);
   let store = createKnowledgeStore(ingestDb);
-  ingestSnapshots(config.root, store, { tier0Root: config.tier0Root });
+  ingestSnapshots(config.root, store, { tier0Root: config.tier0Root, tier1Root: config.tier1Root });
 
   // Serve queries from a read-only handle: no tool ever writes, so the query path should be
   // physically unable to. In-memory stores (tests) keep their ingest handle.
@@ -36,7 +37,7 @@ export function createServerWithStore(config: ServerConfig): CreatedServer {
 
   const server = new McpServer({
     name: "bsv-aio-mcp",
-    version: "1.0.0",
+    version: "1.1.0",
   });
 
   server.tool(
@@ -53,6 +54,7 @@ export function createServerWithStore(config: ServerConfig): CreatedServer {
   registerKnowledgeTools(server, config, store);
   registerInvestigateTools(server, config.root, store);
   registerCodeTools(server, config, store);
+  registerPolicyTools(server, config);
 
   return { server, store };
 }

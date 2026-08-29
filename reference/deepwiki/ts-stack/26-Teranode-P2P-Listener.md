@@ -7,14 +7,14 @@
 
 The following files were used as context for generating this wiki page:
 
-- [packages/helpers/amountinator/tsconfig.json](packages/helpers/amountinator/tsconfig.json)
-- [packages/helpers/bsv-wallet-helper/src/script-templates/ordlock.ts](packages/helpers/bsv-wallet-helper/src/script-templates/ordlock.ts)
-- [packages/helpers/bsv-wallet-helper/src/script-templates/p2pkh.ts](packages/helpers/bsv-wallet-helper/src/script-templates/p2pkh.ts)
-- [packages/helpers/bsv-wallet-helper/src/utils/derivation.ts](packages/helpers/bsv-wallet-helper/src/utils/derivation.ts)
-- [packages/messaging/message-box-client/tsconfig.base.json](packages/messaging/message-box-client/tsconfig.base.json)
-- [packages/messaging/message-box-server/src/swagger.ts](packages/messaging/message-box-server/src/swagger.ts)
-- [packages/messaging/messagebox-services/backend/tsconfig.base.json](packages/messaging/messagebox-services/backend/tsconfig.base.json)
-- [packages/network/ts-p2p/package.json](packages/network/ts-p2p/package.json)
+- [packages/helpers/amountinator/tsconfig.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/amountinator/tsconfig.json)
+- [packages/helpers/bsv-wallet-helper/src/script-templates/ordlock.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/bsv-wallet-helper/src/script-templates/ordlock.ts)
+- [packages/helpers/bsv-wallet-helper/src/script-templates/p2pkh.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/bsv-wallet-helper/src/script-templates/p2pkh.ts)
+- [packages/helpers/bsv-wallet-helper/src/utils/derivation.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/bsv-wallet-helper/src/utils/derivation.ts)
+- [packages/messaging/message-box-client/tsconfig.base.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/message-box-client/tsconfig.base.json)
+- [packages/messaging/message-box-server/src/swagger.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/message-box-server/src/swagger.ts)
+- [packages/messaging/messagebox-services/backend/tsconfig.base.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/messagebox-services/backend/tsconfig.base.json)
+- [packages/network/ts-p2p/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/ts-p2p/package.json)
 
 </details>
 
@@ -27,10 +27,10 @@ The `@bsv/teranode-listener` (also known as `ts-p2p`) package provides a special
 The primary role of the Teranode P2P Listener is to allow services to receive real-time updates from Teranode instances. Unlike public Bitcoin P2P protocols, this listener is designed for a **private network** environment using a Pre-Shared Key (PSK) for network-level access control.
 
 Key capabilities include:
-*   **Private DHT Network**: Access is restricted via a 32-byte PSK [packages/network/ts-p2p/package.json:28-28]().
-*   **Gossipsub Support**: Uses `@chainsafe/libp2p-gossipsub` for efficient message routing [packages/network/ts-p2p/package.json:18-18]().
+*   **Private DHT Network**: Access is restricted via a 32-byte PSK [packages/network/ts-p2p/package.json:28-28](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/ts-p2p/package.json#L28-L28).
+*   **Gossipsub Support**: Uses `@chainsafe/libp2p-gossipsub` for efficient message routing [packages/network/ts-p2p/package.json:18-18](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/ts-p2p/package.json#L18-L18).
 *   **Topic Subscriptions**: Specialized handlers for blockchain-specific topics like blocks and subtrees.
-*   **Peer Discovery**: Implements bootstrap nodes and PubSub-based peer discovery [packages/network/ts-p2p/package.json:21-29]().
+*   **Peer Discovery**: Implements bootstrap nodes and PubSub-based peer discovery [packages/network/ts-p2p/package.json:21-29](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/ts-p2p/package.json#L21-L29).
 
 ## System Architecture
 
@@ -63,7 +63,7 @@ graph TD
     GS -- "Topic: 'block'" --> TL
     TL -- "Decoded Data" --> CB
 ```
-Sources: [packages/network/ts-p2p/package.json:18-32]()
+Sources: [packages/network/ts-p2p/package.json:18-32](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/ts-p2p/package.json#L18-L32)
 
 ## Code Entity Map
 
@@ -95,23 +95,23 @@ classDiagram
     Libp2pStack --> Discovery : uses
     Libp2pStack ..> Gossipsub : "via @chainsafe/libp2p-gossipsub"
 ```
-Sources: [packages/network/ts-p2p/package.json:16-33]()
+Sources: [packages/network/ts-p2p/package.json:16-33](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/ts-p2p/package.json#L16-L33)
 
 ## Implementation Details
 
 ### Dependency Stack
 The listener relies on a modern `libp2p` configuration:
-*   **Transport**: TCP (`@libp2p/tcp`) [packages/network/ts-p2p/package.json:30-30]().
-*   **Security**: Noise encryption (`@chainsafe/libp2p-noise`) [packages/network/ts-p2p/package.json:19-19]().
-*   **Multiplexing**: Yamux (`@chainsafe/libp2p-yamux`) [packages/network/ts-p2p/package.json:20-20]().
-*   **Private Networking**: PNET using a PSK (`@libp2p/pnet`) [packages/network/ts-p2p/package.json:28-28]().
-*   **Peer ID**: Uses `@libp2p/peer-id` for node identity [packages/network/ts-p2p/package.json:26-26]().
+*   **Transport**: TCP (`@libp2p/tcp`) [packages/network/ts-p2p/package.json:30-30](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/ts-p2p/package.json#L30-L30).
+*   **Security**: Noise encryption (`@chainsafe/libp2p-noise`) [packages/network/ts-p2p/package.json:19-19](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/ts-p2p/package.json#L19-L19).
+*   **Multiplexing**: Yamux (`@chainsafe/libp2p-yamux`) [packages/network/ts-p2p/package.json:20-20](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/ts-p2p/package.json#L20-L20).
+*   **Private Networking**: PNET using a PSK (`@libp2p/pnet`) [packages/network/ts-p2p/package.json:28-28](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/ts-p2p/package.json#L28-L28).
+*   **Peer ID**: Uses `@libp2p/peer-id` for node identity [packages/network/ts-p2p/package.json:26-26](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/ts-p2p/package.json#L26-L26).
 
 ### Peer Discovery and DHT
 To maintain connectivity in the private network, the listener employs multiple discovery strategies:
-1.  **Bootstrap Nodes**: Initial entry points into the network defined during initialization [packages/network/ts-p2p/package.json:21-21]().
-2.  **Kademlia DHT**: Used for routing and finding peers in the private DHT (`@libp2p/kad-dht`) [packages/network/ts-p2p/package.json:25-25]().
-3.  **PubSub Discovery**: Peers can discover each other via dedicated PubSub channels [packages/network/ts-p2p/package.json:29-29]().
+1.  **Bootstrap Nodes**: Initial entry points into the network defined during initialization [packages/network/ts-p2p/package.json:21-21](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/ts-p2p/package.json#L21-L21).
+2.  **Kademlia DHT**: Used for routing and finding peers in the private DHT (`@libp2p/kad-dht`) [packages/network/ts-p2p/package.json:25-25](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/ts-p2p/package.json#L25-L25).
+3.  **PubSub Discovery**: Peers can discover each other via dedicated PubSub channels [packages/network/ts-p2p/package.json:29-29](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/ts-p2p/package.json#L29-L29).
 
 ### Topic Subscriptions
 The `TeranodeListener` class provides a high-level abstraction over the Gossipsub implementation. It typically handles:
@@ -136,6 +136,6 @@ While the internal implementation is encapsulated, the listener configuration fo
 | **Ping** | `@libp2p/ping` |
 | **Addressing** | `@multiformats/multiaddr` |
 
-Sources: [packages/network/ts-p2p/package.json:18-32]()
+Sources: [packages/network/ts-p2p/package.json:18-32](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/ts-p2p/package.json#L18-L32)
 
 ---

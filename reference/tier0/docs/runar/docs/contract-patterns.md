@@ -1,0 +1,455 @@
+# Contract Patterns
+
+This guide walks through common smart contract patterns in Rúnar with complete code examples and explanations. Each pattern demonstrates a different capability of Bitcoin SV script, from simple spending conditions to stateful on-chain logic.
+
+---
+
+## Pay-to-Public-Key-Hash (P2PKH)
+
+The simplest and most common Bitcoin contract. Funds can be spent by anyone who can produce a valid signature for the specified public key hash.
+
+```typescript
+import { SmartContract, assert, PubKey, Sig, Addr, hash160, checkSig } from 'runar-lang';
+
+class P2PKH extends SmartContract {
+  readonly pubKeyHash: Addr;
+
+  constructor(pubKeyHash: Addr) {
+    super(pubKeyHash);
+    this.pubKeyHash = pubKeyHash;
+  }
+
+  public unlock(sig: Sig, pubKey: PubKey) {
+    assert(hash160(pubKey) === this.pubKeyHash);
+    assert(checkSig(sig, pubKey));
+  }
+}
+```
+
+**How it works:**
+
+1. At deployment, `pubKeyHash` (a 20-byte address) is embedded in the locking script.
+2. To spend, the unlocking script provides a signature and a public key.
+3. The contract hashes the public key with `hash160` (SHA-256 then RIPEMD-160) and checks it matches the stored hash.
+4. If the hash matches, it verifies the signature against the public key.
+
+**Compiles to:** `OP_DUP OP_HASH160 <pubKeyHash> OP_EQUALVERIFY OP_CHECKSIG`
+
+This is exactly the standard P2PKH script that most Bitcoin wallets use.
+
+---
+
+## Multi-Party Escrow
+
+An escrow contract where funds can be released to the seller or refunded to the buyer, with an arbiter who can authorize either action.
+
+```typescript
+import { SmartContract, assert, PubKey, Sig, checkSig } from 'runar-lang';
+
+class Escrow extends SmartContract {
+  readonly buyer: PubKey;
+  readonly seller: PubKey;
+  readonly arbiter: PubKey;
+
+  constructor(buyer: PubKey, seller: PubKey, arbiter: PubKey) {
+    super(buyer, seller, arbiter);
+    this.buyer = buyer;
+    this.seller = seller;
+    this.arbiter = arbiter;
+  }
+
+  public release(sig: Sig) {
+    assert(checkSig(sig, this.seller) || checkSig(sig, this.arbiter));
+  }
+
+  public refund(sig: Sig) {
+    assert(checkSig(sig, this.buyer) || checkSig(sig, this.arbiter));
+  }
+}
+```
+
+**How it works:**
+
+- **`release`**: The seller can release funds to themselves, or the arbiter can authorize release. Either signature suffices.
+- **`refund`**: The buyer can reclaim funds, or the arbiter can authorize a refund.
+- The `||` operator uses eager evaluation: both `checkSig` calls are always executed, and their results are combined with `OP_BOOLOR`.
+
+Because this contract has two public methods, the compiler generates a dispatch table. The unlocking script includes a method index (`0n` for `release`, `1n` for `refund`) in addition to the signature.
+
+---
+
+## Stateful Counter (OP_PUSH_TX)
+
+A contract whose state persists across transactions. The counter can be incremented or decremented, and the updated value is carried to the next UTXO.
+
+```typescript
+import { StatefulSmartContract, assert } from 'runar-lang';
+
+class Counter extends StatefulSmartContract {
+  count: bigint = 0n; // mutable with default — excluded from constructor
+
+  constructor() {
+    super();
+  }
+
+  public increment() {
+    this.count++;
+  }
+
+  public decrement() {
+    assert(this.count > 0n);
+    this.count--;
+  }
+}
+```
+
+**How it works:**
+
+1. The `count` property is mutable (no `readonly`), making this a stateful contract. The `= 0n` initializer gives it a default value, so it doesn't need to be passed as a constructor argument.
+2. Extending `StatefulSmartContract` tells the compiler to automatically handle the OP_PUSH_TX pattern. For every public method, the compiler injects a preimage check at entry.
+3. `this.count++` / `this.count--` updates the in-memory state.
+4. Because these methods mutate state, the compiler automatically appends a state continuation assertion at the end — it serializes the updated state, hashes it, and verifies the transaction output carries the new state forward.
+
+> **Property Initializers:** Properties with `= value` defaults are excluded from the constructor. Only properties without initializers need to be passed as constructor arguments. This significantly simplifies constructors for contracts with many default values. Initializers must be literal values (`0n`, `true`, `false`, or hex byte strings).
+
+**State lifecycle:**
+
+```
+Deploy:    UTXO with count=0
+Increment: Spend UTXO, create new UTXO with count=1
+Increment: Spend UTXO, create new UTXO with count=2
+Decrement: Spend UTXO, create new UTXO with count=1
+```
+
+---
+
+## Fungible Token (FT)
+
+A simple fungible token where ownership can be transferred. The total supply is immutable; the owner is mutable state.
+
+```typescript
+import { StatefulSmartContract, assert, checkSig } from 'runar-lang';
+import type { PubKey, Sig, ByteString } from 'runar-lang';
+
+class FungibleToken extends StatefulSmartContract {
+  owner: PubKey;           // stateful: current token owner
+  balance: bigint;         // stateful: token balance in this UTXO
+  readonly tokenId: ByteString; // immutable: token identifier
+
+  constructor(owner: PubKey, balance: bigint, tokenId: ByteString) {
+    super(owner, balance, tokenId);
+    this.owner = owner;
+    this.balance = balance;
+    this.tokenId = tokenId;
+  }
+
+  // Split: 1 input → 2 outputs (recipient + change)
+  public transfer(sig: Sig, to: PubKey, amount: bigint, outputSatoshis: bigint) {
+    assert(checkSig(sig, this.owner));
+    assert(amount > 0n);
+    assert(amount <= this.balance);
+
+    // addOutput(satoshis, owner, balance) — args match mutable props in order
+    this.addOutput(outputSatoshis, to, amount);
+    this.addOutput(outputSatoshis, this.owner, this.balance - amount);
+  }
+
+  // Simple send: 1 input → 1 output, full balance
+  public send(sig: Sig, to: PubKey, outputSatoshis: bigint) {
+    assert(checkSig(sig, this.owner));
+    this.addOutput(outputSatoshis, to, this.balance);
+  }
+
+  // Merge: N inputs → 1 output (each input calls this independently)
+  public merge(sig: Sig, totalBalance: bigint, outputSatoshis: bigint) {
+    assert(checkSig(sig, this.owner));
+    assert(totalBalance >= this.balance);
+    this.addOutput(outputSatoshis, this.owner, totalBalance);
+  }
+}
+```
+
+**How it works:**
+
+1. Each UTXO tracks an `owner` and a `balance` — the number of tokens it holds.
+2. **Split (transfer)**: The owner signs and specifies a recipient and amount. `addOutput` registers two outputs: one for the recipient with the transferred amount, and one for the sender with the remaining balance. The compiler verifies both outputs against the transaction's `hashOutputs`.
+3. **Send**: Transfers the full balance to a new owner in a single output.
+4. **Merge**: Multiple UTXOs can be combined. Each input independently verifies the same output (with `totalBalance`). Since all inputs check the same `hashOutputs`, they must agree — if any input lies about the total, the hash check fails.
+
+The `tokenId` is `readonly` and baked into the locking script at deploy time.
+
+---
+
+## Non-Fungible Token (NFT)
+
+An NFT with a unique token ID, metadata, and a burn function.
+
+```typescript
+import { StatefulSmartContract, assert, checkSig } from 'runar-lang';
+import type { PubKey, Sig, ByteString } from 'runar-lang';
+
+class SimpleNFT extends StatefulSmartContract {
+  owner: PubKey;                   // stateful
+  readonly tokenId: ByteString;    // immutable: unique identifier
+  readonly metadata: ByteString;   // immutable: metadata URI/hash
+
+  constructor(owner: PubKey, tokenId: ByteString, metadata: ByteString) {
+    super(owner, tokenId, metadata);
+    this.owner = owner;
+    this.tokenId = tokenId;
+    this.metadata = metadata;
+  }
+
+  public transfer(sig: Sig, newOwner: PubKey, outputSatoshis: bigint) {
+    assert(checkSig(sig, this.owner));
+    // addOutput(satoshis, owner) — single mutable prop
+    this.addOutput(outputSatoshis, newOwner);
+  }
+
+  public burn(sig: Sig) {
+    assert(checkSig(sig, this.owner));
+    // No addOutput and no state mutation = token destroyed
+  }
+}
+```
+
+**Key difference from FT:** The NFT has a single mutable property (`owner`), so `addOutput` takes just satoshis and the new owner. The `burn` method uses neither `addOutput` nor direct state mutation, so the compiler only injects the preimage check — no state continuation. The token ceases to exist.
+
+---
+
+## Oracle Integration (Rabin Signatures)
+
+A contract that uses an external data feed (oracle) verified via Rabin signatures. This example only pays out if the oracle-attested price exceeds a threshold.
+
+```typescript
+import {
+  SmartContract, assert, PubKey, Sig, ByteString,
+  RabinSig, RabinPubKey, checkSig, verifyRabinSig, num2bin
+} from 'runar-lang';
+
+class OraclePriceFeed extends SmartContract {
+  readonly oraclePubKey: RabinPubKey;
+  readonly receiver: PubKey;
+
+  constructor(oraclePubKey: RabinPubKey, receiver: PubKey) {
+    super(oraclePubKey, receiver);
+    this.oraclePubKey = oraclePubKey;
+    this.receiver = receiver;
+  }
+
+  public settle(price: bigint, rabinSig: RabinSig, padding: ByteString, sig: Sig) {
+    // Verify the oracle signed this price
+    const msg = num2bin(price, 8n);
+    assert(verifyRabinSig(msg, rabinSig, padding, this.oraclePubKey));
+
+    // Price must exceed threshold
+    assert(price > 50000n);
+
+    // Receiver must sign
+    assert(checkSig(sig, this.receiver));
+  }
+}
+```
+
+**How it works:**
+
+1. The oracle publishes a price along with a Rabin signature.
+2. `num2bin(price, 8n)` encodes the price as an 8-byte little-endian byte string (the message that was signed).
+3. `verifyRabinSig` checks the Rabin signature against the oracle's public key. This proves the oracle attested to this specific price.
+4. The contract enforces a business rule: `price > 50000n`.
+5. The receiver must also sign the transaction.
+
+Rabin signatures are used instead of ECDSA for oracle data because they are simpler to verify in Script and can sign arbitrary messages without the complexities of sighash construction.
+
+---
+
+## Covenant Enforcement
+
+Covenants restrict how a UTXO can be spent by inspecting the spending transaction itself. This vault contract enforces that the owner can only send to a pre-specified recipient and must send at least a minimum amount.
+
+```typescript
+import {
+  SmartContract, assert, PubKey, Sig, Addr, SigHashPreimage,
+  checkSig, checkPreimage
+} from 'runar-lang';
+
+class CovenantVault extends SmartContract {
+  readonly owner: PubKey;
+  readonly recipient: Addr;
+  readonly minAmount: bigint;
+
+  constructor(owner: PubKey, recipient: Addr, minAmount: bigint) {
+    super(owner, recipient, minAmount);
+    this.owner = owner;
+    this.recipient = recipient;
+    this.minAmount = minAmount;
+  }
+
+  public spend(sig: Sig, amount: bigint, txPreimage: SigHashPreimage) {
+    assert(checkSig(sig, this.owner));
+    assert(checkPreimage(txPreimage));
+    assert(amount >= this.minAmount);
+  }
+}
+```
+
+**How it works:**
+
+The `checkPreimage` call gives the contract access to transaction details. The contract can then enforce rules about the outputs -- for example, that a minimum amount goes to the designated recipient. The owner's signature proves authorization, but the covenant rules constrain what the owner can actually do.
+
+> **Pin the sighash type in stateless covenants.** The compiler auto-injects a
+> `assert(extractSigHashType(txPreimage) === 0x41)` (SIGHASH_ALL | FORKID) pin for
+> `StatefulSmartContract`, but a stateless `SmartContract` that calls
+> `checkPreimage` manually gets no such pin. A permissive flag
+> (ANYONECANPAY / SINGLE / NONE) zeroes preimage fields such as
+> `hashPrevouts`, `hashOutputs`, and `sequence`, which can defeat a covenant that
+> reads them (e.g. via `extractHashOutputs` / `extractHashPrevouts` /
+> `extractSequence`). If your covenant relies on any of those fields, assert the
+> sighash type yourself: `assert(extractSigHashType(txPreimage) === 0x41n);`.
+
+---
+
+## On-Chain Auction
+
+A stateful auction where bidders can submit increasing bids, and the auctioneer closes the auction after a deadline.
+
+```typescript
+import {
+  StatefulSmartContract, assert, PubKey, Sig,
+  checkSig, extractLocktime
+} from 'runar-lang';
+
+class Auction extends StatefulSmartContract {
+  readonly auctioneer: PubKey;
+  highestBidder: PubKey;       // stateful
+  highestBid: bigint = 0n;     // stateful with default — excluded from constructor
+  readonly deadline: bigint;   // block height deadline
+
+  constructor(auctioneer: PubKey, highestBidder: PubKey, deadline: bigint) {
+    super(auctioneer, highestBidder, deadline);
+    this.auctioneer = auctioneer;
+    this.highestBidder = highestBidder;
+    this.deadline = deadline;
+  }
+
+  // StatefulSmartContract automatically injects:
+  // - checkPreimage at method entry
+  // - state continuation (hash256(getStateScript()) === extractOutputHash)
+  //   at method exit for any method that mutates state
+  // The developer only writes the business logic.
+
+  public bid(bidder: PubKey, bidAmount: bigint) {
+    assert(bidAmount > this.highestBid);
+    assert(extractLocktime(this.txPreimage) < this.deadline);
+    this.highestBidder = bidder;
+    this.highestBid = bidAmount;
+    // State continuation is auto-injected because state was mutated
+  }
+
+  public close(sig: Sig) {
+    assert(checkSig(sig, this.auctioneer));
+    assert(extractLocktime(this.txPreimage) >= this.deadline);
+    // No state continuation injected -- no state mutation
+  }
+}
+```
+
+**How it works:**
+
+- **`bid`**: Anyone can bid. The bid must exceed the current highest bid. The `extractLocktime` check ensures the auction has not passed its deadline. State is updated with the new highest bidder and bid amount.
+- **`close`**: Only the auctioneer can close. The locktime check ensures the deadline has passed. No state is propagated -- the auction UTXO is consumed, and the auctioneer receives the funds.
+
+This pattern demonstrates combining multiple stateful fields, time-based conditions via locktime, and two distinct spending paths with different authorization rules.
+
+> **Pair `extractLocktime` with an `extractSequence` finality guard.** A
+> transaction's `nLockTime` is only enforced by consensus when at least one
+> input is *non-final* — i.e. its `nSequence` is below `0xffffffff`. If every
+> input is final, miners ignore `nLockTime` entirely, so a
+> `extractLocktime(preimage) >= deadline` (or `< deadline`) assertion can be
+> bypassed by a hand-built all-final-sequence spend. To make a locktime gate
+> consensus-enforced, also assert the spend is non-final:
+> `assert(extractSequence(this.txPreimage) < 0xffffffffn);`. The compiler emits
+> an advisory warning for any method that reads `extractLocktime` without such a
+> guard. The SDK's `CallOptions` help on the tx side: when you set a non-zero
+> `locktime`, `sequence` defaults to `0xfffffffe` (non-final) automatically — but
+> the covenant itself must still assert the sequence bound so no other unlocking
+> path can supply an all-final tx.
+
+---
+
+## Schnorr Zero-Knowledge Proof
+
+A stateless contract that verifies a Schnorr ZKP proof on-chain, demonstrating the EC (elliptic curve) builtins. The prover proves knowledge of a private key `k` such that `P = k*G` without revealing `k`.
+
+```typescript
+import {
+  SmartContract, assert,
+  ecAdd, ecMul, ecMulGen, ecPointX, ecPointY, ecOnCurve, ecModReduce,
+  EC_N,
+} from 'runar-lang';
+import type { Point } from 'runar-lang';
+
+class SchnorrZKP extends SmartContract {
+  readonly pubKey: Point;
+
+  constructor(pubKey: Point) {
+    super(pubKey);
+    this.pubKey = pubKey;
+  }
+
+  public verify(rPoint: Point, s: bigint, e: bigint) {
+    // Verify R is on the curve
+    assert(ecOnCurve(rPoint));
+
+    // Left side: s*G
+    const sG = ecMulGen(s);
+
+    // Right side: R + e*P
+    const eP = ecMul(this.pubKey, e);
+    const rhs = ecAdd(rPoint, eP);
+
+    // Verify equality
+    assert(ecPointX(sG) === ecPointX(rhs));
+    assert(ecPointY(sG) === ecPointY(rhs));
+  }
+}
+```
+
+**How it works:**
+
+The Schnorr identification protocol:
+
+1. **Prover** picks a random nonce `r`, computes `R = r*G`, and sends `R` to the verifier.
+2. **Verifier** sends a random challenge `e`.
+3. **Prover** computes `s = r + e*k (mod n)` and sends `s`.
+4. **Verifier** checks that `s*G === R + e*P`.
+
+In the Bitcoin contract context, the prover provides `(R, s, e)` in the unlocking script (scriptSig). The locking script contains the public key `P` and verifies the proof equation using on-chain EC arithmetic.
+
+**Key EC builtins used:**
+
+- `ecOnCurve(rPoint)` -- validates the commitment point is on the secp256k1 curve
+- `ecMulGen(s)` -- computes `s*G` using the hardcoded generator point
+- `ecMul(this.pubKey, e)` -- computes `e*P` (scalar multiplication of the public key)
+- `ecAdd(rPoint, eP)` -- computes `R + e*P` (point addition)
+- `ecPointX` / `ecPointY` -- extracts coordinates for comparison
+
+> **Note:** Each `ecMul`/`ecMulGen` call generates ~50-100 KB of Bitcoin Script due to the 256-iteration double-and-add loop. This contract's compiled script is substantial but well within BSV's limits (no opcode count limit, 32 MB stack memory limit).
+
+---
+
+## Pattern Summary
+
+| Pattern | Stateful | Key Techniques |
+|---------|----------|----------------|
+| P2PKH | No | `hash160`, `checkSig` |
+| Escrow | No | Multiple public methods, `\|\|` for multi-party auth |
+| Counter | Yes | OP_PUSH_TX, automatic state continuation via `StatefulSmartContract` |
+| Fungible Token | Yes | Owner transfer via state update |
+| NFT | Yes | Transfer + burn (no state continuation) |
+| Oracle | No | Rabin signatures, `verifyRabinSig`, `num2bin` |
+| Covenant | No | `checkPreimage` for transaction introspection |
+| Auction | Yes | Multiple stateful fields, locktime checks, two spending paths |
+| PostQuantumWallet | No | `verifyWOTS` — WOTS+ one-time PQ signature (~10 KB script) |
+| SPHINCSWallet | No | `verifySLHDSA_SHA2_128s` — SLH-DSA stateless PQ signature (~203 KB script) |
+| SchnorrZKP | No | `ecMulGen`, `ecMul`, `ecAdd`, `ecOnCurve` — on-chain Schnorr ZKP via EC arithmetic |

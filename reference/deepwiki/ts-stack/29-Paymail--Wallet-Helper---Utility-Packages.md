@@ -7,29 +7,29 @@
 
 The following files were used as context for generating this wiki page:
 
-- [conformance/runner/ts/jest.config.mjs](conformance/runner/ts/jest.config.mjs)
-- [conformance/runner/ts/package.json](conformance/runner/ts/package.json)
-- [conformance/runner/ts/runner.test.ts](conformance/runner/ts/runner.test.ts)
-- [conformance/runner/ts/tsconfig.json](conformance/runner/ts/tsconfig.json)
-- [packages/helpers/amountinator/BASELINE.md](packages/helpers/amountinator/BASELINE.md)
-- [packages/helpers/amountinator/tsconfig.json](packages/helpers/amountinator/tsconfig.json)
-- [packages/helpers/bsv-wallet-helper/BASELINE.md](packages/helpers/bsv-wallet-helper/BASELINE.md)
-- [packages/helpers/bsv-wallet-helper/src/script-templates/ordlock.ts](packages/helpers/bsv-wallet-helper/src/script-templates/ordlock.ts)
-- [packages/helpers/bsv-wallet-helper/src/script-templates/p2pkh.ts](packages/helpers/bsv-wallet-helper/src/script-templates/p2pkh.ts)
-- [packages/helpers/bsv-wallet-helper/src/utils/derivation.ts](packages/helpers/bsv-wallet-helper/src/utils/derivation.ts)
-- [packages/helpers/fund-metanet/BASELINE.md](packages/helpers/fund-metanet/BASELINE.md)
-- [packages/helpers/fund-metanet/package.json](packages/helpers/fund-metanet/package.json)
-- [packages/helpers/simple/BASELINE.md](packages/helpers/simple/BASELINE.md)
-- [packages/helpers/ts-paymail/BASELINE.md](packages/helpers/ts-paymail/BASELINE.md)
-- [packages/helpers/ts-paymail/docs/examples/package.json](packages/helpers/ts-paymail/docs/examples/package.json)
-- [packages/messaging/authsocket-client/BASELINE.md](packages/messaging/authsocket-client/BASELINE.md)
-- [packages/messaging/authsocket/BASELINE.md](packages/messaging/authsocket/BASELINE.md)
-- [packages/messaging/message-box-client/BASELINE.md](packages/messaging/message-box-client/BASELINE.md)
-- [packages/messaging/message-box-client/tsconfig.base.json](packages/messaging/message-box-client/tsconfig.base.json)
-- [packages/messaging/message-box-server/src/swagger.ts](packages/messaging/message-box-server/src/swagger.ts)
-- [packages/messaging/messagebox-services/backend/tsconfig.base.json](packages/messaging/messagebox-services/backend/tsconfig.base.json)
-- [packages/network/ts-p2p/package.json](packages/network/ts-p2p/package.json)
-- [pnpm-lock.yaml](pnpm-lock.yaml)
+- [conformance/runner/ts/jest.config.mjs](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/ts/jest.config.mjs)
+- [conformance/runner/ts/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/ts/package.json)
+- [conformance/runner/ts/runner.test.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/ts/runner.test.ts)
+- [conformance/runner/ts/tsconfig.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/ts/tsconfig.json)
+- [packages/helpers/amountinator/BASELINE.md](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/amountinator/BASELINE.md)
+- [packages/helpers/amountinator/tsconfig.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/amountinator/tsconfig.json)
+- [packages/helpers/bsv-wallet-helper/BASELINE.md](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/bsv-wallet-helper/BASELINE.md)
+- [packages/helpers/bsv-wallet-helper/src/script-templates/ordlock.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/bsv-wallet-helper/src/script-templates/ordlock.ts)
+- [packages/helpers/bsv-wallet-helper/src/script-templates/p2pkh.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/bsv-wallet-helper/src/script-templates/p2pkh.ts)
+- [packages/helpers/bsv-wallet-helper/src/utils/derivation.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/bsv-wallet-helper/src/utils/derivation.ts)
+- [packages/helpers/fund-metanet/BASELINE.md](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/fund-metanet/BASELINE.md)
+- [packages/helpers/fund-metanet/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/fund-metanet/package.json)
+- [packages/helpers/simple/BASELINE.md](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/simple/BASELINE.md)
+- [packages/helpers/ts-paymail/BASELINE.md](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/ts-paymail/BASELINE.md)
+- [packages/helpers/ts-paymail/docs/examples/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/ts-paymail/docs/examples/package.json)
+- [packages/messaging/authsocket-client/BASELINE.md](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/authsocket-client/BASELINE.md)
+- [packages/messaging/authsocket/BASELINE.md](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/authsocket/BASELINE.md)
+- [packages/messaging/message-box-client/BASELINE.md](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/message-box-client/BASELINE.md)
+- [packages/messaging/message-box-client/tsconfig.base.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/message-box-client/tsconfig.base.json)
+- [packages/messaging/message-box-server/src/swagger.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/message-box-server/src/swagger.ts)
+- [packages/messaging/messagebox-services/backend/tsconfig.base.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/messagebox-services/backend/tsconfig.base.json)
+- [packages/network/ts-p2p/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/ts-p2p/package.json)
+- [pnpm-lock.yaml](https://github.com/bsv-blockchain/ts-stack/blob/main/pnpm-lock.yaml)
 
 </details>
 
@@ -70,13 +70,13 @@ sequenceDiagram
     S-->>C: TXID
     end
 ```
-**Sources:** [packages/helpers/ts-paymail/docs/examples/package.json:14-15](), [pnpm-lock.yaml:154-196]()
+**Sources:** [packages/helpers/ts-paymail/docs/examples/package.json:14-15](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/ts-paymail/docs/examples/package.json#L14-L15), [pnpm-lock.yaml:154-196](https://github.com/bsv-blockchain/ts-stack/blob/main/pnpm-lock.yaml#L154-L196)
 
 ### Key Implementation Details
 *   **Capability Discovery**: Clients resolve the `.well-known/bsvalias` endpoint to determine supported features (e.g., PKI, Profile, BEEF).
 *   **BEEF Support**: Includes scripts for sending transactions in BEEF format, which includes the transaction and its necessary Merkle proofs/ancestors for SPV validation.
 
-**Sources:** [packages/helpers/ts-paymail/docs/examples/package.json:15](), [packages/helpers/ts-paymail/docs/examples/src/client/sendP2PBeef.js:1-20]() (inferred from scripts)
+**Sources:** [packages/helpers/ts-paymail/docs/examples/package.json:15](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/ts-paymail/docs/examples/package.json#L15), [packages/helpers/ts-paymail/docs/examples/src/client/sendP2PBeef.js:1-20](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/ts-paymail/docs/examples/src/client/sendP2PBeef.js#L1-L20) (inferred from scripts)
 
 ---
 
@@ -104,14 +104,14 @@ graph TD
         H --> I["PublicKey.toAddress()"]
     end
 ```
-**Sources:** [packages/helpers/bsv-wallet-helper/src/utils/derivation.ts:4-11](), [packages/helpers/bsv-wallet-helper/src/utils/derivation.ts:22-56]()
+**Sources:** [packages/helpers/bsv-wallet-helper/src/utils/derivation.ts:4-11](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/bsv-wallet-helper/src/utils/derivation.ts#L4-L11), [packages/helpers/bsv-wallet-helper/src/utils/derivation.ts:22-56](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/bsv-wallet-helper/src/utils/derivation.ts#L22-L56)
 
 ### Script Templates
 The package includes templates for common Bitcoin script patterns:
 *   **P2PKH**: Standard Pay-to-Public-Key-Hash scripts.
 *   **OrdLock**: Specialized scripts for Ordinal locking/unlocking.
 
-**Sources:** [packages/helpers/bsv-wallet-helper/src/script-templates/p2pkh.ts:1-10](), [packages/helpers/bsv-wallet-helper/src/script-templates/ordlock.ts:1-10]()
+**Sources:** [packages/helpers/bsv-wallet-helper/src/script-templates/p2pkh.ts:1-10](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/bsv-wallet-helper/src/script-templates/p2pkh.ts#L1-L10), [packages/helpers/bsv-wallet-helper/src/script-templates/ordlock.ts:1-10](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/bsv-wallet-helper/src/script-templates/ordlock.ts#L1-L10)
 
 ---
 
@@ -120,7 +120,7 @@ The package includes templates for common Bitcoin script patterns:
 ### 3.1 Amountinator (@bsv/amountinator)
 A utility for currency and unit conversion within the BSV ecosystem. It depends on `@bsv/sdk` for transaction-related value handling and `@bsv/wallet-toolbox-client` for retrieving exchange rates or wallet balances.
 
-**Sources:** [packages/helpers/amountinator/package.json:42-49](), [pnpm-lock.yaml:42-63]()
+**Sources:** [packages/helpers/amountinator/package.json:42-49](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/amountinator/package.json#L42-L49), [pnpm-lock.yaml:42-63](https://github.com/bsv-blockchain/ts-stack/blob/main/pnpm-lock.yaml#L42-L63)
 
 ### 3.2 Fund Metanet (@bsv/fund-metanet)
 A CLI tool and library designed to fund Metanet-compatible wallets. It integrates `@bsv/wallet-toolbox` to manage storage and signing for the funding process.
@@ -130,7 +130,7 @@ A CLI tool and library designed to fund Metanet-compatible wallets. It integrate
 *   **Interactive CLI**: Utilizes `readline` and `chalk` for user interaction.
 *   **Wallet Integration**: Leverages `WalletToolbox` for transaction signing and broadcast.
 
-**Sources:** [packages/helpers/fund-metanet/package.json:20-27](), [packages/helpers/fund-metanet/package.json:10-12]()
+**Sources:** [packages/helpers/fund-metanet/package.json:20-27](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/fund-metanet/package.json#L20-L27), [packages/helpers/fund-metanet/package.json:10-12](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/fund-metanet/package.json#L10-L12)
 
 ---
 
@@ -171,7 +171,7 @@ graph LR
 
     FUND --> FUND_I
 ```
-**Sources:** [packages/helpers/ts-paymail/docs/examples/package.json:15](), [packages/helpers/bsv-wallet-helper/src/utils/derivation.ts:4-56](), [packages/helpers/fund-metanet/package.json:11]()
+**Sources:** [packages/helpers/ts-paymail/docs/examples/package.json:15](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/ts-paymail/docs/examples/package.json#L15), [packages/helpers/bsv-wallet-helper/src/utils/derivation.ts:4-56](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/bsv-wallet-helper/src/utils/derivation.ts#L4-L56), [packages/helpers/fund-metanet/package.json:11](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/fund-metanet/package.json#L11)
 
 ## Summary of Package Roles
 
@@ -182,6 +182,6 @@ graph LR
 | `@bsv/amountinator` | Unit conversion and currency math | `@bsv/sdk` |
 | `@bsv/fund-metanet` | CLI-based wallet funding | `@bsv/wallet-toolbox` |
 
-**Sources:** [pnpm-lock.yaml:42-196](), [packages/helpers/fund-metanet/package.json:20-27]()
+**Sources:** [pnpm-lock.yaml:42-196](https://github.com/bsv-blockchain/ts-stack/blob/main/pnpm-lock.yaml#L42-L196), [packages/helpers/fund-metanet/package.json:20-27](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/helpers/fund-metanet/package.json#L20-L27)
 
 ---

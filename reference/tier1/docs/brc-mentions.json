@@ -1,0 +1,22 @@
+{
+  "generated": "2026-08-29",
+  "policy": "BRC numbers cited by each repo's own snapshotted README/docs/examples. The only BRC-to-package edges the capability graph trusts.",
+  "mentions": {
+    "arcade": [
+      74
+    ],
+    "merkle-service": [
+      74
+    ],
+    "messagebox-server": [
+      2,
+      103
+    ],
+    "uhrp-services": [
+      22,
+      24,
+      26,
+      102
+    ]
+  }
+}

@@ -7,17 +7,17 @@
 
 The following files were used as context for generating this wiki page:
 
-- [.editorconfig](.editorconfig)
-- [.npmrc](.npmrc)
-- [conformance/vectors/README.md](conformance/vectors/README.md)
-- [packages/messaging/authsocket-client/package.json](packages/messaging/authsocket-client/package.json)
-- [packages/messaging/authsocket/package.json](packages/messaging/authsocket/package.json)
-- [packages/messaging/message-box-client/package.json](packages/messaging/message-box-client/package.json)
-- [packages/messaging/message-box-server/package.json](packages/messaging/message-box-server/package.json)
-- [packages/messaging/messagebox-services/backend/package.json](packages/messaging/messagebox-services/backend/package.json)
-- [packages/middleware/auth-express-middleware/package.json](packages/middleware/auth-express-middleware/package.json)
-- [packages/middleware/payment-express-middleware/package.json](packages/middleware/payment-express-middleware/package.json)
-- [packages/wallet/btms/package.json](packages/wallet/btms/package.json)
+- [.editorconfig](https://github.com/bsv-blockchain/ts-stack/blob/main/.editorconfig)
+- [.npmrc](https://github.com/bsv-blockchain/ts-stack/blob/main/.npmrc)
+- [conformance/vectors/README.md](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/README.md)
+- [packages/messaging/authsocket-client/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/authsocket-client/package.json)
+- [packages/messaging/authsocket/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/authsocket/package.json)
+- [packages/messaging/message-box-client/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/message-box-client/package.json)
+- [packages/messaging/message-box-server/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/message-box-server/package.json)
+- [packages/messaging/messagebox-services/backend/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/messagebox-services/backend/package.json)
+- [packages/middleware/auth-express-middleware/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/middleware/auth-express-middleware/package.json)
+- [packages/middleware/payment-express-middleware/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/middleware/payment-express-middleware/package.json)
+- [packages/wallet/btms/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/package.json)
 
 </details>
 
@@ -64,7 +64,7 @@ graph TD
     style MBS stroke-width:2px
     style ASS stroke-width:2px
 ```
-Sources: [`packages/messaging/message-box-client/package.json:2-87`](), [`packages/messaging/message-box-server/package.json:2-80`](), [`packages/messaging/authsocket/package.json:2-59`]()
+Sources: [`packages/messaging/message-box-client/package.json:2-87`](https://github.com/bsv-blockchain/ts-stack/blob/main/`packages/messaging/message-box-client/package.json:2-87`), [`packages/messaging/message-box-server/package.json:2-80`](https://github.com/bsv-blockchain/ts-stack/blob/main/`packages/messaging/message-box-server/package.json:2-80`), [`packages/messaging/authsocket/package.json:2-59`](https://github.com/bsv-blockchain/ts-stack/blob/main/`packages/messaging/authsocket/package.json:2-59`)
 
 ---
 
@@ -73,11 +73,11 @@ Sources: [`packages/messaging/message-box-client/package.json:2-87`](), [`packag
 MessageBox is a reliable messaging system designed for scenarios where the recipient may be offline. It follows a "mailbox" metaphor where messages are stored on a server until retrieved by the authenticated owner.
 
 ### MessageBox Client & Server
-The `@bsv/message-box-client` provides the `MessageBoxClient` class for interacting with the 9 standard REST endpoints defined in the message-box specification [`packages/messaging/message-box-client/package.json:15-15`](). It includes `PeerPayClient` for handling payment-related messaging workflows.
+The `@bsv/message-box-client` provides the `MessageBoxClient` class for interacting with the 9 standard REST endpoints defined in the message-box specification [`packages/messaging/message-box-client/package.json:15-15`](https://github.com/bsv-blockchain/ts-stack/blob/main/`packages/messaging/message-box-client/package.json:15-15`). It includes `PeerPayClient` for handling payment-related messaging workflows.
 
-The `@bsv/messagebox-server` is a reference implementation using Express [`packages/messaging/message-box-server/package.json:71-71`](). It supports multiple persistence layers via Knex (SQL) or MongoDB [`packages/messaging/message-box-server/package.json:73-74`]() and integrates Firebase Cloud Messaging (FCM) or Web-Push for real-time notifications to mobile or web clients [`packages/messaging/message-box-server/package.json:72-79`]().
+The `@bsv/messagebox-server` is a reference implementation using Express [`packages/messaging/message-box-server/package.json:71-71`](https://github.com/bsv-blockchain/ts-stack/blob/main/`packages/messaging/message-box-server/package.json:71-71`). It supports multiple persistence layers via Knex (SQL) or MongoDB [`packages/messaging/message-box-server/package.json:73-74`](https://github.com/bsv-blockchain/ts-stack/blob/main/`packages/messaging/message-box-server/package.json:73-74`) and integrates Firebase Cloud Messaging (FCM) or Web-Push for real-time notifications to mobile or web clients [`packages/messaging/message-box-server/package.json:72-79`](https://github.com/bsv-blockchain/ts-stack/blob/main/`packages/messaging/message-box-server/package.json:72-79`).
 
-For details, see [MessageBox Client & Server](#5.1).
+For details, see [MessageBox Client & Server](19-MessageBox-Client---Server.md).
 
 ---
 
@@ -86,15 +86,15 @@ For details, see [MessageBox Client & Server](#5.1).
 AuthSocket implements the BRC-103 protocol over Socket.IO to provide a mutually authenticated, real-time communication channel.
 
 ### Mutual Authentication
-Unlike standard WebSockets, AuthSocket requires both the client and server to prove possession of private keys during the connection handshake. This is handled by the `AuthSocketServer` in `@bsv/authsocket` [`packages/messaging/authsocket/package.json:7-7`]() and the corresponding client in `@bsv/authsocket-client` [`packages/messaging/authsocket-client/package.json:7-7`]().
+Unlike standard WebSockets, AuthSocket requires both the client and server to prove possession of private keys during the connection handshake. This is handled by the `AuthSocketServer` in `@bsv/authsocket` [`packages/messaging/authsocket/package.json:7-7`](https://github.com/bsv-blockchain/ts-stack/blob/main/`packages/messaging/authsocket/package.json:7-7`) and the corresponding client in `@bsv/authsocket-client` [`packages/messaging/authsocket-client/package.json:7-7`](https://github.com/bsv-blockchain/ts-stack/blob/main/`packages/messaging/authsocket-client/package.json:7-7`).
 
 ### Event Exchange
 Once authenticated, the protocol allows for:
 - **Room Management**: Organizing connections into secure groups.
-- **Signed Events**: Every event exchanged can be cryptographically verified using the `@bsv/sdk` primitives [`packages/messaging/authsocket/package.json:57-57`]().
+- **Signed Events**: Every event exchanged can be cryptographically verified using the `@bsv/sdk` primitives [`packages/messaging/authsocket/package.json:57-57`](https://github.com/bsv-blockchain/ts-stack/blob/main/`packages/messaging/authsocket/package.json:57-57`).
 - **Integration**: Works seamlessly with the BRC-31 handshake for initial session establishment.
 
-For details, see [AuthSocket: Authenticated WebSocket Protocol](#5.2).
+For details, see [AuthSocket: Authenticated WebSocket Protocol](20-AuthSocket--Authenticated-WebSocket-Protocol.md).
 
 ---
 
@@ -116,11 +116,11 @@ sequenceDiagram
     S->>AS: notifyRecipient(pubkey)
     AS->>C: emit("new_message")
 ```
-Sources: [`packages/messaging/messagebox-services/backend/package.json:47-51`]()
+Sources: [`packages/messaging/messagebox-services/backend/package.json:47-51`](https://github.com/bsv-blockchain/ts-stack/blob/main/`packages/messaging/messagebox-services/backend/package.json:47-51`)
 
 ### Backend Services
-The `@bsv/backend` package within `messagebox-services` acts as a coordinator, integrating the messaging layer with the `@bsv/overlay` services [`packages/messaging/messagebox-services/backend/package.json:47-47`](). It utilizes Knex for relational data management and the BSV SDK for signature verification [`packages/messaging/messagebox-services/backend/package.json:48-49`]().
+The `@bsv/backend` package within `messagebox-services` acts as a coordinator, integrating the messaging layer with the `@bsv/overlay` services [`packages/messaging/messagebox-services/backend/package.json:47-47`](https://github.com/bsv-blockchain/ts-stack/blob/main/`packages/messaging/messagebox-services/backend/package.json:47-47`). It utilizes Knex for relational data management and the BSV SDK for signature verification [`packages/messaging/messagebox-services/backend/package.json:48-49`](https://github.com/bsv-blockchain/ts-stack/blob/main/`packages/messaging/messagebox-services/backend/package.json:48-49`).
 
-Sources: [`packages/messaging/messagebox-services/backend/package.json:2-51`]()
+Sources: [`packages/messaging/messagebox-services/backend/package.json:2-51`](https://github.com/bsv-blockchain/ts-stack/blob/main/`packages/messaging/messagebox-services/backend/package.json:2-51`)
 
 ---

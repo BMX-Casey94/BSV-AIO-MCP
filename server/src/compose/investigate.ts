@@ -25,8 +25,13 @@ const STOP_WORDS = new Set([
   "and",
   "are",
   "about",
+  "also",
+  "any",
+  "all",
   "at",
   "be",
+  "between",
+  "both",
   "by",
   "can",
   "could",
@@ -34,39 +39,97 @@ const STOP_WORDS = new Set([
   "did",
   "do",
   "does",
+  "each",
+  "every",
+  "few",
   "for",
   "from",
+  "get",
+  "gets",
+  "give",
+  "given",
+  "gives",
+  "got",
   "govern",
   "governs",
   "governing",
   "how",
   "i",
   "in",
+  "into",
   "is",
   "it",
   "its",
+  "just",
+  "keep",
+  "keeps",
+  "let",
+  "like",
+  "made",
+  "make",
+  "makes",
+  "many",
   "may",
   "me",
+  "more",
+  "most",
+  "much",
   "my",
+  "need",
+  "needs",
+  "no",
+  "not",
   "now",
   "of",
   "on",
+  "only",
   "or",
+  "other",
+  "others",
+  "our",
+  "ours",
+  "own",
   "right",
+  "run",
+  "same",
   "should",
+  "so",
+  "some",
   "status",
+  "still",
+  "such",
   "support",
   "supports",
   "supported",
-  "the",
-  "this",
+  "take",
+  "takes",
+  "than",
   "that",
+  "the",
+  "their",
+  "them",
+  "then",
   "these",
+  "they",
+  "thing",
+  "things",
+  "this",
   "those",
   "to",
+  "too",
+  "us",
+  "use",
+  "used",
+  "uses",
+  "using",
   "versus",
+  "very",
+  "via",
   "vs",
+  "want",
+  "wants",
   "was",
+  "we",
   "were",
   "what",
   "when",
@@ -74,8 +137,14 @@ const STOP_WORDS = new Set([
   "which",
   "who",
   "will",
+  "with",
+  "without",
   "would",
   "why",
+  "yes",
+  "you",
+  "your",
+  "yours",
 ]);
 
 type ContradictionFinding = {
@@ -224,7 +293,7 @@ export function investigate(
       gaps,
       contradictions,
       recommendedNext,
-      answerSketch: composeSketch(classifiedAs, claims, hits, ordinalityQuestion),
+      answerSketch: composeSketch(classifiedAs, claims, hits, ordinalityQuestion, tokens),
     });
   }
   // When every BRC the question names is absent, the FTS hits came from digit-substring
@@ -255,7 +324,224 @@ export function investigate(
     upsertHit(hits, { ...deny.hit, excerpt });
   }
 
+  // A distinctive token the corpus never contains is a typo or a foreign concept; name it in
+  // the gaps so the surviving answer is not presented as complete ("configure zqxwv arcade").
+  const unknownTokens = tokens
+    .filter((token) => token.length >= 4 && !/^\d+$/.test(token))
+    .filter((token) => searchKnowledge(store, token, { limit: 1 }).totalCount === 0)
+    .slice(0, 4);
+  for (const token of unknownTokens) {
+    gaps.push(
+      `The pinned snapshot never mentions "${token}"; it may be a typo or outside the corpus.`,
+    );
+  }
+
+  // A bare "what is X?" is answered by the document whose title defines X. FTS ranking can
+  // bury that doc under symbol cards that merely share its tokens ("go-p2p" floods with
+  // symbol:go-p2p:*), so consult the store's titles directly.
+  const bareTermForScan = bareDefinitionTerm(question);
+  if (bareTermForScan && hopsUsed < MAX_HOPS) {
+    const definitional = [
+      ...store.listByIdPrefix("doc:", 1000),
+      ...store.listByIdPrefix("brc:", 400),
+      ...store.listByIdPrefix("principle:", 200),
+    ]
+      .filter((doc) => titleDefinesTerm(doc.title, bareTermForScan))
+      .slice(0, 3);
+    if (definitional.length > 0) {
+      hopsUsed += 1;
+      for (const doc of definitional) {
+        upsertHit(hits, storedHit(doc, tokens));
+      }
+    }
+  }
+
+  // Join questions — "Does <package> implement BRC-N?", "Which BRCs does <package> implement?" —
+  // are answered from the package's own evidenced mentions (its snapshotted docs citing the
+  // BRC), never from the BRC's body alone: a bare "supports" on the spec reads as an
+  // unevidenced yes, and the spec's implementations list may not name the package at all.
+  const yesNoForm = /^(?:does|is|are|can|has|have|do)\b/i.test(question.trim());
+  const joinVerb =
+    /\b(implement\w*|support\w*|use[sd]?|using|mention\w*|integrat\w*|compliant|conform\w*)\b/i.test(
+      question,
+    );
+  const namedPackages = store
+    .listByIdPrefix("package:", 100)
+    .map((doc) => doc.id.slice("package:".length))
+    .filter((name) => packageNamedInQuestion(name, question));
+  const whichBrcsOfPackage =
+    /\bwhich\s+brcs?\b/i.test(question) && joinVerb && namedPackages.length > 0;
+  const joinBrc =
+    yesNoForm && joinVerb && explicitBrcs.length === 1 && missingBrcs.length === 0 && namedPackages.length > 0
+      ? explicitBrcs[0]
+      : undefined;
+
+  if (whichBrcsOfPackage || joinBrc !== undefined) {
+    const mentions = loadBrcMentions(root);
+    const pkg = namedPackages[0]!;
+    const repoShort = mentions.packageRepo.get(pkg) ?? pkg.split("/").pop() ?? pkg;
+    const repoDocs = [
+      ...store.listByIdPrefix(`doc:${repoShort}:`, 25),
+      ...store.listByIdPrefix(`example:${repoShort}:`, 25),
+    ];
+
+    if (whichBrcsOfPackage) {
+      const set = [...(mentions.byPackage.get(pkg) ?? [])].sort((a, b) => a - b);
+      const claims: EvidenceClaim[] =
+        set.length === 0
+          ? [
+              {
+                text: `No pinned ${pkg} documentation cites any BRC; the snapshot does not establish what it implements.`,
+                support: [],
+                status: "insufficient",
+                confidence: "low",
+              },
+            ]
+          : [
+              {
+                text: `${pkg}'s pinned documentation cites ${set.map((n) => `BRC-${n}`).join(", ")} — the only BRC-to-package edges the snapshot trusts.`,
+                support: [repoDocs[0]?.id ?? `package:${pkg}`],
+                status: "supports",
+                confidence: "medium",
+              },
+            ];
+      if (set.length === 0) {
+        hits.length = 0;
+        gaps.push(`No pinned ${pkg} documentation cites any BRC.`);
+      } else if (repoDocs[0]) {
+        upsertHit(hits, storedHit(repoDocs[0], tokens));
+      }
+      return finish({
+        question,
+        classifiedAs,
+        network,
+        hopsUsed,
+        index,
+        needs,
+        claims,
+        hits,
+        gaps,
+        contradictions,
+        recommendedNext,
+        answerSketch: composeSketch(classifiedAs, claims, hits, ordinalityQuestion, tokens),
+      });
+    }
+
+    const brcNum = joinBrc!;
+    if (!mentions.byPackage.get(pkg)?.has(brcNum)) {
+      hits.length = 0;
+      gaps.push(
+        `No pinned ${pkg} documentation cites BRC-${brcNum}; the snapshot does not establish the link, so the BRC's own text is not quoted as a yes.`,
+      );
+      const claims: EvidenceClaim[] = [
+        {
+          text: `The pinned snapshot does not evidence ${pkg} implementing BRC-${brcNum}; its documentation never cites it.`,
+          support: [],
+          status: "insufficient",
+          confidence: "low",
+        },
+      ];
+      return finish({
+        question,
+        classifiedAs,
+        network,
+        hopsUsed,
+        index,
+        needs,
+        claims,
+        hits,
+        gaps,
+        contradictions,
+        recommendedNext,
+        answerSketch: composeSketch(classifiedAs, claims, hits, ordinalityQuestion, tokens),
+      });
+    }
+
+    // Evidenced: quote the package's own doc passage that cites the BRC, with the spec secondary.
+    const mentionRe = new RegExp(
+      `brc[-– ]?0*${brcNum}\\b|/${String(brcNum).padStart(4, "0")}\\.md`,
+      "i",
+    );
+    const citing = repoDocs.find((doc) => mentionRe.test(doc.body));
+    const claims: EvidenceClaim[] = [];
+    if (citing) {
+      const citingHit = storedHit(citing, tokens);
+      citingHit.excerpt = excerptWindow(
+        citing.body,
+        [`brc-${brcNum}`, String(brcNum), ...tokens],
+        false,
+        280,
+      );
+      upsertHit(hits, citingHit);
+      claims.push({
+        text: `Yes — ${pkg}'s pinned documentation cites BRC-${brcNum}. ${citing.title}: ${citingHit.excerpt}`,
+        support: [citing.id],
+        status: statusForClaim([citingHit], []),
+        confidence: "medium",
+      });
+    } else {
+      claims.push({
+        text: `Yes — ${pkg}'s pinned documentation cites BRC-${brcNum} (evidenced mention in the snapshot's BRC-to-package edges).`,
+        support: [`package:${pkg}`],
+        status: "supports",
+        confidence: "medium",
+      });
+    }
+    const brcHit = hits.find((hit) => hit.id === `brc:${brcNum}`);
+    const brcDoc = store.getById(`brc:${brcNum}`);
+    if (brcHit && brcDoc) {
+      // The definition context (Abstract) frames the spec; a token window can open mid-code.
+      const brcExcerpt = excerptWindow(brcDoc.body, tokens, false, 280, true);
+      claims.push({
+        text: `BRC-${brcNum} (${brcHit.title}): ${brcExcerpt}`,
+        support: [brcHit.id],
+        status: statusForClaim([brcHit], []),
+        confidence: "medium",
+      });
+    }
+    return finish({
+      question,
+      classifiedAs,
+      network,
+      hopsUsed,
+      index,
+      needs,
+      claims,
+      hits,
+      gaps,
+      contradictions,
+      recommendedNext,
+      answerSketch: composeSketch(classifiedAs, claims, hits, ordinalityQuestion, tokens),
+    });
+  }
+
   if (classifiedAs === "live-ops" && hopsUsed < MAX_HOPS) {
+    hopsUsed += 1;
+    const ops = getResource(root, store, "ops://testnet");
+    upsertHit(hits, withOpenedExcerpt(ops.hit, ops.text, tokens));
+  }
+
+  // Testnet operations knowledge lives on the pinned ops card, whose vocabulary need not
+  // overlap the question's ("Should I broadcast via Arcade…" never says "testnet"). Surface
+  // it for testnet cues and broadcast-routing asks so the per-network policy is citable.
+  const testnetCue = tokens.some((token) => TESTNET_CUE_TOKENS.has(token));
+  const broadcastCue =
+    tokens.includes("broadcast") &&
+    tokens.some(
+      (token) =>
+        token === "transaction" ||
+        token === "transactions" ||
+        token === "tx" ||
+        token === "arcade" ||
+        token === "mainnet" ||
+        token === "testnet",
+    );
+  if (
+    (testnetCue || broadcastCue) &&
+    classifiedAs !== "live-ops" &&
+    !hits.some((hit) => hit.locator === "ops://testnet") &&
+    hopsUsed < MAX_HOPS
+  ) {
     hopsUsed += 1;
     const ops = getResource(root, store, "ops://testnet");
     upsertHit(hits, withOpenedExcerpt(ops.hit, ops.text, tokens));
@@ -360,17 +646,39 @@ export function investigate(
     if (!doc) {
       continue;
     }
+    if (hit.id.startsWith("package:")) {
+      // Package cards are one short generated paragraph; windowing can cut the operative word
+      // ("Archived upstream; …" losing "Archived"). Quote the whole card.
+      hits[i] = { ...hit, excerpt: cleanExcerptMarkup(doc.body) };
+      continue;
+    }
     if (hit.locator === "ops://ordinality") {
       // The ordinality policy card's operative content is its Rules list; quote it, not the
       // preamble. Wider window: rules 1-2 (sat ordering, fail closed) span ~500 chars.
       hits[i] = { ...hit, excerpt: sectionExcerpt(doc.body, "rules", windowTokens, 500) };
       continue;
     }
-    if (hit.locator === "ops://testnet" && windowTokens.includes("faucet")) {
-      // A faucet question is answered by the ops card's faucet section, not whichever
-      // broadcaster-alias paragraph a coverage window happens to land on.
-      hits[i] = { ...hit, excerpt: sectionExcerpt(doc.body, "faucet", windowTokens, 400) };
-      continue;
+    if (hit.locator === "ops://testnet") {
+      // The ops card is sectioned; quote the section the question is about. Faucet asks get
+      // the faucet table (wide enough to carry the claim endpoints and the Atomic BEEF note);
+      // broadcast-routing and tstn asks get the per-network service map; wallet create/switch
+      // asks get the wallet section with the Setup.createWalletSQLite listing. A "wallet"
+      // token alone (go-wallet-toolbox in a storage question) must not open section 1.
+      const section = windowTokens.includes("faucet")
+        ? { heading: "faucet", size: 1000 }
+        : windowTokens.includes("broadcast") || windowTokens.includes("tstn")
+          ? { heading: "per-network", size: 1400 }
+          : windowTokens.includes("wallet") &&
+              (windowTokens.includes("switch") || windowTokens.includes("create"))
+            ? { heading: "switch", size: 1400 }
+            : undefined;
+      if (section) {
+        hits[i] = {
+          ...hit,
+          excerpt: sectionExcerpt(doc.body, section.heading, windowTokens, section.size),
+        };
+        continue;
+      }
     }
     hits[i] = {
       ...hit,
@@ -411,6 +719,7 @@ export function investigate(
     stubIds,
     deniedPackage: denied,
     packageIds: languagePackageHints(question),
+    hopPackages: topicMatchedPackages(store, tokens),
   });
 
   // A recency question ("latest", "newest", "superseded") can be answered only as of the pin:
@@ -472,7 +781,7 @@ export function investigate(
     gaps,
     contradictions,
     recommendedNext,
-    answerSketch: composeSketch(classifiedAs, claims, hits, ordinalityQuestion),
+    answerSketch: composeSketch(classifiedAs, claims, hits, ordinalityQuestion, tokens),
   });
 }
 
@@ -527,7 +836,13 @@ function classifyQuestion(question: string): ClassifiedAs {
   if (/\b(craig|principle|corpus|consistent|essay|why does|why do)\b/.test(q)) {
     return "design-why";
   }
-  if (/\b(how do i|implement|typescript|package|code)\b/.test(q)) {
+  // A how-to that names a BRC and a network-ops cue spans spec + operations + implementation
+  // ("internalize a Teratestnet faucet payout into a BRC-100 wallet") — that is mixed, not
+  // a pure implementation ask.
+  if (/\bhow do i\b/.test(q) && /\bbrc-\d+\b/.test(q) && /\b(faucet|teratestnet|testnet|ttn|mainnet)\b/.test(q)) {
+    return "mixed";
+  }
+  if (/\b(how do i|implement|typescript|package|code|broadcast)\b/.test(q)) {
     return "implementation";
   }
   if (/\b(used to|formerly|historical|original)\b/.test(q)) {
@@ -659,17 +974,23 @@ function deniedPackageNamed(root: string, question: string): string | undefined 
 /** "Which SDK for a Go wallet backend?" → the confirmed Tier 0 packages for that language. */
 function languagePackageHints(question: string): string[] {
   const q = question.toLowerCase();
-  if (!/\b(sdk|wallet|package|packages|library|libraries|backend|client|toolbox)\b/.test(q)) {
+  const STACK = "(?:sdk|wallet|package|packages|library|libraries|backend|client|toolbox)";
+  if (!new RegExp(`\\b${STACK}\\b`).test(q)) {
     return [];
   }
+  // The language cue must modify a stack noun ("Go wallet backend", "SDK in TypeScript") —
+  // a "Go" drifting through a 30-word UHRP/React question must not pin the Go toolchain.
+  const near = (lang: string): boolean =>
+    new RegExp(`\\b${lang}\\b(?:[\\s,]+\\w+){0,2}[\\s,]+${STACK}\\b`, "i").test(q) ||
+    new RegExp(`\\b${STACK}\\b(?:[\\s,]+\\w+){0,2}[\\s,]+${lang}\\b`, "i").test(q);
   // Every named language contributes its stack — a comparative "TS vs Go" question must not
   // silently answer only one side. Wallet questions lead with the wallet toolbox.
   const walletFirst = /\bwallet\b/.test(q);
   const hints: string[] = [];
-  if (/\b(typescript|javascript|node(?:\.?js)?|ts)\b/.test(q)) {
+  if (near("(?:typescript|javascript|node\\.?js|ts)")) {
     hints.push(...(walletFirst ? ["@bsv/wallet-toolbox", "@bsv/sdk"] : ["@bsv/sdk", "@bsv/wallet-toolbox"]));
   }
-  if (/\bgo(?:lang)?\b/.test(q)) {
+  if (near("(?:go|golang)")) {
     hints.push(...(walletFirst ? ["go-wallet-toolbox", "go-sdk"] : ["go-sdk", "go-wallet-toolbox"]));
   }
   return hints;
@@ -718,7 +1039,9 @@ function detectNeeds(question: string, classified: ClassifiedAs): NeedKind[] {
 
 function inferNetwork(question: string): Network {
   const q = question.toLowerCase();
-  if (/\b(ttn|teratestnet|teratest|faucet)\b/.test(q)) {
+  // Explicit network words win; a bare "faucet" implies ttn only when no network was named
+  // ("How do I use the faucet on mainnet?" is a mainnet question with a wrong premise).
+  if (/\b(ttn|teratestnet|teratest)\b/.test(q)) {
     return "ttn";
   }
   if (/\btstn\b/.test(q)) {
@@ -730,7 +1053,59 @@ function inferNetwork(question: string): Network {
   if (/\btestnet\b/.test(q)) {
     return "test";
   }
+  if (/\bfaucet\b/.test(q)) {
+    return "ttn";
+  }
   return "any";
+}
+
+/**
+ * True when a confirmed package's name appears as a whole word in the question. Scoped names
+ * match on their final segment (`@bsv/uhrp-react` → `uhrp-react`); names shorter than four
+ * characters are too generic to pin on (`bsv`, `sdk`). Repo slugs and unhyphenated mentions
+ * match on collapsed forms: "storage-server" names `@bsv/uhrp-storage-server` (segment suffix),
+ * "message box server" names `messagebox-server`.
+ */
+function packageNamedInQuestion(name: string, question: string): boolean {
+  const short = name.split("/").pop() ?? name;
+  if (short.length < 4) {
+    return false;
+  }
+  const re = new RegExp(
+    `(?<![\\w-])${short.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?![\\w-])`,
+    "i",
+  );
+  if (re.test(question)) {
+    return true;
+  }
+  const collapsedQuestion = question.toLowerCase().replace(/[^a-z0-9]+/g, "");
+  const segments = short.toLowerCase().split(/[-_]+/);
+  for (let i = 0; i < segments.length - 1; i++) {
+    const candidate = segments.slice(i).join("");
+    // Full collapsed name needs 5+ chars; a suffix (dropping leading segments) needs 8+ so
+    // "react" alone cannot name @bsv/uhrp-react.
+    const minLength = i === 0 ? 5 : 8;
+    if (candidate.length >= minLength && collapsedQuestion.includes(candidate)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/** True when a doc/example id belongs to the package's repo ("doc:message-box-server:…" ↔
+ * package `messagebox-server`): compare collapsed forms, full name first, suffixes guarded. */
+function idMatchesPackage(hitId: string, packageName: string): boolean {
+  const short = (packageName.split("/").pop() ?? packageName).toLowerCase();
+  const collapsedId = hitId.toLowerCase().replace(/[^a-z0-9]+/g, "");
+  const segments = short.split(/[-_]+/);
+  for (let i = 0; i < segments.length; i++) {
+    const candidate = segments.slice(i).join("");
+    const minLength = i === 0 ? 5 : 8;
+    if (candidate.length >= minLength && collapsedId.includes(candidate)) {
+      return true;
+    }
+  }
+  return false;
 }
 
 function authorityForClass(classified: ClassifiedAs): number {
@@ -777,13 +1152,72 @@ const DOMAIN_TOKENS = new Set([
   "wallet",
 ]);
 
+/** Tokens that make the pinned testnet ops card relevant even when FTS cannot reach it. */
+const TESTNET_CUE_TOKENS = new Set(["testnet", "ttn", "tstn", "teratestnet", "faucet"]);
+
+/**
+ * Tokens ordered rarest-first by corpus document frequency. "teratestnet" outranks "wallet";
+ * the pair ladder probes distinctive concepts before generic ones.
+ */
+function byCorpusDistinctiveness(store: KnowledgeStore, tokens: string[]): string[] {
+  const frequency = new Map<string, number>();
+  for (const token of tokens) {
+    frequency.set(token, searchKnowledge(store, token, { limit: 20 }).totalCount);
+  }
+  return [...tokens].sort(
+    (a, b) => (frequency.get(a) ?? 0) - (frequency.get(b) ?? 0) || b.length - a.length,
+  );
+}
+
+/**
+ * Confirmed packages whose short name shares a segment with a distinctive question token.
+ * Exact segment match, or a prefix match for longer tokens ("message" → "messagebox-server");
+ * short tokens stay exact so "pay" cannot summon every payment package. Generic ecosystem
+ * words ("services", "server") never hop — they name a class, not a package.
+ */
+function topicMatchedPackages(store: KnowledgeStore, tokens: string[]): string[] {
+  const GENERIC = new Set([
+    "service",
+    "services",
+    "server",
+    "servers",
+    "client",
+    "clients",
+    "package",
+    "packages",
+    "library",
+    "libraries",
+    "network",
+    "networks",
+  ]);
+  const distinctive = new Set(tokens.filter((token) => token.length >= 4 && !GENERIC.has(token)));
+  if (distinctive.size === 0) {
+    return [];
+  }
+  const matched: string[] = [];
+  for (const card of store.listByIdPrefix("package:", 100)) {
+    const name = card.id.slice("package:".length);
+    const short = (name.split("/").pop() ?? name).toLowerCase();
+    const segments = short.split(/[-_]+/);
+    const hit = [...distinctive].some((token) =>
+      segments.some((segment) => segment === token || (token.length >= 5 && segment.startsWith(token))),
+    );
+    if (hit) {
+      matched.push(name);
+    }
+    if (matched.length >= 4) {
+      break;
+    }
+  }
+  return matched;
+}
+
 function retrieveHits(
   store: KnowledgeStore,
   classified: ClassifiedAs,
   tokens: string[],
   question: string,
-): TypedHit[] {
-  const query = tokens.join(" ");
+): TypedHit[] {  const query = tokens.join(" ");
   const filters = filtersForClass(classified);
   if (!query) {
     return [];
@@ -797,10 +1231,20 @@ function retrieveHits(
 
   let result = searchKnowledge(store, query, { filters, limit: 20 });
   take(result.hits);
-  if (collected.length === 0 && tokens.length > 2) {
-    const loosened = [...tokens].sort((a, b) => b.length - a.length).slice(0, 3).join(" ");
-    result = searchKnowledge(store, loosened, { filters, limit: 20 });
-    take(result.hits);
+  if (collected.length < 3 && tokens.length > 2) {
+    // AND over every token is precise but brittle: one absent word ("payout") zeroes the whole
+    // pile. Fall back to pairs of the most corpus-distinctive tokens, accumulating — each pair
+    // is a self-contained concept probe ("teratestnet faucet", "payout wallet").
+    const ordered = byCorpusDistinctiveness(store, tokens);
+    const probe = ordered.slice(0, 5);
+    outer: for (let i = 0; i < probe.length; i++) {
+      for (let j = i + 1; j < probe.length; j++) {
+        take(searchKnowledge(store, `${probe[i]} ${probe[j]}`, { filters, limit: 20 }).hits);
+        if (collected.length >= 8) {
+          break outer;
+        }
+      }
+    }
   }
 
   if (classified === "design-why") {
@@ -868,6 +1312,21 @@ function retrieveHits(
     const doc = store.getById(`package:${name}`);
     if (doc) {
       upsertHit(collected, storedHit(doc, tokens));
+    }
+  }
+
+  // A distinctive token that names a confirmed package's name segment ("uhrp" → uhrp-services,
+  // "@bsv/uhrp-react"; "arcade" → arcade) surfaces that package card and its usage examples:
+  // naming the ecosystem is asking about its implementations, and FTS cannot AND its way to
+  // them ("Where is UHRP specified and implemented?" shares no vocabulary with the card).
+  for (const name of topicMatchedPackages(store, tokens)) {
+    const doc = store.getById(`package:${name}`);
+    if (doc) {
+      upsertHit(collected, storedHit(doc, tokens));
+      const shortRepo = name.split("/").pop() ?? name;
+      for (const example of store.listByIdPrefix(`example:${shortRepo}:`, 2)) {
+        upsertHit(collected, storedHit(example, tokens));
+      }
     }
   }
 
@@ -1058,6 +1517,32 @@ function excerptWindow(
   limit = 280,
   preferDefinition = false,
 ): string {
+  return cleanExcerptMarkup(excerptWindowRaw(text, tokens, preferRequirements, limit, preferDefinition));
+}
+
+/** README bodies carry presentation HTML (<div align="center">, &nbsp;); strip real tags but
+ * keep script placeholders like <signature> that are content, not markup. */
+function cleanExcerptMarkup(excerpt: string): string {
+  return excerpt
+    .replace(
+      /<\/?(?:div|span|a|br|hr|img|p|b|i|em|strong|table|thead|tbody|tr|td|th|ul|ol|li|h[1-6]|center|sub|sup)(?:\s[^>]*)?>/gi,
+      " ",
+    )
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function excerptWindowRaw(
+  text: string,
+  tokens: string[] = [],
+  preferRequirements = false,
+  limit = 280,
+  preferDefinition = false,
+): string {
   // Unescape before windowing so indices into `lower` stay aligned with `normalised`.
   const normalised = text.replace(/\\_/g, "_").replace(/\s+/g, " ").trim();
   const lower = normalised.toLowerCase();
@@ -1101,6 +1586,11 @@ function excerptWindow(
   // wins kept body answers pinned to the title header, and unweighted coverage lets stopword-ish
   // tokens ("can", "use") outscore the distinctive term ("op_cat") the question is about.
   const hasDistinctive = phrases.some((p) => p.length >= 5);
+  // An operative token continuing into a camelCase identifier ("internalize" →
+  // "internalizeAction") marks the API-definition passage; inflections ("internalized") are prose.
+  const camelRe = operative
+    ? new RegExp(`\\b${operative.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}[A-Z]`)
+    : undefined;
   let bestFrom = -1;
   let bestScore = 0;
   for (const phrase of phrases) {
@@ -1125,6 +1615,9 @@ function excerptWindow(
           score += p.length;
         }
       }
+      if (camelRe && camelRe.test(normalised.slice(from, from + limit))) {
+        score += (operative?.length ?? 0) * 2;
+      }
       // A window without any distinctive query term is never the answer passage.
       if (hasDistinctive && !phrases.some((p) => p.length >= 5 && windowText.includes(p))) {
         score = 0;
@@ -1145,11 +1638,21 @@ function excerptWindow(
 
 /** Window from a named markdown section heading when present, else token-windowed. */
 function sectionExcerpt(text: string, section: string, tokens: string[], limit = 280): string {
-  const normalised = text.replace(/\\_/g, "_").replace(/\s+/g, " ").trim();
-  // Headings may carry a numbering prefix ("## 3. Faucet (Teratestnet funding)").
-  const anchor = new RegExp(`#+\\s*(?:\\d+(?:\\.\\d+)*\\.?\\s+)?${section}\\b`, "i").exec(normalised);
-  if (anchor) {
-    return normalised.slice(anchor.index, anchor.index + limit);
+  // Anchor on a heading whose text contains the section key — numbering prefixes ("## 3.") and
+  // leading verbs ("## 1. Can we generate and switch…") both match. Table pipes and code
+  // backticks are elided so the quoted passage reads as prose ("POST /api/claim/wallet").
+  const heading = new RegExp(
+    `^#+\\s*(?:\\d+(?:\\.\\d+)*\\.?\\s+)?[^\\n]*\\b${section}\\b[^\\n]*$`,
+    "im",
+  ).exec(text);
+  if (heading) {
+    return text
+      .slice(heading.index, heading.index + limit * 3)
+      .replace(/\\_/g, "_")
+      .replace(/[`|()]/g, "")
+      .replace(/\s+/g, " ")
+      .trim()
+      .slice(0, limit);
   }
   return excerptWindow(text, tokens);
 }
@@ -1178,6 +1681,7 @@ function composeClaims(
     stubIds?: Set<string>;
     deniedPackage?: string | undefined;
     packageIds?: string[];
+    hopPackages?: string[];
   } = {
     explicitBrcs: [],
     missingBrcs: [],
@@ -1246,12 +1750,15 @@ function composeClaims(
   // Placeholder pages ("specs pending") rank below substantive peers of the same authority;
   // a title that names a distinctive query token outranks a body that merely mentions it.
   const stubs = routing.stubIds ?? new Set<string>();
+  // Hyphenated compounds ("message-box-client") score as whole phrases: their per-word strict
+  // boundaries never match the hyphenated form, which is exactly how real docs were wiped.
+  const compounds = hyphenCompounds(question);
   const ranked = [...eligible].sort(
     (a, b) =>
       a.authority - b.authority ||
       Number(stubs.has(a.id)) - Number(stubs.has(b.id)) ||
-      titleOverlap(b, tokens) - titleOverlap(a, tokens) ||
-      scoreHit(b, tokens) - scoreHit(a, tokens) ||
+      titleOverlap(b, tokens, compounds) - titleOverlap(a, tokens, compounds) ||
+      scoreHit(b, [...tokens, ...compounds]) - scoreHit(a, [...tokens, ...compounds]) ||
       brcNumber(a) - brcNumber(b),
   );
   // The ordinality playbook is an ops card (authority 3), so it sits outside the eligible set
@@ -1294,22 +1801,79 @@ function composeClaims(
   const packageCard = routing.packageIds
     ?.map((id) => eligible.find((hit) => hit.id === `package:${id}`))
     .find((hit) => hit !== undefined);
-  // The question's own address pins win first (named BRC, governed topic); the ordinality
-  // playbook is an operator checklist, never the answer to "which BRC" or "does BRC-N…".
+  // Naming a Tier 1 service/library makes it the subject of the question ("Should I broadcast via
+  // Arcade…"): pin its package card. Tier 0 toolchain names (sdk, wallet-toolbox, runar) are
+  // excluded — those questions are answered by their specs and academy docs, not the label card.
+  const namedPackageCard = eligible.find(
+    (hit) =>
+      hit.id.startsWith("package:") &&
+      hit.title.startsWith("Tier 1 package:") &&
+      packageNamedInQuestion(hit.id.slice("package:".length), question),
+  );
+  // On a how-to question the repo's own README/example answers; the generated identity card
+  // only confirms the name. Prefer the doc from the same repo when one was retrieved.
+  const howToQuestion =
+    /\b(how do i|how do we|how to|install|configure|register|deploy|integrate|use|store|display|upload)\b/i.test(
+      question,
+    );
+  const namedRepoDoc =
+    namedPackageCard && howToQuestion
+      ? eligible.find(
+          (hit) =>
+            (hit.kind === "doc" || hit.kind === "example") &&
+            idMatchesPackage(hit.id, namedPackageCard.id.slice("package:".length)),
+        )
+      : undefined;
+  // The question's own address pins win first (named BRC, governed topic, defined term); the
+  // ordinality playbook is an operator checklist, never the answer to "which BRC" or "does
+  // BRC-N…". A definitional doc outranks the identity card on "what is X?".
   const pinned =
     explicitCard ??
     governanceCard ??
+    definitionCard ??
+    namedRepoDoc ??
+    namedPackageCard ??
     openedCard ??
     beefCard ??
-    definitionCard ??
     opcodeCard ??
     packageCard;
-  const lead = pinned ?? ranked[0];
+  let lead = pinned ?? ranked[0];
+
+  // "Which package/implementation should I use?" is answered by a package or its docs, never
+  // by a BRC that merely shares topic words (BRC-35's title names "Overlay Services" but
+  // specifies a KV store) nor by a symbol card's JSON dump. BRCs stay in the pile as
+  // secondary citations.
+  const implementationPick =
+    routing.explicitBrcs.length === 0 &&
+    /\b(?:which|what)\b[\s\S]{0,60}\b(?:package|packages|sdk|library|implementation|service|services|tool|middleware)\b[\s\S]{0,40}\b(?:use|install|choose|pick|implement)/i.test(
+      question,
+    );
+  if (!pinned && implementationPick) {
+    lead =
+      ranked.find((hit) => hit.kind === "doc" || hit.kind === "example" || hit.kind === "package") ??
+      ranked.find((hit) => hit.kind !== "brc");
+  }
 
   // A bare "what is X?" with no definitional card must not pose an incidental mention (e.g. the
   // 1Sat ordinals BRCs for "sat") as the definition. The coincidental hits are cleared too:
   // leaving them in the lead slot invites the client to quote them as the very definition the
-  // claim just refused to give.
+  // claim just refused to give. A named package card, its repo docs, or a ranked hit that
+  // genuinely names the term ARE about X — they may answer. On-topic is judged on the TERM's
+  // words: "run protocol" is not defined by a doc whose title merely contains "protocol".
+  const bareTermWords = bareTerm?.split(/[\s-]+/).filter(Boolean) ?? [];
+  const strictShortTerm = bareTermWords.length === 1 && bareTermWords[0]!.length < 4;
+  const rankedLeadOnTopic =
+    bareTerm !== undefined &&
+    ranked[0] !== undefined &&
+    (strictShortTerm
+      ? titleDefinesTerm(ranked[0]!.title, bareTerm!)
+      : compounds.some(
+          (compound) =>
+            ranked[0]!.id.toLowerCase().includes(compound) ||
+            mentionsWord(ranked[0]!.title.toLowerCase(), compound),
+        ) ||
+        (bareTermWords.length > 0 &&
+          bareTermWords.every((word) => mentionsWord(ranked[0]!.title.toLowerCase(), word))));
   if (
     bareTerm &&
     !openedCard &&
@@ -1317,7 +1881,10 @@ function composeClaims(
     !explicitCard &&
     !governanceCard &&
     !definitionCard &&
-    !opcodeCard
+    !opcodeCard &&
+    !namedPackageCard &&
+    !namedRepoDoc &&
+    !rankedLeadOnTopic
   ) {
     gaps.push(`No pinned document defines "${bareTerm}"; the retrieved hits mention it only in passing.`);
     hits.length = 0;
@@ -1350,20 +1917,56 @@ function composeClaims(
 
   // An unpinned lead (no explicit/governance/opcode/definition pin fired) must earn its place:
   // at least two word-level token matches, or a distinctive token in its title. Anything weaker
-  // is a coincidental mention — fail closed rather than sell it as the answer.
-  if (!pinned && wordScore(lead, tokens) < 2 && titleOverlap(lead, tokens) === 0) {
-    hits.length = 0;
-    gaps.push(
-      "Retrieval found only incidental mentions of this topic; no pinned document is about it.",
+  // is a coincidental mention — fail closed rather than sell it as the answer. When the
+  // best-ranked hit is coincidental but a LATER hit is genuinely on-topic (a hyphenated compound
+  // in its id, a package the question named, a topic-hopped package's docs), demote instead of
+  // wiping: the pile contains a real answer under a lexical collision.
+  if (!pinned && lead && wordScore(lead, tokens, compounds) < 2 && titleOverlap(lead, tokens, compounds) === 0) {
+    const hopPackages = routing.hopPackages ?? [];    const isHopCard = (hit: TypedHit): boolean =>
+      hopPackages.some(
+        (name) =>
+          hit.id === `package:${name}` ||
+          ((hit.kind === "doc" || hit.kind === "example") && idMatchesPackage(hit.id, name)),
+      );
+    const onTopic = (hit: TypedHit): boolean =>
+      wordScore(hit, tokens, compounds) >= 2 || titleOverlap(hit, tokens, compounds) > 0;
+    const passing = ranked.find(
+      (hit) =>
+        onTopic(hit) &&
+        (compounds.some((compound) => hit.id.toLowerCase().includes(compound)) ||
+          (hit.id.startsWith("package:") &&
+            packageNamedInQuestion(hit.id.slice("package:".length), question)) ||
+          isHopCard(hit)),
     );
-    return [
-      {
-        text: "The pinned snapshot does not contain a document that is about this question; only incidental mentions were found, so nothing is quoted.",
-        support: [],
-        status: "insufficient",
-        confidence: "low",
-      },
-    ];
+    // A topic-hopped package card needs no further proof: the hop itself is the relevance
+    // signal, and hyphen boundaries can zero its word score ("storage" in "uhrp-storage-server").
+    const rescued = passing ?? ranked.find((hit) => isHopCard(hit));
+    if (rescued) {
+      lead = rescued;
+    } else {
+      // A cue-summoned ops card is not an incidental mention: when the question's own
+      // faucet/testnet/broadcast cues injected it and nothing else passed the floor, the ops
+      // card IS the honest answer ("the faucet is Teratestnet funding" on a mainnet ask).
+      const opsCued = hits.find((hit) => hit.locator === "ops://testnet" && hit.excerpt);
+      const cuesOps =
+        tokens.some((token) => TESTNET_CUE_TOKENS.has(token)) || tokens.includes("broadcast");
+      if (opsCued && cuesOps) {
+        lead = opsCued;
+      } else {
+        hits.length = 0;
+        gaps.push(
+          "Retrieval found only incidental mentions of this topic; no pinned document is about it.",
+        );
+        return [
+          {
+            text: "The pinned snapshot does not contain a document that is about this question; only incidental mentions were found, so nothing is quoted.",
+            support: [],
+            status: "insufficient",
+            confidence: "low",
+          },
+        ];
+      }
+    }
   }
 
   // A lead whose own excerpt declares the topic out of scope is an anti-answer: quote the
@@ -1380,6 +1983,38 @@ function composeClaims(
         confidence: "low",
       },
     ];
+  }
+
+  // The lead never mentions a distinctive question token, yet another hit explicitly declares
+  // that token out of scope: the exclusion is the honest answer, not the coincidental lead
+  // ("Should I use BitCom protocols?" — BRC-44 shares "protocols" but BRC-160 names BitCom
+  // only to exclude it).
+  const leadHay = `${lead.id} ${lead.title} ${lead.excerpt ?? ""}`;
+  for (const token of tokens) {
+    if (token.length < 4 || mentionsWord(leadHay, token)) {
+      continue;
+    }
+    const anti = eligible.find(
+      (hit) =>
+        hit.id !== lead.id &&
+        hit.excerpt !== undefined &&
+        mentionsWord(hit.excerpt, token) &&
+        isAntiAnswer(hit.excerpt, [token]),
+    );
+    if (anti) {
+      hits.length = 0;
+      gaps.push(
+        `The only pinned document naming "${token}" (${anti.title}) states it does not cover the topic; no definitional source is pinned.`,
+      );
+      return [
+        {
+          text: `${anti.title} explicitly does not cover this topic: ${anti.excerpt}`,
+          support: [anti.id],
+          status: "insufficient",
+          confidence: "low",
+        },
+      ];
+    }
   }
 
   // A BRC catalogue row (title/category/path) cannot answer a "what does it require/contain"
@@ -1420,26 +2055,79 @@ function composeClaims(
       });
     }
   }
+  // When the testnet ops card informed the answer (faucet funding, broadcast routing, wallet
+  // switching), quote its section as a secondary claim — the operational half of a mixed
+  // answer, in the card's own words (it carries the endpoint paths and BRC references).
+  const opsCard = hits.find((hit) => hit.locator === "ops://testnet" && hit.excerpt);
+  if (opsCard && opsCard.id !== lead.id && !claims.some((claim) => claim.support.includes(opsCard.id))) {
+    claims.push({
+      text: `${opsCard.title}: ${opsCard.excerpt}`,
+      support: [opsCard.id],
+      status: statusForClaim([opsCard], []),
+      confidence: "medium",
+    });
+  }
   return claims;
 }
 
 /** Distinctive tokens (length ≥ 4) present in the hit's title — a topic signal, not a mention. */
-function titleOverlap(hit: TypedHit, tokens: string[]): number {
+function titleOverlap(hit: TypedHit, tokens: string[], compounds: string[] = []): number {
   const title = hit.title.toLowerCase().replace(/\\_/g, "_");
-  return tokens.filter((token) => token.length >= 4 && title.includes(token)).length;
+  let score = tokens.filter((token) => {
+    if (token.length < 4) {
+      return false;
+    }
+    // Word-boundary, not substring: "payment" must not match an unrelated "Payments" title.
+    return mentionsWord(title, token);
+  }).length;
+  for (const compound of compounds) {
+    if (compound.length >= 4 && mentionsWord(title, compound)) {
+      score += compound.split("-").length;
+    }
+  }
+  return score;
 }
 
 /** Word-level token matches across id/title/excerpt. A match inside a hyphenated compound
  * ("scrypt" inside the "scrypt-offchain" URL scheme) is a different token and does not count. */
-function wordScore(hit: TypedHit, tokens: string[]): number {
+function wordScore(hit: TypedHit, tokens: string[], compounds: string[] = []): number {
   const hay = `${hit.id} ${hit.title} ${hit.excerpt ?? ""}`.toLowerCase().replace(/\\_/g, "_");
-  return tokens.filter((token) => {
+  let score = tokens.filter((token) => {
     if (token.length < 3) {
       return false;
     }
     const re = new RegExp(`(?<![\\w-])${token.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?![\\w-])`);
     return re.test(hay);
   }).length;
+  // Long tokens are unambiguous ("peerpayclient", "internalizeaction"): count them double so a
+  // single rare match earns the floor without a second common-word match.
+  score += tokens.filter((token) => {
+    if (token.length < 8) {
+      return false;
+    }
+    const re = new RegExp(`(?<![\\w-])${token.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?![\\w-])`);
+    return re.test(hay);
+  }).length;
+  // A hyphenated compound names one thing ("message-box-client"); its per-word strict boundary
+  // never matches the hyphenated form, so the compound counts at its word weight when whole.
+  for (const compound of compounds) {
+    if (mentionsWord(hay, compound)) {
+      score += compound.split("-").length;
+    }
+  }
+  return score;
+}
+
+/** Hyphenated compounds from the question text ("message-box-client", "go-p2p"). */
+function hyphenCompounds(question: string): string[] {
+  const matches = question.toLowerCase().match(/[\p{L}\p{N}]+(?:-[\p{L}\p{N}]+)+/gu) ?? [];
+  return [...new Set(matches)];
+}
+
+/** Word-boundary membership test against free text (same boundaries as wordScore). */
+function mentionsWord(text: string, token: string): boolean {
+  const re = new RegExp(`(?<![\\w-])${token.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?![\\w-])`, "i");
+  return re.test(text.replace(/\\_/g, "_"));
 }
 
 /** The excerpt itself declares the topic out of scope near a distinctive query token. */
@@ -1573,13 +2261,31 @@ function explicitBrcNumbers(question: string): number[] {
 
 /** The term of a bare single-term definition question: "What is a sat?" → "sat". */
 function bareDefinitionTerm(question: string): string | undefined {
-  const match = /^\s*what(?:'s|\s+is)\s+(?:a\s+|an\s+|the\s+)?([a-z0-9][\w-]*)\s*\??\s*$/i.exec(question);
+  // Up to four words: "What is BEEF?" → "beef"; "What is RUN protocol?" → "run protocol".
+  const match =
+    /^\s*what(?:'s|\s+is)\s+(?:a\s+|an\s+|the\s+)?([a-z0-9][\w-]*(?:\s+[a-z0-9][\w-]*){0,3})\s*\??\s*$/i.exec(
+      question,
+    );
   return match?.[1]?.toLowerCase();
 }
 
 function titleDefinesTerm(title: string, term: string): boolean {
-  const words = title.toLowerCase().replace(/\\_/g, "_").split(/[^a-z0-9_]+/);
-  return words.includes(term);
+  // Hyphens and underscores are separators on both sides: "CHAIN_SPV" defines "spv",
+  // "🛰 go-p2p" defines "go-p2p".
+  const words = title
+    .toLowerCase()
+    .replace(/\\_/g, "_")
+    .split(/[^a-z0-9]+/)
+    .filter(Boolean);
+  const termWords = term.split(/[\s-]+/).filter(Boolean);
+  // A short single word pins only a near-exact title: "pay" must not resolve to
+  // "01 - Pay to Public Key", but "spv" may resolve to "CHAIN_SPV".
+  if (termWords.length === 1 && termWords[0]!.length < 4) {
+    return words.length <= 2 && words.includes(termWords[0]!);
+  }
+  // Every word of the term must appear in the title: "Run an Overlay Node" contains "run"
+  // but not "protocol", so it does not define "run protocol".
+  return termWords.every((word) => words.includes(word));
 }
 
 /** A definition must come from a prose document; a symbol card names a thing, it does not define it. */
@@ -1657,6 +2363,7 @@ function composeSketch(
   claims: EvidenceClaim[],
   hits: TypedHit[],
   ordinalityQuestion = false,
+  tokens: string[] = [],
 ): string {
   // A denial is the answer; the sketch must not bury it under unrelated how-to cards.
   const deny = hits.find((hit) => hit.locator === "repo://deny" && hit.excerpt);
@@ -1681,9 +2388,16 @@ function composeSketch(
   // The lead hit is the answer; the sketch names it first, then the supporting family (the
   // BEEF BRC set is a citation vehicle — goldens require the family to be named). Supports of
   // any secondary claims (e.g. the reserved-opcodes facet of a two-part question) are named too.
+  // A BRC that shares no vocabulary with the question (ladder junk like BRC-148 on a UHRP ask)
+  // is never named.
   const leadId = claims[0]?.support[0];
   const secondaryIds = new Set(claims.slice(1).flatMap((claim) => claim.support));
-  const howBrcs = hits.filter((hit) => hit.kind === "brc");
+  const citedIds = new Set(claims.flatMap((claim) => claim.support));
+  const howBrcs = hits.filter(
+    (hit) =>
+      hit.kind === "brc" &&
+      (citedIds.has(hit.id) || wordScore(hit, tokens) >= 1 || titleOverlap(hit, tokens) > 0),
+  );
   const howCode = hits.filter((hit) => hit.authority <= 2 && hit.kind !== "brc").slice(0, 2);
   const how = [...howBrcs, ...howCode];
   for (const id of secondaryIds) {
@@ -1786,6 +2500,66 @@ function loadContradictionFindings(root: string): unknown[] {
   }
   const raw = JSON.parse(readFileSync(abs, "utf8")) as { findings?: unknown[] };
   return Array.isArray(raw.findings) ? raw.findings : [];
+}
+
+type BrcMentionIndex = {
+  /** Package label → BRC numbers its own snapshotted docs cite. */
+  byPackage: Map<string, Set<number>>;
+  /** Package label → repo short name (docs/examples are keyed by repo, not package name). */
+  packageRepo: Map<string, string>;
+};
+
+let brcMentionCache: { root: string; index: BrcMentionIndex } | undefined;
+
+/** The evidenced BRC↔package edges: built at refresh from each repo's own docs, read-only here. */
+function loadBrcMentions(root: string): BrcMentionIndex {
+  if (brcMentionCache?.root === root) {
+    return brcMentionCache.index;
+  }
+  const byPackage = new Map<string, Set<number>>();
+  const packageRepo = new Map<string, string>();
+  for (const tier of ["tier0", "tier1"] as const) {
+    const tierRoot = join(root, "reference", tier);
+    const mentionsAbs = join(tierRoot, "docs", "brc-mentions.json");
+    if (existsSync(mentionsAbs)) {
+      try {
+        const raw = JSON.parse(readFileSync(mentionsAbs, "utf8")) as {
+          mentions?: Record<string, unknown>;
+        };
+        for (const [pkg, numbers] of Object.entries(raw.mentions ?? {})) {
+          const set = byPackage.get(pkg) ?? new Set<number>();
+          for (const n of Array.isArray(numbers) ? numbers : []) {
+            if (typeof n === "number" && Number.isInteger(n)) {
+              set.add(n);
+            }
+          }
+          byPackage.set(pkg, set);
+        }
+      } catch {
+        // A malformed mentions file is non-fatal: join questions fail closed without it.
+      }
+    }
+    const manifestAbs = join(tierRoot, "manifest.json");
+    if (existsSync(manifestAbs)) {
+      try {
+        const raw = JSON.parse(readFileSync(manifestAbs, "utf8")) as {
+          repos?: Array<{ repo?: unknown; package?: unknown }>;
+        };
+        for (const row of raw.repos ?? []) {
+          const pkg = typeof row.package === "string" ? row.package : "";
+          const repo = typeof row.repo === "string" ? (row.repo.split("/").pop() ?? "") : "";
+          if (pkg && repo) {
+            packageRepo.set(pkg, repo);
+          }
+        }
+      } catch {
+        // Non-fatal: repoShort falls back to the package's short name.
+      }
+    }
+  }
+  const index: BrcMentionIndex = { byPackage, packageRepo };
+  brcMentionCache = { root, index };
+  return index;
 }
 
 function contradictionFromHit(hit: TypedHit): EvidenceContradiction | undefined {

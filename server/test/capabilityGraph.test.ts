@@ -59,7 +59,8 @@ describe("capability_graph.json", () => {
     expect(ef).toBeDefined();
     const pkgs = Array.isArray(ef?.packages) ? [...ef.packages].sort() : [];
     expect(pkgs).not.toEqual([...FOUR_TIER0_PACKAGES].sort());
-    expect(pkgs.includes("@bsv/sdk")).toBe(false);
+    // @bsv/sdk may appear: its own snapshotted docs cite BRC-30, an evidenced edge. The
+    // toolboxes cite no BRC-30, so the spurious short "ef" token must still not attach them.
     expect(pkgs.includes("@bsv/wallet-toolbox")).toBe(false);
     expect(pkgs.includes("go-wallet-toolbox")).toBe(false);
   });
@@ -71,12 +72,41 @@ describe("capability_graph.json", () => {
   });
 
   it("never lists an api name that is absent from symbols.json", () => {
-    const symbols = JSON.parse(readFileSync(resolve(ROOT, "reference/tier0/symbols.json"), "utf8"));
-    const confirmed = new Set((symbols.symbols ?? []).map((row: { name: string }) => row.name));
+    const confirmed = new Set<string>();
+    for (const tier of ["tier0", "tier1"]) {
+      const path = resolve(ROOT, "reference", tier, "symbols.json");
+      if (!existsSync(path)) {
+        continue;
+      }
+      const symbols = JSON.parse(readFileSync(path, "utf8"));
+      for (const row of symbols.symbols ?? []) {
+        confirmed.add(row.name);
+      }
+    }
     const { rows } = loadRows();
     for (const row of rows) {
       for (const name of Array.isArray(row.api) ? row.api : []) {
         expect(confirmed.has(name), `${row.brc} api ${name}`).toBe(true);
+      }
+    }
+  });
+
+  it("never lists a package that is absent from every tier's packages.json", () => {
+    const confirmed = new Set<string>();
+    for (const tier of ["tier0", "tier1"]) {
+      const path = resolve(ROOT, "reference", tier, "packages.json");
+      if (!existsSync(path)) {
+        continue;
+      }
+      const card = JSON.parse(readFileSync(path, "utf8"));
+      for (const name of card.packages ?? []) {
+        confirmed.add(name);
+      }
+    }
+    const { rows } = loadRows();
+    for (const row of rows) {
+      for (const name of Array.isArray(row.packages) ? row.packages : []) {
+        expect(confirmed.has(name), `${row.brc} package ${name}`).toBe(true);
       }
     }
   });

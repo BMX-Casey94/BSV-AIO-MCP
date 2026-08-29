@@ -7,21 +7,21 @@
 
 The following files were used as context for generating this wiki page:
 
-- [.github/CODEOWNERS](.github/CODEOWNERS)
-- [.gitignore](.gitignore)
-- [README.md](README.md)
-- [RELIABILITY.md](RELIABILITY.md)
-- [package.json](package.json)
-- [pnpm-workspace.yaml](pnpm-workspace.yaml)
-- [tsconfig.base.json](tsconfig.base.json)
+- [.github/CODEOWNERS](https://github.com/bsv-blockchain/ts-stack/blob/main/.github/CODEOWNERS)
+- [.gitignore](https://github.com/bsv-blockchain/ts-stack/blob/main/.gitignore)
+- [README.md](https://github.com/bsv-blockchain/ts-stack/blob/main/README.md)
+- [RELIABILITY.md](https://github.com/bsv-blockchain/ts-stack/blob/main/RELIABILITY.md)
+- [package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/package.json)
+- [pnpm-workspace.yaml](https://github.com/bsv-blockchain/ts-stack/blob/main/pnpm-workspace.yaml)
+- [tsconfig.base.json](https://github.com/bsv-blockchain/ts-stack/blob/main/tsconfig.base.json)
 
 </details>
 
 
 
-The `@bsv/ts-stack` is a comprehensive TypeScript monorepo containing the production-grade software stack for the BSV blockchain. It spans the entire lifecycle of blockchain interaction, from low-level cryptographic primitives and transaction construction to high-level wallet services, overlay networks, and authenticated messaging protocols [README.md:1-4]().
+The `@bsv/ts-stack` is a comprehensive TypeScript monorepo containing the production-grade software stack for the BSV blockchain. It spans the entire lifecycle of blockchain interaction, from low-level cryptographic primitives and transaction construction to high-level wallet services, overlay networks, and authenticated messaging protocols [README.md:1-4](https://github.com/bsv-blockchain/ts-stack/blob/main/README.md#L1-L4).
 
-The repository is organized into seven functional domains, comprising over 40 packages [README.md:7-20](). It utilizes a strictly enforced inward dependency flow to ensure architectural stability and modularity.
+The repository is organized into seven functional domains, comprising over 40 packages [README.md:7-20](https://github.com/bsv-blockchain/ts-stack/blob/main/README.md#L7-L20). It utilizes a strictly enforced inward dependency flow to ensure architectural stability and modularity.
 
 ### Domain Architecture
 
@@ -37,7 +37,7 @@ The stack is structured hierarchically. Packages in higher-level domains depend 
 | **Middleware** | Express.js integrations for auth and payments. | `@bsv/auth-express-middleware`, `@bsv/402-pay` |
 | **Helpers** | High-level application APIs and utilities. | `@bsv/simple`, `@bsv/paymail` |
 
-**Sources:** [README.md:7-94](), [README.md:152-162]()
+**Sources:** [README.md:7-94](https://github.com/bsv-blockchain/ts-stack/blob/main/README.md#L7-L94), [README.md:152-162](https://github.com/bsv-blockchain/ts-stack/blob/main/README.md#L152-L162)
 
 ### Dependency Hierarchy
 
@@ -75,36 +75,36 @@ graph TD
   NET --> SDK
   BTMS --> SDK
 ```
-**Sources:** [README.md:154-162]()
+**Sources:** [README.md:154-162](https://github.com/bsv-blockchain/ts-stack/blob/main/README.md#L154-L162)
 
 ### Criticality Tiers & Reliability
 
-The monorepo classifies packages into **Criticality Tiers** to prioritize engineering investment and reliability guarantees [RELIABILITY.md:14-16]().
+The monorepo classifies packages into **Criticality Tiers** to prioritize engineering investment and reliability guarantees [RELIABILITY.md:14-16](https://github.com/bsv-blockchain/ts-stack/blob/main/RELIABILITY.md#L14-L16).
 
-*   **Tier 0 (Core Protocol):** Failure breaks the entire stack. Example: `@bsv/sdk` [RELIABILITY.md:20]().
-*   **Tier 1 (Critical Services):** Failure breaks multiple consumers. Examples: `@bsv/wallet-toolbox`, `@bsv/overlay-services` [RELIABILITY.md:21]().
-*   **Tier 2 (Important):** Failure degrades a single domain. Example: `@bsv/message-box-server` [RELIABILITY.md:22]().
+*   **Tier 0 (Core Protocol):** Failure breaks the entire stack. Example: `@bsv/sdk` [RELIABILITY.md:20](https://github.com/bsv-blockchain/ts-stack/blob/main/RELIABILITY.md#L20).
+*   **Tier 1 (Critical Services):** Failure breaks multiple consumers. Examples: `@bsv/wallet-toolbox`, `@bsv/overlay-services` [RELIABILITY.md:21](https://github.com/bsv-blockchain/ts-stack/blob/main/RELIABILITY.md#L21).
+*   **Tier 2 (Important):** Failure degrades a single domain. Example: `@bsv/message-box-server` [RELIABILITY.md:22](https://github.com/bsv-blockchain/ts-stack/blob/main/RELIABILITY.md#L22).
 
-Each package tracks its state via **Reliability Levels (RL)**, ranging from RL0 (Untested) to RL5 (Hardened) [RELIABILITY.md:5-12]().
+Each package tracks its state via **Reliability Levels (RL)**, ranging from RL0 (Untested) to RL5 (Hardened) [RELIABILITY.md:5-12](https://github.com/bsv-blockchain/ts-stack/blob/main/RELIABILITY.md#L5-L12).
 
 ### Monorepo Management
 
-The stack uses `pnpm` workspaces to manage cross-package dependencies and shared configuration [pnpm-workspace.yaml:1-7]().
+The stack uses `pnpm` workspaces to manage cross-package dependencies and shared configuration [pnpm-workspace.yaml:1-7](https://github.com/bsv-blockchain/ts-stack/blob/main/pnpm-workspace.yaml#L1-L7).
 
-*   **Build System:** Uses a shared `tsconfig.base.json` for consistent compilation across ESM and CJS targets [tsconfig.base.json:1-21]().
-*   **Version Alignment:** Custom scripts `sync-versions.mjs` and `check-versions.mjs` ensure that internal dependencies remain synchronized across the 40+ packages [package.json:10-11]().
-*   **Conformance:** A cross-language conformance suite (TypeScript and Go) validates the SDK against a shared vector corpus [package.json:12]().
+*   **Build System:** Uses a shared `tsconfig.base.json` for consistent compilation across ESM and CJS targets [tsconfig.base.json:1-21](https://github.com/bsv-blockchain/ts-stack/blob/main/tsconfig.base.json#L1-L21).
+*   **Version Alignment:** Custom scripts `sync-versions.mjs` and `check-versions.mjs` ensure that internal dependencies remain synchronized across the 40+ packages [package.json:10-11](https://github.com/bsv-blockchain/ts-stack/blob/main/package.json#L10-L11).
+*   **Conformance:** A cross-language conformance suite (TypeScript and Go) validates the SDK against a shared vector corpus [package.json:12](https://github.com/bsv-blockchain/ts-stack/blob/main/package.json#L12).
 
-For details on the workspace layout and dependency flow, see [Repository Structure & Monorepo Setup](#1.1).
+For details on the workspace layout and dependency flow, see [Repository Structure & Monorepo Setup](02-Repository-Structure---Monorepo-Setup.md).
 
 ### CI/CD and Release Pipeline
 
 The repository implements a robust CI/CD pipeline via GitHub Actions:
-1.  **Continuous Integration:** Validates every PR with build, lint, and test jobs across the entire workspace [package.json:6-8]().
-2.  **Conformance Testing:** Runs the `@bsv/sdk` against cryptographic and transaction vectors [package.json:12]().
+1.  **Continuous Integration:** Validates every PR with build, lint, and test jobs across the entire workspace [package.json:6-8](https://github.com/bsv-blockchain/ts-stack/blob/main/package.json#L6-L8).
+2.  **Conformance Testing:** Runs the `@bsv/sdk` against cryptographic and transaction vectors [package.json:12](https://github.com/bsv-blockchain/ts-stack/blob/main/package.json#L12).
 3.  **Automated Releases:** Publishes packages to npm using OIDC-based authentication triggered by git tags.
 
-For details on the automation workflows, see [CI/CD, Release & Versioning](#1.2).
+For details on the automation workflows, see [CI/CD, Release & Versioning](03-CI-CD--Release---Versioning.md).
 
 ### Code-to-Domain Mapping
 
@@ -133,11 +133,11 @@ graph LR
     AS_DIR["packages/messaging/authsocket"]
   end
 
-  SDK_DIR --- "@bsv/sdk"
-  WT_DIR --- "@bsv/wallet-toolbox"
-  OV_DIR --- "@bsv/overlay"
-  MB_DIR --- "@bsv/message-box-client"
+  SDK_DIR --- SDK_PKG["@bsv/sdk"]
+  WT_DIR --- WT_PKG["@bsv/wallet-toolbox"]
+  OV_DIR --- OV_PKG["@bsv/overlay"]
+  MB_DIR --- MB_PKG["@bsv/message-box-client"]
 ```
-**Sources:** [README.md:26-78]()
+**Sources:** [README.md:26-78](https://github.com/bsv-blockchain/ts-stack/blob/main/README.md#L26-L78)
 
 ---

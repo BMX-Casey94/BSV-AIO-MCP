@@ -7,20 +7,20 @@
 
 The following files were used as context for generating this wiki page:
 
-- [packages/network/chaintracks-server/package.json](packages/network/chaintracks-server/package.json)
-- [packages/overlays/overlay-express-examples/package.json](packages/overlays/overlay-express-examples/package.json)
-- [packages/overlays/overlay-express/package.json](packages/overlays/overlay-express/package.json)
-- [packages/wallet/wab/package.json](packages/wallet/wab/package.json)
-- [packages/wallet/wallet-infra/package.json](packages/wallet/wallet-infra/package.json)
-- [packages/wallet/wallet-toolbox-examples/package.json](packages/wallet/wallet-toolbox-examples/package.json)
-- [packages/wallet/wallet-toolbox-examples/src/internalizeWalletPayment.ts](packages/wallet/wallet-toolbox-examples/src/internalizeWalletPayment.ts)
-- [packages/wallet/wallet-toolbox-examples/src/janitor.ts](packages/wallet/wallet-toolbox-examples/src/janitor.ts)
-- [packages/wallet/wallet-toolbox-examples/src/listChange.ts](packages/wallet/wallet-toolbox-examples/src/listChange.ts)
-- [packages/wallet/wallet-toolbox/client/package.json](packages/wallet/wallet-toolbox/client/package.json)
-- [packages/wallet/wallet-toolbox/mobile/package.json](packages/wallet/wallet-toolbox/mobile/package.json)
-- [packages/wallet/wallet-toolbox/package.json](packages/wallet/wallet-toolbox/package.json)
-- [packages/wallet/wallet-toolbox/src/storage/schema/entities/__tests/CertificateFieldTests.test.ts](packages/wallet/wallet-toolbox/src/storage/schema/entities/__tests/CertificateFieldTests.test.ts)
-- [packages/wallet/wallet-toolbox/src/storage/schema/entities/__tests/usersTests.test.ts](packages/wallet/wallet-toolbox/src/storage/schema/entities/__tests/usersTests.test.ts)
+- [packages/network/chaintracks-server/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/chaintracks-server/package.json)
+- [packages/overlays/overlay-express-examples/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/overlay-express-examples/package.json)
+- [packages/overlays/overlay-express/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/overlay-express/package.json)
+- [packages/wallet/wab/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wab/package.json)
+- [packages/wallet/wallet-infra/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wallet-infra/package.json)
+- [packages/wallet/wallet-toolbox-examples/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wallet-toolbox-examples/package.json)
+- [packages/wallet/wallet-toolbox-examples/src/internalizeWalletPayment.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wallet-toolbox-examples/src/internalizeWalletPayment.ts)
+- [packages/wallet/wallet-toolbox-examples/src/janitor.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wallet-toolbox-examples/src/janitor.ts)
+- [packages/wallet/wallet-toolbox-examples/src/listChange.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wallet-toolbox-examples/src/listChange.ts)
+- [packages/wallet/wallet-toolbox/client/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wallet-toolbox/client/package.json)
+- [packages/wallet/wallet-toolbox/mobile/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wallet-toolbox/mobile/package.json)
+- [packages/wallet/wallet-toolbox/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wallet-toolbox/package.json)
+- [packages/wallet/wallet-toolbox/src/storage/schema/entities/__tests/CertificateFieldTests.test.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wallet-toolbox/src/storage/schema/entities/__tests/CertificateFieldTests.test.ts)
+- [packages/wallet/wallet-toolbox/src/storage/schema/entities/__tests/usersTests.test.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wallet-toolbox/src/storage/schema/entities/__tests/usersTests.test.ts)
 
 </details>
 
@@ -34,11 +34,11 @@ The toolbox is designed to be environment-agnostic while providing specialized e
 
 | Target | Package / Entry Point | Primary Technologies |
 | :--- | :--- | :--- |
-| **All (Server)** | `@bsv/wallet-toolbox` | Node.js, Knex, MySQL, SQLite [packages/wallet/wallet-toolbox/package.json:2-52]() |
-| **Client (Web)** | `@bsv/wallet-toolbox-client` | IndexedDB (idb), Web Crypto [packages/overlays/overlay-express/package.json:73-73]() |
-| **Mobile** | `@bsv/wallet-toolbox-mobile` | React Native / SQLite [packages/wallet/wallet-toolbox/mobile/package.json:1-10]() |
+| **All (Server)** | `@bsv/wallet-toolbox` | Node.js, Knex, MySQL, SQLite [packages/wallet/wallet-toolbox/package.json:2-52](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wallet-toolbox/package.json#L2-L52) |
+| **Client (Web)** | `@bsv/wallet-toolbox-client` | IndexedDB (idb), Web Crypto [packages/overlays/overlay-express/package.json:73-73](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/overlay-express/package.json#L73-L73) |
+| **Mobile** | `@bsv/wallet-toolbox-mobile` | React Native / SQLite [packages/wallet/wallet-toolbox/mobile/package.json:1-10](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wallet-toolbox/mobile/package.json#L1-L10) |
 
-Sources: [packages/wallet/wallet-toolbox/package.json:1-73](), [packages/overlays/overlay-express/package.json:68-80]()
+Sources: [packages/wallet/wallet-toolbox/package.json:1-73](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wallet-toolbox/package.json#L1-L73), [packages/overlays/overlay-express/package.json:68-80](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/overlay-express/package.json#L68-L80)
 
 ## Core Architecture & Data Flow
 
@@ -66,7 +66,7 @@ sequenceDiagram
     SM->>DB: update("actions")
     W-->>App: Action Result
 ```
-Sources: [packages/wallet/wallet-toolbox/src/storage/schema/entities/__tests/usersTests.test.ts:84-113](), [packages/wallet/wallet-toolbox-examples/src/internalizeWalletPayment.ts:45-64]()
+Sources: [packages/wallet/wallet-toolbox/src/storage/schema/entities/__tests/usersTests.test.ts:84-113](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wallet-toolbox/src/storage/schema/entities/__tests/usersTests.test.ts#L84-L113), [packages/wallet/wallet-toolbox-examples/src/internalizeWalletPayment.ts:45-64](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wallet-toolbox-examples/src/internalizeWalletPayment.ts#L45-L64)
 
 ## WalletStorageManager & Storage Providers
 
@@ -74,25 +74,25 @@ The `WalletStorageManager` abstracts the underlying database. It supports multip
 
 ### Key Entities
 The storage layer manages several BRC-100 compliant entities:
-- **EntityUser**: Manages identity keys and user-specific settings [packages/wallet/wallet-toolbox/src/storage/schema/entities/__tests/usersTests.test.ts:33-42]().
-- **EntityCertificate**: Stores BRC-116/BRC-117 identity certificates [packages/wallet/wallet-toolbox/src/storage/schema/entities/__tests/CertificateFieldTests.test.ts:35-47]().
-- **EntityCertificateField**: Individual fields within a certificate, supporting master key encryption [packages/wallet/wallet-toolbox/src/storage/schema/entities/__tests/CertificateFieldTests.test.ts:52-61]().
+- **EntityUser**: Manages identity keys and user-specific settings [packages/wallet/wallet-toolbox/src/storage/schema/entities/__tests/usersTests.test.ts:33-42](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wallet-toolbox/src/storage/schema/entities/__tests/usersTests.test.ts#L33-L42).
+- **EntityCertificate**: Stores BRC-116/BRC-117 identity certificates [packages/wallet/wallet-toolbox/src/storage/schema/entities/__tests/CertificateFieldTests.test.ts:35-47](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wallet-toolbox/src/storage/schema/entities/__tests/CertificateFieldTests.test.ts#L35-L47).
+- **EntityCertificateField**: Individual fields within a certificate, supporting master key encryption [packages/wallet/wallet-toolbox/src/storage/schema/entities/__tests/CertificateFieldTests.test.ts:52-61](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wallet-toolbox/src/storage/schema/entities/__tests/CertificateFieldTests.test.ts#L52-L61).
 
 ### Implementation Details
-- **StorageKnex**: Uses the Knex.js query builder to support PostgreSQL, MySQL, and SQLite. Used primarily in `@bsv/wallet-infra` and `@bsv/wab-server` [packages/wallet/wallet-infra/package.json:38-47]().
-- **StorageIdb**: A browser-based provider utilizing the `idb` wrapper for IndexedDB [packages/wallet/wallet-toolbox/package.json:48-48]().
-- **Sync Layer**: The `SyncMap` and `createSyncMap` functions allow for reconciling data between different storage instances, essential for multi-device synchronization [packages/wallet/wallet-toolbox/src/storage/schema/entities/__tests/usersTests.test.ts:107-110]().
+- **StorageKnex**: Uses the Knex.js query builder to support PostgreSQL, MySQL, and SQLite. Used primarily in `@bsv/wallet-infra` and `@bsv/wab-server` [packages/wallet/wallet-infra/package.json:38-47](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wallet-infra/package.json#L38-L47).
+- **StorageIdb**: A browser-based provider utilizing the `idb` wrapper for IndexedDB [packages/wallet/wallet-toolbox/package.json:48-48](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wallet-toolbox/package.json#L48-L48).
+- **Sync Layer**: The `SyncMap` and `createSyncMap` functions allow for reconciling data between different storage instances, essential for multi-device synchronization [packages/wallet/wallet-toolbox/src/storage/schema/entities/__tests/usersTests.test.ts:107-110](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wallet-toolbox/src/storage/schema/entities/__tests/usersTests.test.ts#L107-L110).
 
-Sources: [packages/wallet/wallet-toolbox/src/storage/schema/entities/__tests/usersTests.test.ts:1-208](), [packages/wallet/wallet-toolbox/src/storage/schema/entities/__tests/CertificateFieldTests.test.ts:1-154](), [packages/wallet/wallet-infra/package.json:38-47]()
+Sources: [packages/wallet/wallet-toolbox/src/storage/schema/entities/__tests/usersTests.test.ts:1-208](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wallet-toolbox/src/storage/schema/entities/__tests/usersTests.test.ts#L1-L208), [packages/wallet/wallet-toolbox/src/storage/schema/entities/__tests/CertificateFieldTests.test.ts:1-154](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wallet-toolbox/src/storage/schema/entities/__tests/CertificateFieldTests.test.ts#L1-L154), [packages/wallet/wallet-infra/package.json:38-47](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wallet-infra/package.json#L38-L47)
 
 ## WalletSigner & Authentication
 
 The `WalletSigner` is responsible for all cryptographic operations. It handles BRC-42 key derivation and transaction signing without exposing the root private key to the rest of the application.
 
-- **Internalization**: The `internalizeAction` function allows a wallet to ingest external outputs (like BRC-29 payments) by deriving the correct keys from a `paymentRemittance` [packages/wallet/wallet-toolbox-examples/src/internalizeWalletPayment.ts:49-64]().
+- **Internalization**: The `internalizeAction` function allows a wallet to ingest external outputs (like BRC-29 payments) by deriving the correct keys from a `paymentRemittance` [packages/wallet/wallet-toolbox-examples/src/internalizeWalletPayment.ts:49-64](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wallet-toolbox-examples/src/internalizeWalletPayment.ts#L49-L64).
 - **WalletAuthenticationManager**: Manages BRC-103 mutual authentication sessions, ensuring that only authorized peers can request signatures or view balances.
 
-Sources: [packages/wallet/wallet-toolbox-examples/src/internalizeWalletPayment.ts:33-69](), [packages/wallet/wallet-toolbox/package.json:42-44]()
+Sources: [packages/wallet/wallet-toolbox-examples/src/internalizeWalletPayment.ts:33-69](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wallet-toolbox-examples/src/internalizeWalletPayment.ts#L33-L69), [packages/wallet/wallet-toolbox/package.json:42-44](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wallet-toolbox/package.json#L42-L44)
 
 ## Wallet-Infra Reference Deployment
 
@@ -124,13 +124,13 @@ graph TD
     style Server stroke-dasharray: 5 5
     style Toolbox stroke-width: 2px
 ```
-Sources: [packages/wallet/wallet-infra/package.json:38-47](), [packages/wallet/wallet-toolbox/package.json:42-49]()
+Sources: [packages/wallet/wallet-infra/package.json:38-47](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wallet-infra/package.json#L38-L47), [packages/wallet/wallet-toolbox/package.json:42-49](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wallet-toolbox/package.json#L42-L49)
 
 ### Key Features in Infrastructure
-- **ChaintracksService**: A service within the toolbox used by `@bsv/chaintracks-server` to monitor blockchain headers and validate Merkle paths [packages/network/chaintracks-server/package.json:5-33]().
-- **Janitor & Maintenance**: Tools like `janitorOnIdentity` are used to find and release unspendable or invalid change outputs, ensuring the UTXO set remains clean [packages/wallet/wallet-toolbox-examples/src/janitor.ts:15-50]().
-- **Output Listing**: Advanced filtering via `listOutputs` allows applications to query specific "baskets" of UTXOs (e.g., `specOpInvalidChange`) [packages/wallet/wallet-toolbox-examples/src/janitor.ts:25-25]().
+- **ChaintracksService**: A service within the toolbox used by `@bsv/chaintracks-server` to monitor blockchain headers and validate Merkle paths [packages/network/chaintracks-server/package.json:5-33](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/chaintracks-server/package.json#L5-L33).
+- **Janitor & Maintenance**: Tools like `janitorOnIdentity` are used to find and release unspendable or invalid change outputs, ensuring the UTXO set remains clean [packages/wallet/wallet-toolbox-examples/src/janitor.ts:15-50](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wallet-toolbox-examples/src/janitor.ts#L15-L50).
+- **Output Listing**: Advanced filtering via `listOutputs` allows applications to query specific "baskets" of UTXOs (e.g., `specOpInvalidChange`) [packages/wallet/wallet-toolbox-examples/src/janitor.ts:25-25](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wallet-toolbox-examples/src/janitor.ts#L25-L25).
 
-Sources: [packages/network/chaintracks-server/package.json:1-42](), [packages/wallet/wallet-toolbox-examples/src/janitor.ts:1-172](), [packages/wallet/wallet-toolbox-examples/src/listChange.ts:14-47]()
+Sources: [packages/network/chaintracks-server/package.json:1-42](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/chaintracks-server/package.json#L1-L42), [packages/wallet/wallet-toolbox-examples/src/janitor.ts:1-172](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wallet-toolbox-examples/src/janitor.ts#L1-L172), [packages/wallet/wallet-toolbox-examples/src/listChange.ts:14-47](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wallet-toolbox-examples/src/listChange.ts#L14-L47)
 
 ---

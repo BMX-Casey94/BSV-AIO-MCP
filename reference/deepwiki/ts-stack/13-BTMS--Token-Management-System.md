@@ -7,19 +7,19 @@
 
 The following files were used as context for generating this wiki page:
 
-- [.editorconfig](.editorconfig)
-- [.npmrc](.npmrc)
-- [conformance/vectors/README.md](conformance/vectors/README.md)
-- [packages/messaging/message-box-server/package.json](packages/messaging/message-box-server/package.json)
-- [packages/overlays/btms-backend/package.json](packages/overlays/btms-backend/package.json)
-- [packages/wallet/btms-permission-module/package.json](packages/wallet/btms-permission-module/package.json)
-- [packages/wallet/btms/README.md](packages/wallet/btms/README.md)
-- [packages/wallet/btms/index.ts](packages/wallet/btms/index.ts)
-- [packages/wallet/btms/jest.config.js](packages/wallet/btms/jest.config.js)
-- [packages/wallet/btms/package-lock.json](packages/wallet/btms/package-lock.json)
-- [packages/wallet/btms/package.json](packages/wallet/btms/package.json)
-- [packages/wallet/btms/src/BTMS.ts](packages/wallet/btms/src/BTMS.ts)
-- [packages/wallet/btms/src/BTMSAdvanced.ts](packages/wallet/btms/src/BTMSAdvanced.ts)
+- [.editorconfig](https://github.com/bsv-blockchain/ts-stack/blob/main/.editorconfig)
+- [.npmrc](https://github.com/bsv-blockchain/ts-stack/blob/main/.npmrc)
+- [conformance/vectors/README.md](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/README.md)
+- [packages/messaging/message-box-server/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/message-box-server/package.json)
+- [packages/overlays/btms-backend/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/btms-backend/package.json)
+- [packages/wallet/btms-permission-module/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms-permission-module/package.json)
+- [packages/wallet/btms/README.md](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/README.md)
+- [packages/wallet/btms/index.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/index.ts)
+- [packages/wallet/btms/jest.config.js](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/jest.config.js)
+- [packages/wallet/btms/package-lock.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/package-lock.json)
+- [packages/wallet/btms/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/package.json)
+- [packages/wallet/btms/src/BTMS.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/src/BTMS.ts)
+- [packages/wallet/btms/src/BTMSAdvanced.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/src/BTMSAdvanced.ts)
 
 </details>
 
@@ -68,30 +68,30 @@ graph TD
     BTMS -- "Uses" --> MB
     TX -- "Validated by" --> BTMSTopic
 ```
-**Sources:** [packages/wallet/btms/src/BTMS.ts:98-120](), [packages/wallet/btms/README.md:34-43](), [packages/wallet/btms/package.json:51-53]()
+**Sources:** [packages/wallet/btms/src/BTMS.ts:98-120](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/src/BTMS.ts#L98-L120), [packages/wallet/btms/README.md:34-43](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/README.md#L34-L43), [packages/wallet/btms/package.json:51-53](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/package.json#L51-L53)
 
 ## Core Classes
 
 ### BTMS Class
-The `BTMS` class is the primary entry point for developers. It provides high-level methods for token lifecycle management, abstracting away the complexities of UTXO selection and script construction [packages/wallet/btms/src/BTMS.ts:4-9]().
+The `BTMS` class is the primary entry point for developers. It provides high-level methods for token lifecycle management, abstracting away the complexities of UTXO selection and script construction [packages/wallet/btms/src/BTMS.ts:4-9](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/src/BTMS.ts#L4-L9).
 
-*   **`issue(amount, metadata)`**: Creates a new token. It uses a random derivation key for privacy and marks the output with an `ISSUE` marker [packages/wallet/btms/src/BTMS.ts:161-212]().
-*   **`send(assetId, recipient, amount)`**: Handles UTXO selection from the wallet's BTMS basket, constructs the transfer transaction, and optionally delivers the BEEF (Bitcoin Envelope Entity Format) to the recipient via a `CommsLayer` [packages/wallet/btms/README.md:143-161]().
-*   **`accept(payment)`**: Processes incoming tokens received via messaging layers and internalizes them into the wallet's local storage [packages/wallet/btms/README.md:163-174]().
-*   **`getBalance(assetId)`**: Aggregates UTXOs in the specific asset's basket to return a total balance [packages/wallet/btms/README.md:195-202]().
+*   **`issue(amount, metadata)`**: Creates a new token. It uses a random derivation key for privacy and marks the output with an `ISSUE` marker [packages/wallet/btms/src/BTMS.ts:161-212](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/src/BTMS.ts#L161-L212).
+*   **`send(assetId, recipient, amount)`**: Handles UTXO selection from the wallet's BTMS basket, constructs the transfer transaction, and optionally delivers the BEEF (Bitcoin Envelope Entity Format) to the recipient via a `CommsLayer` [packages/wallet/btms/README.md:143-161](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/README.md#L143-L161).
+*   **`accept(payment)`**: Processes incoming tokens received via messaging layers and internalizes them into the wallet's local storage [packages/wallet/btms/README.md:163-174](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/README.md#L163-L174).
+*   **`getBalance(assetId)`**: Aggregates UTXOs in the specific asset's basket to return a total balance [packages/wallet/btms/README.md:195-202](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/README.md#L195-L202).
 
-**Sources:** [packages/wallet/btms/src/BTMS.ts:98-223](), [packages/wallet/btms/README.md:100-211]()
+**Sources:** [packages/wallet/btms/src/BTMS.ts:98-223](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/src/BTMS.ts#L98-L223), [packages/wallet/btms/README.md:100-211](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/README.md#L100-L211)
 
 ### BTMSToken (Script Template)
 This class handles the encoding and decoding of the 3-field PushDrop script used by BTMS.
 
 | Field | Description | Code Reference |
 | :--- | :--- | :--- |
-| **0: Asset ID** | The canonical ID (`txid.vout`) or `"ISSUE"` marker. | [packages/wallet/btms/README.md:80-84]() |
-| **1: Amount** | UTF-8 string representing a positive integer. | [packages/wallet/btms/README.md:85]() |
-| **2: Metadata** | Optional JSON string containing token details (name, symbol, icon). | [packages/wallet/btms/README.md:86]() |
+| **0: Asset ID** | The canonical ID (`txid.vout`) or `"ISSUE"` marker. | [packages/wallet/btms/README.md:80-84](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/README.md#L80-L84) |
+| **1: Amount** | UTF-8 string representing a positive integer. | [packages/wallet/btms/README.md:85](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/README.md#L85) |
+| **2: Metadata** | Optional JSON string containing token details (name, symbol, icon). | [packages/wallet/btms/README.md:86](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/README.md#L86) |
 
-**Sources:** [packages/wallet/btms/src/BTMSToken.js:1-50](), [packages/wallet/btms/README.md:78-87]()
+**Sources:** [packages/wallet/btms/src/BTMSToken.js:1-50](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/src/BTMSToken.js#L1-L50), [packages/wallet/btms/README.md:78-87](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/README.md#L78-L87)
 
 ## Token Lifecycle Logic
 
@@ -116,22 +116,22 @@ sequenceDiagram
     User->>Overlay: LookupResolver.lookup(txid)
     Overlay->>Overlay: Validate Input Sum >= Output Sum
 ```
-**Sources:** [packages/wallet/btms/src/BTMS.ts:161-225](), [packages/wallet/btms/README.md:88-97]()
+**Sources:** [packages/wallet/btms/src/BTMS.ts:161-225](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/src/BTMS.ts#L161-L225), [packages/wallet/btms/README.md:88-97](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/README.md#L88-L97)
 
 ## Integration Modules
 
 ### btms-permission-module
-The `@bsv/btms-permission-module` is a specialized package for integrating BTMS into BRC-100 wallets (like the `wallet-toolbox`). It allows the wallet to handle BTMS-specific requests while maintaining security boundaries [packages/wallet/btms-permission-module/package.json:2-4]().
+The `@bsv/btms-permission-module` is a specialized package for integrating BTMS into BRC-100 wallets (like the `wallet-toolbox`). It allows the wallet to handle BTMS-specific requests while maintaining security boundaries [packages/wallet/btms-permission-module/package.json:2-4](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms-permission-module/package.json#L2-L4).
 
-*   **Dependencies**: Requires `@bsv/sdk`, `@bsv/btms`, and `@bsv/wallet-toolbox-client` [packages/wallet/btms-permission-module/package.json:26-30]().
+*   **Dependencies**: Requires `@bsv/sdk`, `@bsv/btms`, and `@bsv/wallet-toolbox-client` [packages/wallet/btms-permission-module/package.json:26-30](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms-permission-module/package.json#L26-L30).
 
 ### btms-backend (Overlay)
-The `@bsv/btms-backend` package implements the server-side logic for the BTMS overlay. It uses the `@bsv/overlay` engine to track the state of every BTMS UTXO [packages/overlays/btms-backend/package.json:2-6]().
+The `@bsv/btms-backend` package implements the server-side logic for the BTMS overlay. It uses the `@bsv/overlay` engine to track the state of every BTMS UTXO [packages/overlays/btms-backend/package.json:2-6](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/btms-backend/package.json#L2-L6).
 
-*   **Topic Manager**: Implements validation rules (e.g., ensuring metadata consistency across transfers) [packages/wallet/btms/README.md:93-97]().
-*   **Storage**: Typically uses MongoDB to index token outputs for fast lookup by `assetId` or owner [packages/overlays/btms-backend/package.json:52]().
+*   **Topic Manager**: Implements validation rules (e.g., ensuring metadata consistency across transfers) [packages/wallet/btms/README.md:93-97](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/README.md#L93-L97).
+*   **Storage**: Typically uses MongoDB to index token outputs for fast lookup by `assetId` or owner [packages/overlays/btms-backend/package.json:52](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/btms-backend/package.json#L52).
 
-**Sources:** [packages/wallet/btms-permission-module/package.json:1-37](), [packages/overlays/btms-backend/package.json:1-54]()
+**Sources:** [packages/wallet/btms-permission-module/package.json:1-37](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms-permission-module/package.json#L1-L37), [packages/overlays/btms-backend/package.json:1-54](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/btms-backend/package.json#L1-L54)
 
 ## Implementation Details
 
@@ -140,13 +140,13 @@ The canonical Asset ID is derived from the transaction ID and output index of th
 *   **Function**: `BTMSToken.computeAssetId(txid, vout)`
 *   **Format**: `<32-byte-hex-txid>.<output-index>` (e.g., `abc123...def.0`)
 
-**Sources:** [packages/wallet/btms/src/BTMS.ts:222](), [packages/wallet/btms/README.md:241-244]()
+**Sources:** [packages/wallet/btms/src/BTMS.ts:222](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/src/BTMS.ts#L222), [packages/wallet/btms/README.md:241-244](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/README.md#L241-L244)
 
 ### Basket Management
 BTMS uses the `wallet-toolbox` basket system to organize UTXOs.
 *   **Basket Name**: `p btms <assetId>`
-*   **Labels**: BTMS transactions are tagged with labels such as `btms_type_issue`, `btms_direction_incoming`, and `btms_counterparty_<pubkey>` for efficient filtering in the UI [packages/wallet/btms/src/BTMS.ts:183-205]().
+*   **Labels**: BTMS transactions are tagged with labels such as `btms_type_issue`, `btms_direction_incoming`, and `btms_counterparty_<pubkey>` for efficient filtering in the UI [packages/wallet/btms/src/BTMS.ts:183-205](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/src/BTMS.ts#L183-L205).
 
-**Sources:** [packages/wallet/btms/src/BTMS.ts:161-225]()
+**Sources:** [packages/wallet/btms/src/BTMS.ts:161-225](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/src/BTMS.ts#L161-L225)
 
 ---

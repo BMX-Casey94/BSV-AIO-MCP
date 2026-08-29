@@ -7,9 +7,9 @@
 
 The following files were used as context for generating this wiki page:
 
-- [packages/overlays/gasp-core/package.json](packages/overlays/gasp-core/package.json)
-- [packages/overlays/overlay-discovery-services/package.json](packages/overlays/overlay-discovery-services/package.json)
-- [packages/overlays/overlay-services/package.json](packages/overlays/overlay-services/package.json)
+- [packages/overlays/gasp-core/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/gasp-core/package.json)
+- [packages/overlays/overlay-discovery-services/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/overlay-discovery-services/package.json)
+- [packages/overlays/overlay-services/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/overlay-services/package.json)
 
 </details>
 
@@ -33,7 +33,7 @@ The overlay architecture is built on a modular pattern where a central **Engine*
 
 The `Engine` class in `@bsv/overlay` is the primary entry point for overlay operations. It manages the lifecycle of transactions as they are submitted to the network, ensuring they are stored and passed to the relevant `TopicManager` for indexing. The system utilizes GASP (Graph Aware Sync Protocol) to synchronize state between nodes without requiring a central coordinator.
 
-For details, see [Overlay Services Engine & GASP Sync](#4.1).
+For details, see [Overlay Services Engine & GASP Sync](15-Overlay-Services-Engine---GASP-Sync.md).
 
 #### Logic Flow Diagram
 This diagram illustrates the relationship between the core `Engine` and its supporting interfaces.
@@ -58,7 +58,7 @@ graph TD
     E --> OGS
     OGS --> G
 ```
-**Sources:** [packages/overlays/overlay-services/package.json:1-81](), [packages/overlays/gasp-core/package.json:1-66]()
+**Sources:** [packages/overlays/overlay-services/package.json:1-81](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/overlay-services/package.json#L1-L81), [packages/overlays/gasp-core/package.json:1-66](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/gasp-core/package.json#L1-L66)
 
 ---
 
@@ -66,7 +66,7 @@ graph TD
 
 `@bsv/overlay-express` provides a standardized way to deploy overlay services as HTTP servers. It includes helpers to configure database backends (Knex for SQL or MongoDB) and automatically wires up the Engine with Express routes. This allows developers to focus on topic logic while the framework handles the boilerplate of networking and persistence.
 
-For details, see [Overlay Express & Deployment](#4.2).
+For details, see [Overlay Express & Deployment](16-Overlay-Express---Deployment.md).
 
 #### Deployment Components
 The framework bridges high-level configuration to the underlying Engine.
@@ -89,7 +89,7 @@ graph LR
     CK -.-> OE
     CM -.-> OE
 ```
-**Sources:** [packages/overlays/overlay-services/package.json:75-79]()
+**Sources:** [packages/overlays/overlay-services/package.json:75-79](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/overlay-services/package.json#L75-L79)
 
 ---
 
@@ -104,7 +104,7 @@ The `@bsv/overlay-topics` package contains the "standard library" of BSV overlay
 
 Each topic implementation typically follows a pattern of providing a `TopicManager` for validation and a `LookupService` for querying the indexed data.
 
-For details, see [Canonical Topic Library (@bsv/overlay-topics)](#4.3).
+For details, see [Canonical Topic Library (@bsv/overlay-topics)](17-Canonical-Topic-Library---bsv-overlay-topics.md).
 
 ---
 
@@ -117,6 +117,6 @@ The ecosystem is rounded out by `@bsv/overlay-discovery-services`, which facilit
 | **UHRP Storage** | Specialized storage handling for large blobs associated with overlay transactions. |
 | **Multi-DB Support** | Storage abstractions allowing the use of Knex (Postgres/SQLite/MySQL) or MongoDB. |
 
-**Sources:** [packages/overlays/overlay-discovery-services/package.json:1-71](), [packages/overlays/overlay-services/package.json:27-36]()
+**Sources:** [packages/overlays/overlay-discovery-services/package.json:1-71](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/overlay-discovery-services/package.json#L1-L71), [packages/overlays/overlay-services/package.json:27-36](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/overlay-services/package.json#L27-L36)
 
 ---

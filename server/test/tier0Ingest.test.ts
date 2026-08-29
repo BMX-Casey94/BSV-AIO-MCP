@@ -18,7 +18,8 @@ describe("tier0 ingest", () => {
   it("counts confirmed packages on the index pin and serves repo://tier0", () => {
     const store = createKnowledgeStore(openDatabase(":memory:"));
     const config = { ...defaultConfig(ROOT), tier0Root: FIXTURE };
-    ingestSnapshots(config.root, store, { tier0Root: FIXTURE });
+    // Hermetic: no tier1Root, so the real Tier 1 snapshot cannot leak into fixture counts.
+    ingestSnapshots(config.root, store, { tier0Root: FIXTURE, tier1Root: join(FIXTURE, "absent-tier1") });
     const status = buildIndexStatus(config.root, store);
     expect(status.counts.packages).toBe(2);
     expect(status.status).toMatch(/ready|stale/);
@@ -30,7 +31,7 @@ describe("tier0 ingest", () => {
 
   it("ingests spec and vector cards from the pinned card set", () => {
     const store = createKnowledgeStore(openDatabase(":memory:"));
-    const result = ingestSnapshots(ROOT, store, { tier0Root: FIXTURE });
+    const result = ingestSnapshots(ROOT, store, { tier0Root: FIXTURE, tier1Root: join(FIXTURE, "absent-tier1") });
 
     const pkg = store.getById("package:@bsv/sdk");
     expect(pkg?.kind).toBe("doc");
@@ -63,7 +64,8 @@ describe("tier0 ingest", () => {
 
     const status = buildIndexStatus(ROOT, store);
     expect(status.status).toBe("ready");
-    expect(status.counts.packages).toBe(5);
+    // 5 Tier 0 packages + 7 Tier 1 packages.
+    expect(status.counts.packages).toBe(12);
     expect(store.countByIdPrefix("spec:")).toBeGreaterThan(0);
     expect(store.countByIdPrefix("symbol:")).toBeGreaterThan(0);
     expect(getResource(ROOT, store, "repo://tier0").text).toContain("bsv-blockchain/ts-sdk");

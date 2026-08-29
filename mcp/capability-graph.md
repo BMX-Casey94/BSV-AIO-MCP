@@ -13,7 +13,11 @@ Build `reference/capability_graph.json` from, in order:
 1. `reference/brc_index.json` — id, title, category, path
 2. `data/education_index.json` themes that mention the same BRC or concept
 3. `reference/shoprag-successor-map.json` — current package names only
-4. After Phase B: exported symbol names that match the BRC title tokens
+4. Exported symbol names that match the BRC title tokens (Tier 0+1 `symbols.json`)
+5. Evidenced BRC→package edges: `reference/tier0/docs/brc-mentions.json` and
+   `reference/tier1/docs/brc-mentions.json` — BRC numbers cited by each repo's own
+   snapshotted README/docs/examples. These are the only BRC-to-package edges the
+   graph trusts beyond title-token matching.
 
 **Forbidden:** copying a donor project's capability seed file. Those rows invent
 APIs (`PeerPayClient`, `createPayment`, `serialiseEnvelope`).
@@ -41,6 +45,7 @@ React kits (`identity-react`, `uhrp-react`) may appear as `kind: example`
 
 ## Tools
 
-- Phase B: `get_package_for_concept` reads this graph (packages + BRCs only)
-- Phase D: `check_dependency` uses `reference/deny-list.json` plus indexed packages
+- `get_package_for_concept` reads this graph (packages + BRCs only)
+- `check_dependency` uses `reference/deny-list.json` plus the confirmed Tier 0/1
+  package cards (shipped in 1.1.0)
 - Do not add `build_context`. `investigate` is the expensive path.

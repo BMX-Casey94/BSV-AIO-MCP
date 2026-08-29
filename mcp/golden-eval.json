@@ -1,8 +1,10 @@
 {
   "generated": "2026-08-14",
-  "purpose": "Golden set. Phase A must pass G04, G05, G09, G10. Later phases add the rest. BitGenius public Q&A is a canary only — never ingested.",
+  "purpose": "Golden set. Phase A must pass G04, G05, G09, G10. Phase B adds G02, G12, G13. Phase C adds G01, G03, G07, G08 (Tier 1 snapshot) and G14-G29 (Tier 1 deep-dive: hyphenated names, archived-status, evidenced BRC joins, ops cues). Phase D adds G06, G11 (read-only policy tools). BitGenius public Q&A is a canary only — never ingested.",
   "phase_a": ["G04", "G05", "G09", "G10"],
   "phase_b": ["G02", "G12", "G13"],
+  "phase_c": ["G01", "G03", "G07", "G08", "G14", "G15", "G16", "G17", "G18", "G19", "G20", "G21", "G22", "G23", "G24", "G25", "G26", "G27", "G28", "G29"],
+  "phase_d": ["G06", "G11"],
   "cases": [
     {
       "id": "G01",
@@ -34,7 +36,7 @@
       "class": "implementation",
       "expect": {
         "must_mention": ["Arcade", "per-network", "ttn"],
-        "must_cite": ["ops://testnet"],
+        "must_cite": ["ops://testnet", "package:arcade"],
         "must_not": ["prefer SVNode", "Arcade first on every network", "SEEN_MULTIPLE_NODES"],
         "authority_lead": 2
       }
@@ -64,6 +66,7 @@
       "class": "actuate",
       "expect": {
         "tool": "network_guard",
+        "args": { "intent_text": "I want to test a payment flow. Should I use mainnet?" },
         "action": "ask_switch",
         "network": "ttn"
       }
@@ -140,9 +143,150 @@
       "phase": "D",
       "expect": {
         "tool": "check_dependency",
+        "args": { "name": "bsv" },
         "status": "denied",
         "must_cite": ["repo://deny"],
         "must_mention": ["@bsv/sdk", "CVE-2025-69287"]
+      }
+    },
+    {
+      "id": "G14",
+      "question": "How do I use the message-box-server?",
+      "class": "implementation",
+      "expect": {
+        "must_cite": ["repo://ts-stack/infra/message-box-server/README.md"],
+        "must_mention": ["message box server"]
+      }
+    },
+    {
+      "id": "G15",
+      "question": "Is storage-server still maintained?",
+      "class": "mixed",
+      "expect": {
+        "must_cite": ["package:@bsv/uhrp-storage-server"],
+        "must_mention": ["archived", "ts-stack"]
+      }
+    },
+    {
+      "id": "G16",
+      "question": "What is go-p2p?",
+      "class": "mixed",
+      "expect": {
+        "must_cite": ["repo://go-p2p/README.md"],
+        "must_mention": ["libp2p"]
+      }
+    },
+    {
+      "id": "G17",
+      "question": "How do I configure storage?",
+      "class": "implementation",
+      "expect": {
+        "must_cite": ["package:@bsv/uhrp-storage-server"]
+      }
+    },
+    {
+      "id": "G18",
+      "question": "Which package should I use for overlay services?",
+      "class": "implementation",
+      "expect": {
+        "must_cite": ["repo://ts-stack/packages/overlays/overlay/README.md"],
+        "must_mention": ["@bsv/overlay"]
+      }
+    },
+    {
+      "id": "G19",
+      "question": "Does arcade implement BRC-74?",
+      "class": "implementation",
+      "expect": {
+        "must_cite": ["BRC-74"],
+        "must_mention": ["yes", "arcade"]
+      }
+    },
+    {
+      "id": "G20",
+      "question": "Which BRCs does message-box-server implement?",
+      "class": "implementation",
+      "expect": {
+        "must_mention": ["BRC-2", "BRC-103"]
+      }
+    },
+    {
+      "id": "G21",
+      "question": "Does the uhrp-react SDK implement BRC-103 on Teratestnet?",
+      "class": "implementation",
+      "expect": {
+        "network": "ttn",
+        "must_mention": ["does not evidence @bsv/uhrp-react implementing BRC-103"]
+      }
+    },
+    {
+      "id": "G22",
+      "question": "Is message-box-server archived and what is its successor?",
+      "class": "mixed",
+      "expect": {
+        "must_cite": ["package:messagebox-server"],
+        "must_mention": ["archived", "infra/message-box-server"]
+      }
+    },
+    {
+      "id": "G23",
+      "question": "What is gasp-core?",
+      "class": "mixed",
+      "expect": {
+        "must_mention": ["graph aware sync"]
+      }
+    },
+    {
+      "id": "G24",
+      "question": "How do I use the message-box-client?",
+      "class": "implementation",
+      "expect": {
+        "must_mention": ["@bsv/message-box-client", "npm install"]
+      }
+    },
+    {
+      "id": "G25",
+      "question": "How do I use the faucet on mainnet?",
+      "class": "implementation",
+      "expect": {
+        "network": "main",
+        "must_cite": ["ops://testnet"],
+        "must_mention": ["teratestnet"]
+      }
+    },
+    {
+      "id": "G26",
+      "question": "What is pay?",
+      "class": "mixed",
+      "expect": {
+        "must_mention": ["no pinned document defines \"pay\""]
+      }
+    },
+    {
+      "id": "G27",
+      "question": "How do I configure zqxwv arcade?",
+      "class": "implementation",
+      "expect": {
+        "must_mention": ["never mentions \"zqxwv\""]
+      }
+    },
+    {
+      "id": "G28",
+      "question": "Should I broadcast via Arcade?",
+      "class": "implementation",
+      "expect": {
+        "must_cite": ["package:arcade", "ops://testnet"],
+        "must_mention": ["per-network"]
+      }
+    },
+    {
+      "id": "G29",
+      "question": "How do I upload to uhrp-storage-server from go-wallet-toolbox on tstn?",
+      "class": "implementation",
+      "expect": {
+        "network": "tstn",
+        "must_cite": ["ops://testnet"],
+        "must_mention": ["uhrp storage server"]
       }
     }
   ]

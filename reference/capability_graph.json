@@ -5,9 +5,13 @@
     "data/education_index.json",
     "reference/shoprag-successor-map.json",
     "reference/tier0/packages.json",
-    "reference/tier0/symbols.json"
+    "reference/tier0/symbols.json",
+    "reference/tier0/docs/brc-mentions.json",
+    "reference/tier1/packages.json",
+    "reference/tier1/symbols.json",
+    "reference/tier1/docs/brc-mentions.json"
   ],
-  "policy": "Titles plus confirmed Tier 0 cards. packages come from a word-boundary match of grouping tokens of length ≥ 3 against exported symbols. api lists only exported names that exact-match a title token. Do not invent API names.",
+  "policy": "Titles plus confirmed Tier 0/1 cards. packages come from a word-boundary match of grouping tokens of length ≥ 3 against exported symbols, unioned with the evidenced BRC mentions each repo's own documentation makes. api lists only exported names that exact-match a title token. Do not invent API names.",
   "count": 171,
   "capabilities": [
     {
@@ -25,7 +29,9 @@
       "name": "Data Encryption and Decryption",
       "brc": "BRC-2",
       "also": [],
-      "packages": [],
+      "packages": [
+        "messagebox-server"
+      ],
       "api": [],
       "education_themes": [],
       "authority_hint": 1
@@ -91,7 +97,9 @@
       "name": "Everett-style Transaction Envelopes",
       "brc": "BRC-8",
       "also": [],
-      "packages": [],
+      "packages": [
+        "go-sdk"
+      ],
       "api": [],
       "education_themes": [],
       "authority_hint": 1
@@ -241,7 +249,9 @@
       "also": [
         "BRC-87"
       ],
-      "packages": [],
+      "packages": [
+        "uhrp-services"
+      ],
       "api": [],
       "education_themes": [],
       "authority_hint": 1
@@ -263,7 +273,9 @@
       "also": [
         "BRC-87"
       ],
-      "packages": [],
+      "packages": [
+        "uhrp-services"
+      ],
       "api": [],
       "education_themes": [],
       "authority_hint": 1
@@ -283,7 +295,9 @@
       "name": "Universal Hash Resolution Protocol",
       "brc": "BRC-26",
       "also": [],
-      "packages": [],
+      "packages": [
+        "uhrp-services"
+      ],
       "api": [],
       "education_themes": [],
       "authority_hint": 1
@@ -320,7 +334,10 @@
       "also": [
         "BRC-125"
       ],
-      "packages": [],
+      "packages": [
+        "@bsv/sdk",
+        "go-wallet-toolbox"
+      ],
       "api": [],
       "education_themes": [],
       "authority_hint": 1
@@ -330,7 +347,9 @@
       "name": "Transaction Extended Format (EF)",
       "brc": "BRC-30",
       "also": [],
-      "packages": [],
+      "packages": [
+        "@bsv/sdk"
+      ],
       "api": [
         "EF"
       ],
@@ -464,7 +483,10 @@
       "name": "BSV Key Derivation Scheme (BKDS)",
       "brc": "BRC-42",
       "also": [],
-      "packages": [],
+      "packages": [
+        "@bsv/sdk",
+        "go-sdk"
+      ],
       "api": [],
       "education_themes": [],
       "authority_hint": 1
@@ -474,7 +496,9 @@
       "name": "Security Levels, Protocol IDs, Key IDs and Counterparties",
       "brc": "BRC-43",
       "also": [],
-      "packages": [],
+      "packages": [
+        "go-sdk"
+      ],
       "api": [],
       "education_themes": [
         "security-economics"
@@ -755,7 +779,9 @@
       "also": [
         "BRC-9"
       ],
-      "packages": [],
+      "packages": [
+        "go-wallet-toolbox"
+      ],
       "api": [],
       "education_themes": [
         "spv-light-clients"
@@ -849,7 +875,9 @@
       "brc": "BRC-74",
       "also": [],
       "packages": [
-        "go-sdk"
+        "arcade",
+        "go-sdk",
+        "merkle-service"
       ],
       "api": [],
       "education_themes": [],
@@ -880,7 +908,9 @@
       "name": "Message Signature Creation and Verification",
       "brc": "BRC-77",
       "also": [],
-      "packages": [],
+      "packages": [
+        "go-sdk"
+      ],
       "api": [],
       "education_themes": [],
       "authority_hint": 1
@@ -1145,7 +1175,9 @@
       "name": "P Protocols: Allowing future wallet protocol permission schemes",
       "brc": "BRC-98",
       "also": [],
-      "packages": [],
+      "packages": [
+        "@bsv/sdk"
+      ],
       "api": [],
       "education_themes": [
         "wallets-keys"
@@ -1176,7 +1208,13 @@
         "BRC-153",
         "BRC-164"
       ],
-      "packages": [],
+      "packages": [
+        "@bsv/sdk",
+        "@bsv/wallet-toolbox",
+        "go-sdk",
+        "go-wallet-toolbox",
+        "runar"
+      ],
       "api": [],
       "education_themes": [
         "wallets-keys"
@@ -1198,7 +1236,9 @@
       "name": "The deployment-info.json Specification",
       "brc": "BRC-102",
       "also": [],
-      "packages": [],
+      "packages": [
+        "uhrp-services"
+      ],
       "api": [],
       "education_themes": [],
       "authority_hint": 1
@@ -1210,7 +1250,10 @@
       "also": [
         "BRC-104"
       ],
-      "packages": [],
+      "packages": [
+        "go-sdk",
+        "messagebox-server"
+      ],
       "api": [],
       "education_themes": [],
       "authority_hint": 1
@@ -1222,7 +1265,9 @@
       "also": [
         "BRC-103"
       ],
-      "packages": [],
+      "packages": [
+        "go-wallet-toolbox"
+      ],
       "api": [],
       "education_themes": [],
       "authority_hint": 1
@@ -1341,7 +1386,9 @@
       "name": "Time Labels: Backwards-Compatible Action Timestamp Filters for List Actions",
       "brc": "BRC-114",
       "also": [],
-      "packages": [],
+      "packages": [
+        "go-wallet-toolbox"
+      ],
       "api": [],
       "education_themes": [],
       "authority_hint": 1

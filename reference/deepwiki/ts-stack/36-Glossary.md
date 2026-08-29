@@ -7,38 +7,38 @@
 
 The following files were used as context for generating this wiki page:
 
-- [.editorconfig](.editorconfig)
-- [.gitignore](.gitignore)
-- [.npmrc](.npmrc)
-- [README.md](README.md)
-- [conformance/runner/go/go.mod](conformance/runner/go/go.mod)
-- [conformance/runner/go/go.sum](conformance/runner/go/go.sum)
-- [conformance/runner/go/main.go](conformance/runner/go/main.go)
-- [conformance/runner/package.json](conformance/runner/package.json)
-- [conformance/runner/src/runner.js](conformance/runner/src/runner.js)
-- [conformance/vectors/README.md](conformance/vectors/README.md)
-- [conformance/vectors/sdk/crypto/ecdsa.json](conformance/vectors/sdk/crypto/ecdsa.json)
-- [conformance/vectors/sdk/crypto/ecies.json](conformance/vectors/sdk/crypto/ecies.json)
-- [conformance/vectors/sdk/crypto/hmac.json](conformance/vectors/sdk/crypto/hmac.json)
-- [package.json](package.json)
-- [packages/messaging/message-box-server/package.json](packages/messaging/message-box-server/package.json)
-- [packages/overlays/topics/BASELINE.md](packages/overlays/topics/BASELINE.md)
-- [packages/overlays/topics/src/__tests__/desktopintegrity.test.ts](packages/overlays/topics/src/__tests__/desktopintegrity.test.ts)
-- [packages/overlays/topics/src/__tests__/monsterbattle.test.ts](packages/overlays/topics/src/__tests__/monsterbattle.test.ts)
-- [packages/overlays/topics/src/__tests__/utility-tokens.test.ts](packages/overlays/topics/src/__tests__/utility-tokens.test.ts)
-- [packages/wallet/btms/README.md](packages/wallet/btms/README.md)
-- [packages/wallet/btms/index.ts](packages/wallet/btms/index.ts)
-- [packages/wallet/btms/jest.config.js](packages/wallet/btms/jest.config.js)
-- [packages/wallet/btms/package-lock.json](packages/wallet/btms/package-lock.json)
-- [packages/wallet/btms/package.json](packages/wallet/btms/package.json)
-- [packages/wallet/btms/src/BTMS.ts](packages/wallet/btms/src/BTMS.ts)
-- [packages/wallet/btms/src/BTMSAdvanced.ts](packages/wallet/btms/src/BTMSAdvanced.ts)
-- [specs/EXCEPTIONS.md](specs/EXCEPTIONS.md)
-- [specs/README.md](specs/README.md)
-- [specs/auth/brc31-handshake.yaml](specs/auth/brc31-handshake.yaml)
-- [specs/messaging/authsocket-asyncapi.yaml](specs/messaging/authsocket-asyncapi.yaml)
-- [specs/messaging/message-box-http.yaml](specs/messaging/message-box-http.yaml)
-- [tsconfig.base.json](tsconfig.base.json)
+- [.editorconfig](https://github.com/bsv-blockchain/ts-stack/blob/main/.editorconfig)
+- [.gitignore](https://github.com/bsv-blockchain/ts-stack/blob/main/.gitignore)
+- [.npmrc](https://github.com/bsv-blockchain/ts-stack/blob/main/.npmrc)
+- [README.md](https://github.com/bsv-blockchain/ts-stack/blob/main/README.md)
+- [conformance/runner/go/go.mod](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/go/go.mod)
+- [conformance/runner/go/go.sum](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/go/go.sum)
+- [conformance/runner/go/main.go](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/go/main.go)
+- [conformance/runner/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/package.json)
+- [conformance/runner/src/runner.js](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/src/runner.js)
+- [conformance/vectors/README.md](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/README.md)
+- [conformance/vectors/sdk/crypto/ecdsa.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/sdk/crypto/ecdsa.json)
+- [conformance/vectors/sdk/crypto/ecies.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/sdk/crypto/ecies.json)
+- [conformance/vectors/sdk/crypto/hmac.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/sdk/crypto/hmac.json)
+- [package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/package.json)
+- [packages/messaging/message-box-server/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/message-box-server/package.json)
+- [packages/overlays/topics/BASELINE.md](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/topics/BASELINE.md)
+- [packages/overlays/topics/src/__tests__/desktopintegrity.test.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/topics/src/__tests__/desktopintegrity.test.ts)
+- [packages/overlays/topics/src/__tests__/monsterbattle.test.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/topics/src/__tests__/monsterbattle.test.ts)
+- [packages/overlays/topics/src/__tests__/utility-tokens.test.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/topics/src/__tests__/utility-tokens.test.ts)
+- [packages/wallet/btms/README.md](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/README.md)
+- [packages/wallet/btms/index.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/index.ts)
+- [packages/wallet/btms/jest.config.js](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/jest.config.js)
+- [packages/wallet/btms/package-lock.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/package-lock.json)
+- [packages/wallet/btms/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/package.json)
+- [packages/wallet/btms/src/BTMS.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/src/BTMS.ts)
+- [packages/wallet/btms/src/BTMSAdvanced.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/src/BTMSAdvanced.ts)
+- [specs/EXCEPTIONS.md](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/EXCEPTIONS.md)
+- [specs/README.md](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/README.md)
+- [specs/auth/brc31-handshake.yaml](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/auth/brc31-handshake.yaml)
+- [specs/messaging/authsocket-asyncapi.yaml](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/messaging/authsocket-asyncapi.yaml)
+- [specs/messaging/message-box-http.yaml](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/messaging/message-box-http.yaml)
+- [tsconfig.base.json](https://github.com/bsv-blockchain/ts-stack/blob/main/tsconfig.base.json)
 
 </details>
 
@@ -51,17 +51,17 @@ This page provides a comprehensive glossary of domain-specific terms, Bitcoin Re
 ### BEEF (Bitcoin Enveloped Evidence Format)
 A serialized format for Bitcoin transactions that includes all necessary Merkle paths and ancestor transactions required for autonomous verification by a recipient without querying a centralized indexer.
 *   **Implementation:** `Beef` and `BeefTx` classes in the SDK.
-*   **Code Pointer:** [packages/sdk/ts-sdk/src/transaction/Beef.ts]()
+*   **Code Pointer:** [packages/sdk/ts-sdk/src/transaction/Beef.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/sdk/ts-sdk/src/transaction/Beef.ts)
 
 ### BUMP (BSV Unified Merkle Path)
 A standardized format for representing Merkle proofs, allowing a transaction to be proven against a block header. BUMPs are more efficient than traditional Merkle proofs and support batching.
 *   **Implementation:** `MerklePath` class in the SDK.
-*   **Code Pointer:** [packages/sdk/ts-sdk/src/transaction/MerklePath.ts]()
+*   **Code Pointer:** [packages/sdk/ts-sdk/src/transaction/MerklePath.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/sdk/ts-sdk/src/transaction/MerklePath.ts)
 
 ### Script Template
 A high-level abstraction over Bitcoin Script that simplifies the creation and unlocking of common UTXO patterns (e.g., P2PKH, PushDrop).
 *   **Implementation:** `ScriptTemplate` abstract class.
-*   **Code Pointer:** [packages/sdk/ts-sdk/src/templates/ScriptTemplate.ts]()
+*   **Code Pointer:** [packages/sdk/ts-sdk/src/templates/ScriptTemplate.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/sdk/ts-sdk/src/templates/ScriptTemplate.ts)
 
 ---
 
@@ -78,7 +78,7 @@ The following table defines the BRC (Bitcoin Request for Comment) standards impl
 | **BRC-103** | AuthSocket | Authenticated WebSocket protocol for secure event exchange. | `AuthSocketServer` |
 | **BRC-121** | HTTP 402 Payments | Middleware for handling "Payment Required" responses and tx-based access. | `402-pay` package |
 
-**Sources:** [specs/README.md:66-81](), [README.md:82-84]()
+**Sources:** [specs/README.md:66-81](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/README.md#L66-L81), [README.md:82-84](https://github.com/bsv-blockchain/ts-stack/blob/main/README.md#L82-L84)
 
 ---
 
@@ -87,22 +87,22 @@ The following table defines the BRC (Bitcoin Request for Comment) standards impl
 ### GASP (Graph-based Asynchronous Sync Protocol)
 A protocol used by Overlay Services to synchronize transaction graphs between nodes, ensuring that all participants in a specific topic have a consistent view of the data.
 *   **Implementation:** `OverlayGASPStorage`, `OverlayGASPRemote`.
-*   **Spec:** [specs/sync/gasp-asyncapi.yaml]()
+*   **Spec:** [specs/sync/gasp-asyncapi.yaml](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/sync/gasp-asyncapi.yaml)
 
 ### Topic Manager (TM)
 A component responsible for validating incoming transactions for a specific overlay topic. It determines if a transaction "belongs" to the topic and satisfies its business logic.
 *   **Implementation:** `TopicManager` interface.
-*   **Code Pointer:** [packages/overlays/overlay-services/src/TopicManager.ts]()
+*   **Code Pointer:** [packages/overlays/overlay-services/src/TopicManager.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/overlay-services/src/TopicManager.ts)
 
 ### Lookup Service (LS)
 A query engine that provides an interface to retrieve data from an overlay's indexed storage.
 *   **Implementation:** `LookupService` interface.
-*   **Code Pointer:** [packages/overlays/overlay-services/src/LookupService.ts]()
+*   **Code Pointer:** [packages/overlays/overlay-services/src/LookupService.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/overlay-services/src/LookupService.ts)
 
 ### UHRP (Universal Hash Resolution Protocol)
 A content-addressable storage protocol used for locating and retrieving data based on its hash rather than its location.
 *   **Implementation:** `uhrp-storage-server`, `tm_uhrp`.
-*   **Sources:** [packages/overlays/topics/BASELINE.md:44-44](), [README.md:57-57]()
+*   **Sources:** [packages/overlays/topics/BASELINE.md:44-44](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/topics/BASELINE.md#L44-L44), [README.md:57-57](https://github.com/bsv-blockchain/ts-stack/blob/main/README.md#L57-L57)
 
 ---
 
@@ -132,7 +132,7 @@ graph TD
         E1 --- F2["WalletStorageManager (wallet-toolbox)"]
     end
 ```
-**Sources:** [README.md:29-35](), [specs/README.md:68-68]()
+**Sources:** [README.md:29-35](https://github.com/bsv-blockchain/ts-stack/blob/main/README.md#L29-L35), [specs/README.md:68-68](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/README.md#L68-L68)
 
 ### From Concept to Code: Overlays & Messaging
 This diagram associates overlay and messaging concepts with their respective service implementations and specifications.
@@ -156,7 +156,7 @@ graph LR
         H1 --- K2["tm_identity (overlay-topics)"]
     end
 ```
-**Sources:** [packages/overlays/topics/BASELINE.md:27-47](), [specs/README.md:73-78]()
+**Sources:** [packages/overlays/topics/BASELINE.md:27-47](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/topics/BASELINE.md#L27-L47), [specs/README.md:73-78](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/README.md#L73-L78)
 
 ---
 
@@ -164,11 +164,11 @@ graph LR
 
 | Term | Domain | Definition |
 | :--- | :--- | :--- |
-| **BTMS** | Wallet | Basic Token Management System. Handles UTXO-based tokens using PushDrop scripts. [packages/wallet/btms/src/BTMS.ts]() |
-| **Chaintracks** | Network | A service for tracking blockchain headers and verifying Merkle proofs against the longest chain. [packages/network/chaintracks-server]() |
-| **WAB** | Wallet | Wallet Authentication Backend. Manages user sessions, MFA, and identity linking. [packages/wallet/wab]() |
+| **BTMS** | Wallet | Basic Token Management System. Handles UTXO-based tokens using PushDrop scripts. [packages/wallet/btms/src/BTMS.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/src/BTMS.ts) |
+| **Chaintracks** | Network | A service for tracking blockchain headers and verifying Merkle proofs against the longest chain. [packages/network/chaintracks-server](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/chaintracks-server) |
+| **WAB** | Wallet | Wallet Authentication Backend. Manages user sessions, MFA, and identity linking. [packages/wallet/wab](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wab) |
 | **PushDrop** | SDK | A script template pattern used to "push" data into a locking script and "drop" it during unlocking. |
-| **AuthSocket** | Messaging | A WebSocket implementation using BRC-103 for mutual authentication. [packages/messaging/authsocket]() |
-| **Teranode Listener** | Network | A P2P listener that subscribes to Teranode topics (blocks, subtrees) over a private DHT. [packages/network/ts-p2p]() |
+| **AuthSocket** | Messaging | A WebSocket implementation using BRC-103 for mutual authentication. [packages/messaging/authsocket](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/messaging/authsocket) |
+| **Teranode Listener** | Network | A P2P listener that subscribes to Teranode topics (blocks, subtrees) over a private DHT. [packages/network/ts-p2p](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/ts-p2p) |
 
-**Sources:** [README.md:39-47](), [specs/README.md:74-74]()
+**Sources:** [README.md:39-47](https://github.com/bsv-blockchain/ts-stack/blob/main/README.md#L39-L47), [specs/README.md:74-74](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/README.md#L74-L74)

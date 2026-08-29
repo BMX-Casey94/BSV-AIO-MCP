@@ -7,13 +7,13 @@
 
 The following files were used as context for generating this wiki page:
 
-- [packages/messaging/authsocket-client/package.json](packages/messaging/authsocket-client/package.json)
-- [packages/messaging/authsocket/package.json](packages/messaging/authsocket/package.json)
-- [packages/messaging/message-box-client/package.json](packages/messaging/message-box-client/package.json)
-- [packages/messaging/messagebox-services/backend/package.json](packages/messaging/messagebox-services/backend/package.json)
-- [packages/middleware/402-pay/package.json](packages/middleware/402-pay/package.json)
-- [packages/middleware/auth-express-middleware/package.json](packages/middleware/auth-express-middleware/package.json)
-- [packages/middleware/payment-express-middleware/package.json](packages/middleware/payment-express-middleware/package.json)
+- [packages/messaging/authsocket-client/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/authsocket-client/package.json)
+- [packages/messaging/authsocket/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/authsocket/package.json)
+- [packages/messaging/message-box-client/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/message-box-client/package.json)
+- [packages/messaging/messagebox-services/backend/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/messagebox-services/backend/package.json)
+- [packages/middleware/402-pay/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/middleware/402-pay/package.json)
+- [packages/middleware/auth-express-middleware/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/middleware/auth-express-middleware/package.json)
+- [packages/middleware/payment-express-middleware/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/middleware/payment-express-middleware/package.json)
 
 </details>
 
@@ -52,7 +52,7 @@ graph TD
         AUTH & PAY & P402 --> SDK["@bsv/sdk"]
     end
 ```
-Sources: [packages/middleware/auth-express-middleware/package.json:66-68](), [packages/middleware/payment-express-middleware/package.json:60-62](), [packages/middleware/402-pay/package.json:46-48]()
+Sources: [packages/middleware/auth-express-middleware/package.json:66-68](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/middleware/auth-express-middleware/package.json#L66-L68), [packages/middleware/payment-express-middleware/package.json:60-62](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/middleware/payment-express-middleware/package.json#L60-L62), [packages/middleware/402-pay/package.json:46-48](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/middleware/402-pay/package.json#L46-L48)
 
 ---
 
@@ -67,9 +67,9 @@ Complementing this, `@bsv/payment-express-middleware` implements **BRC-29**, whi
 - **Certificate Exchange**: Support for BRC-104 selective disclosure of identity attributes.
 - **Payment Validation**: Real-time checking of BEEF or transaction data against service requirements.
 
-For details, see [Auth & Payment Express Middleware](#6.1).
+For details, see [Auth & Payment Express Middleware](22-Auth---Payment-Express-Middleware.md).
 
-Sources: [packages/middleware/auth-express-middleware/package.json:4-4](), [packages/middleware/payment-express-middleware/package.json:4-4]()
+Sources: [packages/middleware/auth-express-middleware/package.json:4-4](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/middleware/auth-express-middleware/package.json#L4-L4), [packages/middleware/payment-express-middleware/package.json:4-4](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/middleware/payment-express-middleware/package.json#L4-L4)
 
 ---
 
@@ -98,9 +98,9 @@ sequenceDiagram
 - **Client Wrapper**: `create402Fetch` handles the 402-retry logic transparently for the user.
 - **Statelessness**: Designed to work across distributed systems using standard HTTP headers.
 
-For details, see [402-Pay: HTTP Micropayment Middleware (BRC-121)](#6.2).
+For details, see [402-Pay: HTTP Micropayment Middleware (BRC-121)](23-402-Pay--HTTP-Micropayment-Middleware--BRC-121.md).
 
-Sources: [packages/middleware/402-pay/package.json:4-4](), [packages/middleware/402-pay/package.json:13-20]()
+Sources: [packages/middleware/402-pay/package.json:4-4](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/middleware/402-pay/package.json#L4-L4), [packages/middleware/402-pay/package.json:13-20](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/middleware/402-pay/package.json#L13-L20)
 
 ---
 
@@ -112,6 +112,6 @@ Sources: [packages/middleware/402-pay/package.json:4-4](), [packages/middleware/
 | `@bsv/payment-express-middleware` | BRC-29 | Peer Payment Validation | `paymentMiddleware` |
 | `@bsv/402-pay` | BRC-121 | HTTP Micropayments | `createPaymentMiddleware` |
 
-Sources: [packages/middleware/auth-express-middleware/package.json:2-4](), [packages/middleware/payment-express-middleware/package.json:2-4](), [packages/middleware/402-pay/package.json:2-4]()
+Sources: [packages/middleware/auth-express-middleware/package.json:2-4](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/middleware/auth-express-middleware/package.json#L2-L4), [packages/middleware/payment-express-middleware/package.json:2-4](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/middleware/payment-express-middleware/package.json#L2-L4), [packages/middleware/402-pay/package.json:2-4](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/middleware/402-pay/package.json#L2-L4)
 
 ---

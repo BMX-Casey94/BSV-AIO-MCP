@@ -1,0 +1,9 @@
+{
+  "name": "@acme/mini-lib",
+  "version": "1.0.0",
+  "description": "Mini library fixture for Tier 1 refresh tests.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

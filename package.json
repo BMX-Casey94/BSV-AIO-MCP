@@ -1,6 +1,6 @@
 {
   "name": "bsv-aio-mcp",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Read-only BSV knowledge MCP server: pinned-snapshot answers for BRCs, Bitcoin Script opcodes, BEEF, Runar, the Tier 0 SDKs and the Craig Wright essay corpus. Never fetches live HTTP; never actuates.",
   "type": "module",
   "license": "MIT",

@@ -26,6 +26,7 @@ export type KnowledgeStore = {
   insertDocument(doc: StoredDocument): void;
   countByKind(kind: string): number;
   countByIdPrefix(prefix: string): number;
+  listByIdPrefix(prefix: string, limit?: number): StoredDocument[];
   getById(id: string): StoredDocument | undefined;
   getByLocator(locator: string): StoredDocument | undefined;
   ftsCount(): number;
@@ -65,6 +66,9 @@ export function createKnowledgeStore(db: DatabaseSync): KnowledgeStore {
   );
   const countIdPrefix: StatementSync = db.prepare(
     "SELECT COUNT(*) AS n FROM documents WHERE id LIKE ? || '%' ESCAPE '\\'",
+  );
+  const listIdPrefix: StatementSync = db.prepare(
+    "SELECT id, kind, authority, title, locator, revision, fetched_at, network, language, era, body FROM documents WHERE id LIKE ? || '%' ESCAPE '\\' ORDER BY id LIMIT ?",
   );
   const selectId: StatementSync = db.prepare(
     "SELECT id, kind, authority, title, locator, revision, fetched_at, network, language, era, body FROM documents WHERE id = ?",
@@ -110,6 +114,13 @@ export function createKnowledgeStore(db: DatabaseSync): KnowledgeStore {
     countByIdPrefix(prefix) {
       const row = countIdPrefix.get(escapeLikePrefix(prefix)) as { n: number } | undefined;
       return row?.n ?? 0;
+    },
+
+    listByIdPrefix(prefix, limit = 50) {
+      const rows = listIdPrefix.all(escapeLikePrefix(prefix), limit) as DocumentRow[];
+      return rows
+        .map((row) => rowToDocument(row))
+        .filter((doc): doc is StoredDocument => doc !== undefined);
     },
 
     getById(id) {

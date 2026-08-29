@@ -7,10 +7,10 @@
 
 The following files were used as context for generating this wiki page:
 
-- [packages/network/chaintracks-server/package.json](packages/network/chaintracks-server/package.json)
-- [packages/overlays/overlay-express/package.json](packages/overlays/overlay-express/package.json)
-- [packages/wallet/wab/package.json](packages/wallet/wab/package.json)
-- [packages/wallet/wallet-toolbox/package.json](packages/wallet/wallet-toolbox/package.json)
+- [packages/network/chaintracks-server/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/chaintracks-server/package.json)
+- [packages/overlays/overlay-express/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/overlay-express/package.json)
+- [packages/wallet/wab/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wab/package.json)
+- [packages/wallet/wallet-toolbox/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wallet-toolbox/package.json)
 
 </details>
 
@@ -28,7 +28,7 @@ The primary role of the `@bsv/chaintracks-server` is to maintain an up-to-date v
 - **Express API**: Provides a RESTful interface for external applications to query the current chain state.
 - **Modular Entrypoints**: Supports standard, custom, and prefixed routing configurations.
 
-Sources: [packages/network/chaintracks-server/package.json:5-13](), [packages/network/chaintracks-server/package.json:29-34]()
+Sources: [packages/network/chaintracks-server/package.json:5-13](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/chaintracks-server/package.json#L5-L13), [packages/network/chaintracks-server/package.json:29-34](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/chaintracks-server/package.json#L29-L34)
 
 ---
 
@@ -66,7 +66,7 @@ graph TD
     style S2 stroke-dasharray: 5 5
     style S3 stroke-dasharray: 5 5
 ```
-Sources: [packages/network/chaintracks-server/package.json:5-15](), [packages/wallet/wallet-toolbox/package.json:41-44]()
+Sources: [packages/network/chaintracks-server/package.json:5-15](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/chaintracks-server/package.json#L5-L15), [packages/wallet/wallet-toolbox/package.json:41-44](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wallet-toolbox/package.json#L41-L44)
 
 ---
 
@@ -86,7 +86,7 @@ The `package.json` defines several scripts for different deployment scenarios:
 - `npm run start:custom`: Uses the `server-custom.ts` entrypoint for specialized configurations.
 - `npm run start:prefix`: Uses `server-with-prefix.ts` to host the API under a specific URL path.
 
-Sources: [packages/network/chaintracks-server/package.json:8-15]()
+Sources: [packages/network/chaintracks-server/package.json:8-15](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/chaintracks-server/package.json#L8-L15)
 
 ---
 
@@ -126,7 +126,7 @@ graph LR
     B --- B1
     C --- C1
 ```
-Sources: [packages/network/chaintracks-server/package.json:5-6](), [packages/network/chaintracks-server/package.json:29-34](), [packages/wallet/wallet-toolbox/package.json:46-46]()
+Sources: [packages/network/chaintracks-server/package.json:5-6](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/chaintracks-server/package.json#L5-L6), [packages/network/chaintracks-server/package.json:29-34](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/chaintracks-server/package.json#L29-L34), [packages/wallet/wallet-toolbox/package.json:46-46](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wallet-toolbox/package.json#L46-L46)
 
 ---
 
@@ -139,6 +139,6 @@ The `chaintracks-server` is a "leaf" package in the network domain, depending on
 - **express**: The web framework used to expose the service over HTTP.
 - **dotenv**: Used to load configuration from `.env` files.
 
-Sources: [packages/network/chaintracks-server/package.json:29-34](), [packages/wallet/wallet-toolbox/package.json:41-44]()
+Sources: [packages/network/chaintracks-server/package.json:29-34](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/chaintracks-server/package.json#L29-L34), [packages/wallet/wallet-toolbox/package.json:41-44](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wallet-toolbox/package.json#L41-L44)
 
 ---

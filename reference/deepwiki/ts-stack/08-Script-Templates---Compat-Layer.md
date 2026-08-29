@@ -7,12 +7,12 @@
 
 The following files were used as context for generating this wiki page:
 
-- [conformance/runner/go/.gitignore](conformance/runner/go/.gitignore)
-- [conformance/runner/go/README.md](conformance/runner/go/README.md)
-- [conformance/vectors/sdk/compat/bsm.json](conformance/vectors/sdk/compat/bsm.json)
-- [conformance/vectors/sdk/crypto/signature.json](conformance/vectors/sdk/crypto/signature.json)
-- [conformance/vectors/sdk/keys/private-key.json](conformance/vectors/sdk/keys/private-key.json)
-- [packages/sdk/ts-templates/package.json](packages/sdk/ts-templates/package.json)
+- [conformance/runner/go/.gitignore](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/go/.gitignore)
+- [conformance/runner/go/README.md](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/runner/go/README.md)
+- [conformance/vectors/sdk/compat/bsm.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/sdk/compat/bsm.json)
+- [conformance/vectors/sdk/crypto/signature.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/sdk/crypto/signature.json)
+- [conformance/vectors/sdk/keys/private-key.json](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/sdk/keys/private-key.json)
+- [packages/sdk/ts-templates/package.json](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/sdk/ts-templates/package.json)
 
 </details>
 
@@ -22,7 +22,7 @@ This section covers the higher-level script abstractions and compatibility modul
 
 ## Script Templates (@bsv/templates)
 
-The `@bsv/templates` package provides concrete implementations of the `ScriptTemplate` interface defined in the core SDK [packages/sdk/ts-sdk/src/transaction/ScriptTemplate.ts](). These templates simplify the creation of complex locking and unlocking scripts by abstracting opcode sequences into functional classes.
+The `@bsv/templates` package provides concrete implementations of the `ScriptTemplate` interface defined in the core SDK [packages/sdk/ts-sdk/src/transaction/ScriptTemplate.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/sdk/ts-sdk/src/transaction/ScriptTemplate.ts). These templates simplify the creation of complex locking and unlocking scripts by abstracting opcode sequences into functional classes.
 
 ### P2PKH (Pay-to-PublicKey-Hash)
 The most common script template, implementing the standard Bitcoin payment pattern. It handles the generation of the locking script from an address or public key and the creation of the unlocking script using a private key signature.
@@ -58,7 +58,7 @@ graph TD
     F -. "implements" .-> D
     F -. "implements" .-> E
 ```
-Sources: [packages/sdk/ts-templates/package.json:2-5](), [packages/sdk/ts-templates/package.json:63-65]()
+Sources: [packages/sdk/ts-templates/package.json:2-5](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/sdk/ts-templates/package.json#L2-L5), [packages/sdk/ts-templates/package.json:63-65](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/sdk/ts-templates/package.json#L63-L65)
 
 ---
 
@@ -68,9 +68,9 @@ The `compat` directory in the SDK provides implementations for legacy or cross-p
 
 ### Bitcoin Signed Messages (BSM)
 BSM (BRC-77) is used for proving ownership of a private key by signing a human-readable string.
-- **Key Function:** `BSM.sign(message, privKey)` creates a compact signature [conformance/vectors/sdk/compat/bsm.json:59-73]().
-- **Verification:** `BSM.verify(message, signature, pubKey)` validates the signature against the message [conformance/vectors/sdk/compat/bsm.json:91-103]().
-- **Magic Hash:** BSM prepends a specific prefix (`"\x18Bitcoin Signed Message:\n"`) to prevent "signature reuse" attacks where a message signature could be mistaken for a transaction signature [conformance/vectors/sdk/compat/bsm.json:11-21]().
+- **Key Function:** `BSM.sign(message, privKey)` creates a compact signature [conformance/vectors/sdk/compat/bsm.json:59-73](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/sdk/compat/bsm.json#L59-L73).
+- **Verification:** `BSM.verify(message, signature, pubKey)` validates the signature against the message [conformance/vectors/sdk/compat/bsm.json:91-103](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/sdk/compat/bsm.json#L91-L103).
+- **Magic Hash:** BSM prepends a specific prefix (`"\x18Bitcoin Signed Message:\n"`) to prevent "signature reuse" attacks where a message signature could be mistaken for a transaction signature [conformance/vectors/sdk/compat/bsm.json:11-21](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/sdk/compat/bsm.json#L11-L21).
 
 ### ECIES (Elliptic Curve Integrated Encryption Scheme)
 Used for asymmetric encryption. It allows a sender to encrypt data using a recipient's public key, which only the recipient can decrypt with their private key.
@@ -85,7 +85,7 @@ A standard for prefixing and checksumming arbitrary data (like scripts or signat
 | ECIES | `ECIES` | Asymmetric Encryption | N/A |
 | BIP276 | `BIP276` | Data Encoding | N/A |
 
-Sources: [conformance/vectors/sdk/compat/bsm.json:1-8](), [conformance/vectors/sdk/compat/bsm.json:121-135]()
+Sources: [conformance/vectors/sdk/compat/bsm.json:1-8](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/sdk/compat/bsm.json#L1-L8), [conformance/vectors/sdk/compat/bsm.json:121-135](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/sdk/compat/bsm.json#L121-L135)
 
 ---
 
@@ -122,7 +122,7 @@ graph LR
     ID -- "uses" --> BRC42
     REG -- "resolves" --> ID
 ```
-Sources: [conformance/vectors/sdk/keys/private-key.json:83-94](), [conformance/vectors/sdk/keys/private-key.json:1-7]()
+Sources: [conformance/vectors/sdk/keys/private-key.json:83-94](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/sdk/keys/private-key.json#L83-L94), [conformance/vectors/sdk/keys/private-key.json:1-7](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/sdk/keys/private-key.json#L1-L7)
 
 ---
 
@@ -130,9 +130,9 @@ Sources: [conformance/vectors/sdk/keys/private-key.json:83-94](), [conformance/v
 
 The `compat` and `template` layers are validated through the conformance suite to ensure parity between TypeScript and other implementations (like Go).
 
-- **Signature Encodings:** Validates DER and Compact signature formats used by BSM and transaction templates [conformance/vectors/sdk/crypto/signature.json:1-8]().
-- **Key Derivation:** Ensures that BRC-42 child keys are derived consistently across environments, which is critical for identity and registry modules [conformance/vectors/sdk/keys/private-key.json:83-146]().
+- **Signature Encodings:** Validates DER and Compact signature formats used by BSM and transaction templates [conformance/vectors/sdk/crypto/signature.json:1-8](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/sdk/crypto/signature.json#L1-L8).
+- **Key Derivation:** Ensures that BRC-42 child keys are derived consistently across environments, which is critical for identity and registry modules [conformance/vectors/sdk/keys/private-key.json:83-146](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/sdk/keys/private-key.json#L83-L146).
 
-Sources: [conformance/vectors/sdk/crypto/signature.json:9-25](), [conformance/vectors/sdk/compat/bsm.json:121-135]()
+Sources: [conformance/vectors/sdk/crypto/signature.json:9-25](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/sdk/crypto/signature.json#L9-L25), [conformance/vectors/sdk/compat/bsm.json:121-135](https://github.com/bsv-blockchain/ts-stack/blob/main/conformance/vectors/sdk/compat/bsm.json#L121-L135)
 
 ---

@@ -7,15 +7,15 @@
 
 The following files were used as context for generating this wiki page:
 
-- [packages/middleware/auth-express-middleware/BASELINE.md](packages/middleware/auth-express-middleware/BASELINE.md)
-- [packages/overlays/overlay-services/BASELINE.md](packages/overlays/overlay-services/BASELINE.md)
-- [packages/sdk/ts-sdk/BASELINE.md](packages/sdk/ts-sdk/BASELINE.md)
-- [packages/sdk/ts-sdk/BENCHMARK.md](packages/sdk/ts-sdk/BENCHMARK.md)
-- [packages/wallet/wallet-toolbox/BASELINE.md](packages/wallet/wallet-toolbox/BASELINE.md)
-- [specs/broadcast/arc.yaml](specs/broadcast/arc.yaml)
-- [specs/errors.md](specs/errors.md)
-- [specs/overlay/overlay-http.yaml](specs/overlay/overlay-http.yaml)
-- [specs/sdk/brc-100-wallet.json](specs/sdk/brc-100-wallet.json)
+- [packages/middleware/auth-express-middleware/BASELINE.md](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/middleware/auth-express-middleware/BASELINE.md)
+- [packages/overlays/overlay-services/BASELINE.md](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/overlay-services/BASELINE.md)
+- [packages/sdk/ts-sdk/BASELINE.md](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/sdk/ts-sdk/BASELINE.md)
+- [packages/sdk/ts-sdk/BENCHMARK.md](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/sdk/ts-sdk/BENCHMARK.md)
+- [packages/wallet/wallet-toolbox/BASELINE.md](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wallet-toolbox/BASELINE.md)
+- [specs/broadcast/arc.yaml](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/broadcast/arc.yaml)
+- [specs/errors.md](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/errors.md)
+- [specs/overlay/overlay-http.yaml](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/overlay/overlay-http.yaml)
+- [specs/sdk/brc-100-wallet.json](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/sdk/brc-100-wallet.json)
 
 </details>
 
@@ -58,13 +58,13 @@ graph TD
     B -- "signs" --> G
     B -- "holds" --> H
 ```
-Sources: [specs/sdk/brc-100-wallet.json:1-216](), [packages/sdk/ts-sdk/src/wallet/ProtoWallet.ts:1-50]().
+Sources: [specs/sdk/brc-100-wallet.json:1-216](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/sdk/brc-100-wallet.json#L1-L216), [packages/sdk/ts-sdk/src/wallet/ProtoWallet.ts:1-50](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/sdk/ts-sdk/src/wallet/ProtoWallet.ts#L1-L50).
 
 ### Implementation Details: ProtoWallet
 `ProtoWallet` serves as the primary implementation of the `WalletClient` interface. It leverages `KeyDeriver` for BRC-42 hierarchical derivation and handles the state of in-progress "Actions".
 
-- **KeyDeriver**: Handles the mathematical derivation of private and public keys based on a root seed and a protocol/counterparty path [packages/sdk/ts-sdk/src/primitives/PrivateKey.ts:16-17]().
-- **CachedKeyDeriver**: A wrapper that provides memoization for derivation operations to improve performance in high-frequency environments like transaction signing [packages/sdk/ts-sdk/BENCHMARK.md:16-17]().
+- **KeyDeriver**: Handles the mathematical derivation of private and public keys based on a root seed and a protocol/counterparty path [packages/sdk/ts-sdk/src/primitives/PrivateKey.ts:16-17](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/sdk/ts-sdk/src/primitives/PrivateKey.ts#L16-L17).
+- **CachedKeyDeriver**: A wrapper that provides memoization for derivation operations to improve performance in high-frequency environments like transaction signing [packages/sdk/ts-sdk/BENCHMARK.md:16-17](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/sdk/ts-sdk/BENCHMARK.md#L16-L17).
 
 ## BRC-103 Mutual Authentication
 
@@ -94,7 +94,7 @@ sequenceDiagram
     MW->>MW: SessionManager.createSession()
     MW-->>App: 200 OK / Session Established
 ```
-Sources: [packages/middleware/auth-express-middleware/BASELINE.md:1-15](), [packages/sdk/ts-sdk/BENCHMARK.md:14-15]().
+Sources: [packages/middleware/auth-express-middleware/BASELINE.md:1-15](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/middleware/auth-express-middleware/BASELINE.md#L1-L15), [packages/sdk/ts-sdk/BENCHMARK.md:14-15](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/sdk/ts-sdk/BENCHMARK.md#L14-L15).
 
 ## Error Handling (Error Taxonomy)
 
@@ -102,21 +102,21 @@ Wallet and Auth operations follow a strict error taxonomy defined in `specs/erro
 
 | Category | Example Code | Description |
 | :--- | :--- | :--- |
-| **Crypto** | `ERR_CRYPTO_KEY_DERIVATION_FAILED` | Failed BRC-42 derivation (e.g. point at infinity) [specs/errors.md:86-86](). |
-| **Transaction** | `ERR_TX_CONSTRUCTION_INSUFFICIENT_FUNDS` | Wallet cannot fund the requested outputs [specs/errors.md:99-99](). |
-| **Serialization** | `ERR_SERIALIZATION_INVALID_BEEF` | BEEF bytes fail validation during internalization [specs/errors.md:64-64](). |
-| **Auth** | `ERR_CRYPTO_INVALID_CERTIFICATE_SIGNATURE` | BRC-103 certificate signature mismatch [specs/errors.md:89-89](). |
+| **Crypto** | `ERR_CRYPTO_KEY_DERIVATION_FAILED` | Failed BRC-42 derivation (e.g. point at infinity) [specs/errors.md:86-86](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/errors.md#L86-L86). |
+| **Transaction** | `ERR_TX_CONSTRUCTION_INSUFFICIENT_FUNDS` | Wallet cannot fund the requested outputs [specs/errors.md:99-99](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/errors.md#L99-L99). |
+| **Serialization** | `ERR_SERIALIZATION_INVALID_BEEF` | BEEF bytes fail validation during internalization [specs/errors.md:64-64](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/errors.md#L64-L64). |
+| **Auth** | `ERR_CRYPTO_INVALID_CERTIFICATE_SIGNATURE` | BRC-103 certificate signature mismatch [specs/errors.md:89-89](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/errors.md#L89-L89). |
 
-Sources: [specs/errors.md:1-140]().
+Sources: [specs/errors.md:1-140](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/errors.md#L1-L140).
 
 ## Performance & Benchmarks
 
 Critical paths in the Wallet and Auth layers are monitored for performance regressions. Key "Hot Paths" include:
 
-1.  **Schnorr Sign/Verify**: Used in every BRC-103 handshake [packages/sdk/ts-sdk/BENCHMARK.md:14-15]().
-2.  **BRC-42 Key Derivation**: Performed for every transaction output and identity proof [packages/sdk/ts-sdk/BENCHMARK.md:16-17]().
-3.  **BEEF Encode/Decode**: The standard envelope format for BRC-100 `createAction` and `submit` operations [packages/sdk/ts-sdk/BENCHMARK.md:24-25]().
+1.  **Schnorr Sign/Verify**: Used in every BRC-103 handshake [packages/sdk/ts-sdk/BENCHMARK.md:14-15](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/sdk/ts-sdk/BENCHMARK.md#L14-L15).
+2.  **BRC-42 Key Derivation**: Performed for every transaction output and identity proof [packages/sdk/ts-sdk/BENCHMARK.md:16-17](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/sdk/ts-sdk/BENCHMARK.md#L16-L17).
+3.  **BEEF Encode/Decode**: The standard envelope format for BRC-100 `createAction` and `submit` operations [packages/sdk/ts-sdk/BENCHMARK.md:24-25](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/sdk/ts-sdk/BENCHMARK.md#L24-L25).
 
-Sources: [packages/sdk/ts-sdk/BENCHMARK.md:8-30]().
+Sources: [packages/sdk/ts-sdk/BENCHMARK.md:8-30](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/sdk/ts-sdk/BENCHMARK.md#L8-L30).
 
 ---

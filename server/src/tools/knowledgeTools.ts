@@ -337,6 +337,44 @@ export function getResource(
     }
   }
 
+  if (uri === "repo://tier1") {
+    const text = readSnapshotFile(root, "reference/tier1/manifest.json");
+    if (text !== undefined) {
+      return { uri, text, hit: fileHit(uri, "Tier 1 repository manifest", "doc", 2, text, pin) };
+    }
+  }
+
+  // A snapshotted repo doc citation: repo://{shortRepo}/{path} resolves against the committed
+  // tier docs trees (Tier 1 first so a Tier 1 service doc wins over a same-named Tier 0 path).
+  const repoDoc = /^repo:\/\/([A-Za-z0-9._-]+)\/([^?#]+)$/.exec(uri);
+  if (repoDoc) {
+    const shortRepo = repoDoc[1] ?? "";
+    const rel = safeDecode(repoDoc[2] ?? "");
+    if (shortRepo && rel && !rel.includes("..")) {
+      for (const tier of ["tier1", "tier0"] as const) {
+        const text = readNestedUnderDir(
+          join(root, "reference", tier, "docs", shortRepo),
+          rel,
+        );
+        if (text !== undefined) {
+          const example = /^examples?\//i.test(rel);
+          return {
+            uri,
+            text,
+            hit: fileHit(
+              uri,
+              `${shortRepo}: ${rel}`,
+              example ? "example" : "doc",
+              example ? 3 : 2,
+              text,
+              pin,
+            ),
+          };
+        }
+      }
+    }
+  }
+
   if (uri === "repo://deny") {
     const text = readSnapshotFile(root, "reference/deny-list.json");
     if (text !== undefined) {
@@ -791,6 +829,28 @@ function readUnderDir(dir: string, name: string): string | undefined {
   }
   const realDir = realPath(dir);
   const abs = realPath(join(dir, name));
+  if (realDir === undefined || abs === undefined || !isInside(realDir, abs) || !isPlainFile(abs)) {
+    return undefined;
+  }
+  try {
+    return readFileSync(abs, "utf8");
+  } catch {
+    return undefined;
+  }
+}
+
+/** readUnderDir for nested relative paths (`docs/setup.md`); same symlink containment. */
+function readNestedUnderDir(dir: string, rel: string): string | undefined {
+  if (
+    !rel ||
+    rel.includes("\0") ||
+    rel.includes("\\") ||
+    rel.split("/").some((segment) => segment === "" || segment === "." || segment === "..")
+  ) {
+    return undefined;
+  }
+  const realDir = realPath(dir);
+  const abs = realPath(resolve(dir, ...rel.split("/")));
   if (realDir === undefined || abs === undefined || !isInside(realDir, abs) || !isPlainFile(abs)) {
     return undefined;
   }

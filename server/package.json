@@ -1,18 +1,20 @@
 {
   "name": "bsv-aio-mcp-server",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "type": "module",
   "engines": {
     "node": ">=22.13"
   },
   "scripts": {
-    "build": "node build-server.mjs && node build-refresh.mjs && node build-fetch-academy.mjs",
+    "build": "node build-server.mjs && node build-refresh.mjs && node build-refresh-tier1.mjs && node build-fetch-academy.mjs",
     "start": "node dist/index.mjs",
     "build:server": "node build-server.mjs",
     "build:refresh": "node build-refresh.mjs",
+    "build:refresh-tier1": "node build-refresh-tier1.mjs",
     "build:fetch-academy": "node build-fetch-academy.mjs",
     "refresh:tier0": "npm run build:refresh && node dist/refresh.mjs",
+    "refresh:tier1": "npm run build:refresh-tier1 && node dist/refresh-tier1.mjs",
     "fetch:academy": "npm run build:fetch-academy && node dist/fetch-academy.mjs",
     "smoke": "node scripts/smoke.mjs",
     "test": "vitest run",

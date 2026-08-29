@@ -1,15 +1,17 @@
 # MCP contract — tools, resources, planes
 
-Frozen 2026-08-14 (addenda same day); shipped as `bsv-aio-mcp` 1.0.0. Sections marked
-*future* are design goals beyond 1.0.0 — the shipped tool list is the root README's.
+Frozen 2026-08-14 (addenda same day); shipped as `bsv-aio-mcp` 1.0.0; Tier 1 snapshot and
+read-only policy tools added in 1.1.0. Sections marked *future* are design goals beyond
+1.1.0 — the shipped tool list is the root README's.
 UK English in generated text. Winner rules live in `winner-policy.md`.
 
 ## Planes
 
-| Plane | Role | Mutates chain? | In 1.0.0? |
+| Plane | Role | Mutates chain? | In 1.1.0? |
 |---|---|---|---|
 | **knowledge** | Snapshot search, essays, BRCs, wiki, contradictions | No | Yes |
-| **code** | Symbols, deps, tests, examples, BRC↔impl edges | No | Yes (Tier 0) |
+| **code** | Symbols, deps, tests, examples, BRC↔impl edges | No | Yes (Tier 0+1) |
+| **policy** | `check_dependency`, `network_guard` — advice over pinned cards | No | Yes (read-only) |
 | **live-query** | Arcade / WoC / faucet *status* | No | No — declared as `needs` |
 | **actuate** | Faucet claim, broadcast, wallet create | Yes | No — refused by design |
 
@@ -94,6 +96,8 @@ See `evidence-package.schema.json`. Return type of `investigate` / `design_revie
 | `repo://registry` | `reference/repo_registry.json` |
 | `repo://deny` | `reference/deny-list.json` |
 | `repo://tier0` | `reference/tier0/manifest.json` |
+| `repo://tier1` | `reference/tier1/manifest.json` |
+| `repo://{shortRepo}/{path}` | Snapshotted repo doc/example (`reference/tier0/docs/`, `reference/tier1/docs/`); Tier 1 wins on a name clash |
 | `spec://ts-stack/{service}` | `reference/tier0/specs/` |
 | `symbol://{repo}/{name}` | `reference/tier0/symbols.json` row — `{repo}` is the **short** name (e.g. `ts-sdk`, not `bsv-blockchain/ts-sdk`); `{name}` is the exact exported identifier |
 | `vector://{domain}/{case}` | `reference/tier0/vectors/` |
@@ -119,15 +123,21 @@ Retrieval: Plane 1 (prose) is SQLite FTS5 (BM25) with ranking heuristics. Plane 
 - `inspect_schema(service) → spec file` — ts-stack `specs/`
 - `error_taxonomy(prefix?) → ERR_* rows` — `specs/errors.md`
 
-Future (not in 1.0.0): `trace_dependency`, `repo_lookup`, `follow_edge`,
-`check_dependency` (the deny list is already served at `repo://deny` and enforced
-by `investigate`).
+Future (not in 1.1.0): `trace_dependency`, `repo_lookup`, `follow_edge`.
+
+### Policy (read-only; shipped in 1.1.0)
+- `check_dependency(name) → { name, status, reason?, successor?, source, note? }` —
+  `denied` always carries the reason and successor; `allowed` means confirmed in the pinned
+  Tier 0/1 package cards; `unknown` means the snapshot says nothing (absence is not
+  endorsement). Reads committed cards only; never fetches.
+- `network_guard(intent_text, current_network?) → { action, network, reason }` —
+  `ask_switch` (testing intent on mainnet → ttn), `remind_main` (production intent →
+  real-funds reminder), `deny` (actuation request — this server never actuates), `allow`.
 
 ### Synthesis
 - `investigate(question, context?) → EvidencePackage`
 
-Future (not in 1.0.0): `design_review`, `scaffold_flow`, `concept_map`,
-`network_guard`.
+Future (not in 1.1.0): `design_review`, `scaffold_flow`, `concept_map`.
 
 Do **not** implement `brc_ask` or `build_context`. Do **not** invent capability
 API names.

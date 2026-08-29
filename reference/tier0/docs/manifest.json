@@ -1,0 +1,1170 @@
+{
+  "generated": "2026-08-29",
+  "count": 291,
+  "files": {
+    "go-sdk/docs/concepts/42.md": {
+      "sha256": "9fc2b82dc6a87061d585759b9ae6c561a33eaa6b05723f0a5138fccac2e6e8df",
+      "example": false
+    },
+    "go-sdk/docs/concepts/AUTH.md": {
+      "sha256": "80f3315c79220295a56263c4cc4587a26fafc6283d2e0cd935f86431a0002284",
+      "example": false
+    },
+    "go-sdk/docs/concepts/BEEF.md": {
+      "sha256": "4c5244d96d662bfc1a289967224b07abfe233f4bbfd388a999baaae497aba0fe",
+      "example": false
+    },
+    "go-sdk/docs/concepts/CHAIN_SPV.md": {
+      "sha256": "02e9a24ac0eaab2fd4bea47c5c662b3fb94d054eded832b04faf5e6050ef432c",
+      "example": false
+    },
+    "go-sdk/docs/concepts/FEE.md": {
+      "sha256": "8681940615203b0d8dc2b9fa46b47ee2cdc7f0f27e255dc91b3e6524637431de",
+      "example": false
+    },
+    "go-sdk/docs/concepts/HASHES.md": {
+      "sha256": "42e47d1494d2e452aa02d536bc6d0947a5d76846f981652ecec5101c874d9a4d",
+      "example": false
+    },
+    "go-sdk/docs/concepts/HOW_TX.md": {
+      "sha256": "748a29516054831a5d748b55cf64fd9dffdd7fa252d5db94c16d8f38c5ab3332",
+      "example": false
+    },
+    "go-sdk/docs/concepts/IDENTITY.md": {
+      "sha256": "3fb1f573d30ca52ee48c80cccebad23614556ad77a191c053363fe1da119ba5d",
+      "example": false
+    },
+    "go-sdk/docs/concepts/OP.md": {
+      "sha256": "67fe28c89ff9736510891610f455a904823220c8a883aee902ad7b7480826628",
+      "example": false
+    },
+    "go-sdk/docs/concepts/OVERLAY_TOOLS.md": {
+      "sha256": "b6b71ae2209920c7c7a3bba1b28edf811f9a84807377a9566caf6272dfda7053",
+      "example": false
+    },
+    "go-sdk/docs/concepts/README.md": {
+      "sha256": "7dc933e5d747ed7c0c5a309a303a35efdd85fc87f1e218444d3a34999371d8a2",
+      "example": false
+    },
+    "go-sdk/docs/concepts/REGISTRY.md": {
+      "sha256": "c8156658785aa18d6dc76df6ed1fcac0e0bcb58bc6938da2007736bbcf1f950a",
+      "example": false
+    },
+    "go-sdk/docs/concepts/TEMPLATES.md": {
+      "sha256": "82ddfa38719e989ba7e6b3680f81a5079603eb8f7c0bab7f707598c2c8dd4ae8",
+      "example": false
+    },
+    "go-sdk/docs/concepts/TX_SIG.md": {
+      "sha256": "0c92a005b5183180e2bad53cd2015403d6b9bf773fe97636e12cffc9e82a0a3b",
+      "example": false
+    },
+    "go-sdk/docs/concepts/TX_VALID.md": {
+      "sha256": "5aebb3e6114428d5afed7c5ae8209a08f3b55cc6eaf9f5eef15521eb355cf2d0",
+      "example": false
+    },
+    "go-sdk/docs/examples/address_from_wif/README.md": {
+      "sha256": "8c2cdfb8738c80d28fcd0098e02c849bd242f70b1ba9ee21ddcf354210695392",
+      "example": false
+    },
+    "go-sdk/docs/examples/aes/README.md": {
+      "sha256": "cd5ed19b03c9fb90083e56fe7c9e2cf94e749381774a5834b9560c99b7b0bd57",
+      "example": false
+    },
+    "go-sdk/docs/examples/authenticated_messaging/README.md": {
+      "sha256": "7db61b3519f159a2b29efa4f622275ed1b3fd4613f67f2928ddce5958ac95a16",
+      "example": false
+    },
+    "go-sdk/docs/examples/broadcaster/broadcaster.md": {
+      "sha256": "b860e65856fa36f50720edf7cadb0c9c31f0a3542c0132563dba0000900cb649",
+      "example": false
+    },
+    "go-sdk/docs/examples/create_hmac/README.md": {
+      "sha256": "b366b7a4fc2381a5dd76ef6cc4a1b87fd4195118e0fc8ab094b043d9f2243b81",
+      "example": false
+    },
+    "go-sdk/docs/examples/create_signature/README.md": {
+      "sha256": "b427651a5b1753373d1f651286e93ff2f0b7c02991aeed09233e2a76ffff0637",
+      "example": false
+    },
+    "go-sdk/docs/examples/create_simple_tx/create_simple_tx.md": {
+      "sha256": "0400d832ec08fe613885ac4e3dc10ad2d2834d65923245410a892c3369038e3e",
+      "example": false
+    },
+    "go-sdk/docs/examples/create_tx_with_inscription/README.md": {
+      "sha256": "a9ae5374ba624a55af9224e61e1ead487aaf25a51911be8f1dde6ccc6671accc",
+      "example": false
+    },
+    "go-sdk/docs/examples/create_tx_with_op_return/README.md": {
+      "sha256": "f69e35edfbd442852b462f4a59566913bb7f9704ffb80201d3044776c0e3d0fe",
+      "example": false
+    },
+    "go-sdk/docs/examples/create_wallet/README.md": {
+      "sha256": "0419d30abd247e59d63a37e71de8b331ca13c07a0ae284d785beb6a71cf4a0a8",
+      "example": false
+    },
+    "go-sdk/docs/examples/derive_child/README.md": {
+      "sha256": "f9649a7803b736220d5234b0e1fcbf54cbb4c0802514615dd049d95c76a084fb",
+      "example": false
+    },
+    "go-sdk/docs/examples/ecies_electrum_binary/README.md": {
+      "sha256": "f40be88236e7cfc1462b54925a2258b1dd3c54f7e72ab84ac5ea418da625b85f",
+      "example": false
+    },
+    "go-sdk/docs/examples/ecies_shared/README.md": {
+      "sha256": "5707512bead05577d0cd2d19393c56a25ac7fc9d3cf5cb674aa84eaf3ce2b237",
+      "example": false
+    },
+    "go-sdk/docs/examples/ecies_single/README.md": {
+      "sha256": "10ef9cf95b618771869fa73b59954e10b393252487c03cfe5ea83f8824d6c258",
+      "example": false
+    },
+    "go-sdk/docs/examples/encrypt_data/README.md": {
+      "sha256": "1a6a477c69eace37a4763875b8b8376bc1f6585afa81fc8cffb2dd8d0af565b6",
+      "example": false
+    },
+    "go-sdk/docs/examples/encrypted_message/README.md": {
+      "sha256": "48b995e4936e36807e743839d63c06bd7fc4ef6f270111d3a5d7a809f29cac2a",
+      "example": false
+    },
+    "go-sdk/docs/examples/fee_modeling/README.md": {
+      "sha256": "68f81437a4979c505fde3ebe3a85ed1476f079da28136759b613d1cd08d060ba",
+      "example": false
+    },
+    "go-sdk/docs/examples/generate_hd_key/README.md": {
+      "sha256": "6ff00441e0ee2cc7dedde7787b1238980e72da7eee6eeddc9d93996a8d30aa76",
+      "example": false
+    },
+    "go-sdk/docs/examples/get_public_key/README.md": {
+      "sha256": "12a622f15f5cab000930ed91604c4b2ce6a7dcb60281198cc37d2f0f477ee4a5",
+      "example": false
+    },
+    "go-sdk/docs/examples/GO_BT.md": {
+      "sha256": "bc1b538a09bdd27a951e32aa596bc7c986f292d4e5cfabc79b66841c66dc5267",
+      "example": false
+    },
+    "go-sdk/docs/examples/hd_key_from_xpub/README.md": {
+      "sha256": "a5192be9788f1c23f30fc86ce22400b88d5100d53cfe0ad003bc9403580801ae",
+      "example": false
+    },
+    "go-sdk/docs/examples/http_wallet/README.md": {
+      "sha256": "be440fb068b0084e39dbea4373ea4c858eeee34f16dd38b1a5344a31516ad194",
+      "example": false
+    },
+    "go-sdk/docs/examples/identity_client/README.md": {
+      "sha256": "5e474e3336c0a9fb0f170a8e538cb0298242132c39c39b1a07321aeb9d90e1d0",
+      "example": false
+    },
+    "go-sdk/docs/examples/keyshares_pk_from_backup/README.md": {
+      "sha256": "7a81d05748cae5d836a06803e1db41c2bd7acd17ffdfdf4656c6acd34efb5e79",
+      "example": false
+    },
+    "go-sdk/docs/examples/keyshares_pk_to_backup/README.md": {
+      "sha256": "e75a9888007952a1ef519e3c68bae8a15e149a6dbc9d7c872aafb50346926b5f",
+      "example": false
+    },
+    "go-sdk/docs/examples/README.md": {
+      "sha256": "cd1782aeb07bec982efdfabb3bfb3995acc47c7ee97d8a33a5c2ab4533038d13",
+      "example": false
+    },
+    "go-sdk/docs/examples/registry_register/README.md": {
+      "sha256": "3a138521848e7844a919fd53b65ce5faf04b0dfcbb842112c63bd0073d249325",
+      "example": false
+    },
+    "go-sdk/docs/examples/registry_resolve/README.md": {
+      "sha256": "81f38d28d9e1a29d716a835f1d3f2751d5763cf24266766b2d0b5f2d99ceefe2",
+      "example": false
+    },
+    "go-sdk/docs/examples/set_source_tx_output/README.md": {
+      "sha256": "8292137fa3b0e7ff49b9a979129eac6032736ec2bdb3d639d2175cfacd0c1d66",
+      "example": false
+    },
+    "go-sdk/docs/examples/storage_downloader/storage_downloader.md": {
+      "sha256": "d402d78d86b58fd8359f65ddbfd3793624af4ea2491f90ca98abb4d37ac2d0c9",
+      "example": false
+    },
+    "go-sdk/docs/examples/storage_uploader/storage_uploader.md": {
+      "sha256": "6c75ce99322b02931e26cab2fd6e0a8658e1d9c93781af144e75f255802d3fa5",
+      "example": false
+    },
+    "go-sdk/docs/examples/validate_spv/README.md": {
+      "sha256": "9d8c20ab7356274af52beaf80f3ee21b3ac09b72b5dcde863232a348f2fcad44",
+      "example": false
+    },
+    "go-sdk/docs/examples/verify_beef/README.md": {
+      "sha256": "3accab01cf9b97c3377f5e10ac0d513b207d807df134e85d931321df87839621",
+      "example": false
+    },
+    "go-sdk/docs/examples/verify_transaction/README.md": {
+      "sha256": "daddaa194e3a95c101e1a0bfbe05773d4358f40ba8d4e45b07fd46a60ee039bc",
+      "example": false
+    },
+    "go-sdk/docs/README.md": {
+      "sha256": "15976b727caf69040bb43eb5b64849521ed8a1383873b96c864ce76b0bb3da09",
+      "example": false
+    },
+    "go-sdk/README.md": {
+      "sha256": "38a834943609d8cdfb0f1f580b5081be3aac5e76aed5fef52550662983eca827",
+      "example": false
+    },
+    "go-wallet-toolbox/docs/monitor.md": {
+      "sha256": "e7d27fdbe17f0dc329c6657a98c8ba09e68791653d65106c545728dbfb7dd7e6",
+      "example": false
+    },
+    "go-wallet-toolbox/docs/storage_server.md": {
+      "sha256": "b1a0dafcd616ee68971d8b71a84bfdc664dbf60b4be62a048725498e8879a2a6",
+      "example": false
+    },
+    "go-wallet-toolbox/docs/storage.md": {
+      "sha256": "18efa241ea72e7b2f11eed3b0e4f63dcdff5fe5c3891991b5203ef9400c0505d",
+      "example": false
+    },
+    "go-wallet-toolbox/docs/testing-postgres.md": {
+      "sha256": "1bd2c83cf7c401b40095d0c127afaeb43495a3629ecf2124b735f68bc364fae2",
+      "example": false
+    },
+    "go-wallet-toolbox/docs/throughput-bottleneck-report.md": {
+      "sha256": "b1d9efd96de489386a22110b02334e0a7c66d18f4d846325e709379d9d8ccc68",
+      "example": false
+    },
+    "go-wallet-toolbox/docs/throughput-dashboard-1000tps-handover.md": {
+      "sha256": "d818a37adae6c969ed515cadec916435360d040de02be7ec2045cc88a760fba0",
+      "example": false
+    },
+    "go-wallet-toolbox/docs/throughput-dashboard.md": {
+      "sha256": "0b828212d6dc56efb3b9367c42d12d347c401487f43b9cd8dad39c7c7e68fc26",
+      "example": false
+    },
+    "go-wallet-toolbox/docs/throughput-docker.md": {
+      "sha256": "aea84ee1032f07e3280cec4b477e7d6c18a053673c458b8fcfc5fb5024d6612e",
+      "example": false
+    },
+    "go-wallet-toolbox/docs/utxo-lifecycle.md": {
+      "sha256": "90e7bc172070ec02c50a69bd92d5ea567b2851311e732f788244d3da414b9f42",
+      "example": false
+    },
+    "go-wallet-toolbox/docs/wallet.md": {
+      "sha256": "3ef85ada180b831c523c9b5743466dd86772566a0af0d610d217596ea0b96342",
+      "example": false
+    },
+    "go-wallet-toolbox/examples/complex_wallet_examples/create_faucet_server/QUICK_START.md": {
+      "sha256": "b48a17ec1e203682d5178ad6c57118d0c00ef143ef285029fe00da10457f8f45",
+      "example": true
+    },
+    "go-wallet-toolbox/examples/perf_torture/README.md": {
+      "sha256": "dacaf8a20a7ca1e641db0599b7cde8c1da979caaa2a080de9241e3b047857ecb",
+      "example": true
+    },
+    "go-wallet-toolbox/examples/README.md": {
+      "sha256": "7f6670d3668a8118732186e73335a3a9f51d5a0e00bcec55cc0910211e3892f5",
+      "example": true
+    },
+    "go-wallet-toolbox/examples/services_examples/fiat_exchange_rate/fiat_exchange_rate.md": {
+      "sha256": "4b4dd69a8c471f40111c3387cd410b88ee4ad9c71f3c0a475c256e2b6b142929",
+      "example": true
+    },
+    "go-wallet-toolbox/examples/services_examples/get_beef/get_beef.md": {
+      "sha256": "99bf6dfa68067209bdec89cf2f02a9e66d002883007128b72aec722c1a33b3e6",
+      "example": true
+    },
+    "go-wallet-toolbox/examples/services_examples/get_block_header_from_block_hash/get_block_header_from_block_hash.md": {
+      "sha256": "d3388138b19a87facc4bac346871830acfb9b2fb5d702774f1b953d541267b94",
+      "example": true
+    },
+    "go-wallet-toolbox/examples/services_examples/get_chain_tip_header/get_chain_tip_header.md": {
+      "sha256": "ea49139a6abed039d879d31568c261b2a8329cc5f425ef9ca421efa7cbbcc993",
+      "example": true
+    },
+    "go-wallet-toolbox/examples/services_examples/get_current_block_height/get_current_block_height.md": {
+      "sha256": "56e6c8e7abbb48a68468fe56c80e0a8daeb759a7808baf0e072ec8e5698df563",
+      "example": true
+    },
+    "go-wallet-toolbox/examples/services_examples/get_merkle_path_for_tx/get_merkle_path_for_tx.md": {
+      "sha256": "3b02a4524f4a5a31b9d5cfb533fbad7c8960e154aee975b53dbfa8db3fb4917d",
+      "example": true
+    },
+    "go-wallet-toolbox/examples/services_examples/get_rawtx_from_txid/get_rawtx_from_txid.md": {
+      "sha256": "6bf819f13f0f0c0feb18befb96e629a0d78ce2faa7ba69fbf7b1f710559417b7",
+      "example": true
+    },
+    "go-wallet-toolbox/examples/services_examples/get_script_hash_history/get_script_hash_history.md": {
+      "sha256": "0f2bb08325a85d005a42b4d35977e2e655a79d3c2589c73e34c37ddc944f6a37",
+      "example": true
+    },
+    "go-wallet-toolbox/examples/services_examples/get_utxo_status/get_utxo_status.md": {
+      "sha256": "3287bef041839096d12375366473c97e00be15b59b3fbf1a40f1f4183b61f309",
+      "example": true
+    },
+    "go-wallet-toolbox/examples/services_examples/is_utxo/is_utxo.md": {
+      "sha256": "15c066b40d0ac8577a37a4f816f0f19d717583e3d4ed417330efd68f56762472",
+      "example": true
+    },
+    "go-wallet-toolbox/examples/services_examples/is_valid_root_for_block_height/is_valid_root_for_block_height.md": {
+      "sha256": "2e52b8f0557cdb48f20d9a8a60b51e05a9b022220adb36966884615d677ceed5",
+      "example": true
+    },
+    "go-wallet-toolbox/examples/services_examples/nlock_time_is_final/nlock_time_is_final.md": {
+      "sha256": "6a64564f6c1cd1e224cf33e4076ba25390981a7c0bb5b00320e53d67f9b39656",
+      "example": true
+    },
+    "go-wallet-toolbox/examples/services_examples/post_beef_hex/post_beef_hex.md": {
+      "sha256": "9f945204dff40e98eb2238adb68087c0a647d6f477018ed7dafc0529d2d82753",
+      "example": true
+    },
+    "go-wallet-toolbox/examples/services_examples/post_beef_with_multiple_txs/post_beef_with_multiple_txs.md": {
+      "sha256": "bbe06489c11580e76372e40ba949d28b712da61175e06a3094eef2ec8ae7ef3b",
+      "example": true
+    },
+    "go-wallet-toolbox/examples/services_examples/post_beef/post_beef.md": {
+      "sha256": "795c094f10f5c46b157135c711261820b31b47a06125f9f6f8d133940272c9dd",
+      "example": true
+    },
+    "go-wallet-toolbox/examples/throughput_mode/throughput-mode.md": {
+      "sha256": "0fa2b34f0afa4df7118d05b3eacd4a8bd22f246f69435741bb0753bae4f14e3d",
+      "example": true
+    },
+    "go-wallet-toolbox/examples/wallet_examples/create_data_tx/create_data_tx.md": {
+      "sha256": "07a13fb61c0532fcea47c136de17d2b125495533446ac2a2d493411dce8a1b2e",
+      "example": true
+    },
+    "go-wallet-toolbox/examples/wallet_examples/create_p2pkh_tx/create_p2pkh_tx.md": {
+      "sha256": "41ec4525303890c76808f1bbf57a87d1819ae32fead8cf4cfa88b74174677b13",
+      "example": true
+    },
+    "go-wallet-toolbox/examples/wallet_examples/decrypt/decrypt.md": {
+      "sha256": "c5cc1395adefcf7d7d5924cfe8260398999b5818e04f024d2551a4960d0fb364",
+      "example": true
+    },
+    "go-wallet-toolbox/examples/wallet_examples/encrypt/encrypt.md": {
+      "sha256": "e71b3fd02be4172a3708d59beca7fe8276b650aaca8c107a16b6e2816a130653",
+      "example": true
+    },
+    "go-wallet-toolbox/examples/wallet_examples/get_balance/get_balance.md": {
+      "sha256": "b6fbb48eab95e2f9d67f46c676368194e34548bf13d09a6b0b1fdae9d67ce27b",
+      "example": true
+    },
+    "go-wallet-toolbox/examples/wallet_examples/internalize_tx_from_faucet/internalize_tx_from_faucet.md": {
+      "sha256": "0e0b8f5bdc01be12b18c6d545df60a38dbf7a82029a5a8ae42d4e3258707283f",
+      "example": true
+    },
+    "go-wallet-toolbox/README.md": {
+      "sha256": "4eab214bd3b3eee62d5f98a8f463b865e841a478f7a55eb4918f1627e723e923",
+      "example": false
+    },
+    "runar/docs/api-reference.md": {
+      "sha256": "67ec000167e6deb7e2967ad3ee7a377ef06e99677476c39df9e0fb9a58870525",
+      "example": false
+    },
+    "runar/docs/audit/2026-07-oracle-remediation-status.md": {
+      "sha256": "108dcac04ce6bf51b7143d052975eb96f9684e9091244c2db92c4e2c6cb54048",
+      "example": false
+    },
+    "runar/docs/audit/2026-08-ec-degenerate-cases.md": {
+      "sha256": "d157ab2a0119203d3f9e1e31129bda04c394083330bc556a3f2657964e65d297",
+      "example": false
+    },
+    "runar/docs/audit/2026-08-go-only-crypto-oracles.md": {
+      "sha256": "5d32bc86e2b26506d05a84e599bce7869002a95b1d4c6c4c4d9f36f99b90a356",
+      "example": false
+    },
+    "runar/docs/audit/2026-08-regression-drill.md": {
+      "sha256": "0226642deea5810bbd5ce2bc8e187b1c57f32f02fe93dca1a3e95df5bfcac509",
+      "example": false
+    },
+    "runar/docs/audit/2026-08-testing-gap-remediation-plan.md": {
+      "sha256": "f49128d9b9accae53388a6df746477bbd55f10fde64672d88a4a58dc42827b38",
+      "example": false
+    },
+    "runar/docs/audit/upstream-bsv-sdk-bip143-hashprevouts.md": {
+      "sha256": "1c3b5212325ae4599fde3f3986d5d2b949aafd082ccb82420cf6fc3133cf11bf",
+      "example": false
+    },
+    "runar/docs/audit/upstream-bsv-sdk-op2mul-chronicle.md": {
+      "sha256": "d741855aeb5b9462b7993daf870cd7ffcfb84a8695d038d02e9e51fb42b4fed1",
+      "example": false
+    },
+    "runar/docs/compiler-architecture.md": {
+      "sha256": "cc3c9311be8b8aaf6edf55e7497a163dcb0343e9abca07b82114a267c73f06d0",
+      "example": false
+    },
+    "runar/docs/contract-patterns.md": {
+      "sha256": "4f6589e89c0e5d89249fbee04c6e6eb4efc7fe3628bfff1e6e929167fa907bb6",
+      "example": false
+    },
+    "runar/docs/cross-covenant-pattern.md": {
+      "sha256": "e537b8a198fc4fc98aad47a9d56f0da9f505d55299d82196d8229f1a85b07a34",
+      "example": false
+    },
+    "runar/docs/formats/go.md": {
+      "sha256": "42e9f66d1afa3df900a59f5109a6e167cfe7332f372cde29125c56d16e799e8f",
+      "example": false
+    },
+    "runar/docs/formats/java.md": {
+      "sha256": "314e5efccc2a5d4d3079d2f1da3e5d042683ecc7d48830246c81c37e36d5ce88",
+      "example": false
+    },
+    "runar/docs/formats/move.md": {
+      "sha256": "c7259e80fb58b8c3dfdb762c70fa5720b2cca24cbb6ca910511abcecdfa244ac",
+      "example": false
+    },
+    "runar/docs/formats/python.md": {
+      "sha256": "6eee4dd59a09147ca1ac95ff91ed9fe4a3bc0d9ab4cb8f24241cbfe8dd82e3f1",
+      "example": false
+    },
+    "runar/docs/formats/README.md": {
+      "sha256": "7b047883e1f978a1d5528acb9275adf24707b63e9853342361c2d4e0f7795753",
+      "example": false
+    },
+    "runar/docs/formats/ruby.md": {
+      "sha256": "0c1f2f8a1fc2f4b67d7577382699541b7ab225f3f5eefc7fc33fe2915150f991",
+      "example": false
+    },
+    "runar/docs/formats/rust.md": {
+      "sha256": "8ba6ab07f7f0cc6ef31aa9a3a8df187f3c45993982f07ff2cf26b02df41e7d33",
+      "example": false
+    },
+    "runar/docs/formats/solidity.md": {
+      "sha256": "c6019593091b8d5f37771b6cfca918fcbe90cfc74e6bf0564c6c4fabedcec2b0",
+      "example": false
+    },
+    "runar/docs/formats/typescript.md": {
+      "sha256": "3ad7c34ecd75feeccecb6fbdf1639c322921f821bc2c0125c655fdecd27cf025",
+      "example": false
+    },
+    "runar/docs/formats/zig.md": {
+      "sha256": "bf195b8bbb5e0f92f4868c7674aa0855261f925f5030da2a5d9c70370d3754f1",
+      "example": false
+    },
+    "runar/docs/fri-verifier-measurements.md": {
+      "sha256": "9781cdb5a619d1b065ed5ad8f65c8b1e53825ff9092971240fea72777140fbcc",
+      "example": false
+    },
+    "runar/docs/gate0-evaluation.md": {
+      "sha256": "d7555bcb3395e2f123eabb98270f671937dc55e4dc25ba4fc3fdf6730bb614b8",
+      "example": false
+    },
+    "runar/docs/getting-started.md": {
+      "sha256": "4f7ad51f794c4c3042a00ffd706bc2558b8f8e927c51842384e25d199e5b7c31",
+      "example": false
+    },
+    "runar/docs/integration-guide.md": {
+      "sha256": "761403a6d971c8851cef1cf795ae5806de21a5320f14df835e57f353717efdfa",
+      "example": false
+    },
+    "runar/docs/java-tier-plan.md": {
+      "sha256": "a40061de3dab38f2b55209eb6cf644e06ec6841a87edbc627ef12bccbe5c6f84",
+      "example": false
+    },
+    "runar/docs/language-reference.md": {
+      "sha256": "cb49796ee98e7798bcab9599b3edd744e850868a1ca276a511ba1b6b64192344",
+      "example": false
+    },
+    "runar/docs/ordinals-guide.md": {
+      "sha256": "a66ac08b296c49cdc0bf10022c98f2325e5e62697a0758ec60c79833d300bb21",
+      "example": false
+    },
+    "runar/docs/post-quantum-analysis.md": {
+      "sha256": "ad65e5fe4051fea94ebe0ddd9af6105ea2333ee94069ad534cda5811008f4ec7",
+      "example": false
+    },
+    "runar/docs/sp1-fri-verifier.md": {
+      "sha256": "62955b3558f2443b2a41d4e3aca9a596af9976a24456e0a36a73e331555cd39d",
+      "example": false
+    },
+    "runar/docs/sp1-proof-format.md": {
+      "sha256": "0ba2347ab7704517a3e4c3f21095293bc02c664cd34c87fd37edc91f443ded3b",
+      "example": false
+    },
+    "runar/docs/test-skips.md": {
+      "sha256": "86f0c4f042f8a86e82a79aa4e92369b40863066d8d782f701d452a4185716a88",
+      "example": false
+    },
+    "runar/docs/testing-guide.md": {
+      "sha256": "fe0ae7f40113ffceaa20c4f24c4e67cb899c1bd629b210ab3f185d8f6014623a",
+      "example": false
+    },
+    "runar/docs/zig-parity-status.md": {
+      "sha256": "2a97dc853a0399c9bba693ed1107a7f47b0d10155f7717ed80032fa1ccc378af",
+      "example": false
+    },
+    "runar/examples/end2end-example/go/PriceBet_test.go": {
+      "sha256": "8d677c944415f0975b833440958231927cabdbd9fc078791103a09005abde4a4",
+      "example": true
+    },
+    "runar/examples/end2end-example/go/PriceBet.runar.go": {
+      "sha256": "817a38b3c112d964303a9966b5745516995687d627179d7c1598e27c986d628f",
+      "example": true
+    },
+    "runar/examples/end2end-example/move/PriceBet.test.ts": {
+      "sha256": "a6aa0637e0cce1d70c4df4d5d072ec46c8990cbe48e72e5ee3bb513d28c36dd3",
+      "example": true
+    },
+    "runar/examples/end2end-example/python/conftest.py": {
+      "sha256": "cb5e6e3e6696504851a4858d22c811325876ae2720a0a9d6001f00ff9f36fe55",
+      "example": true
+    },
+    "runar/examples/end2end-example/python/PriceBet.runar.py": {
+      "sha256": "633e1723f22ccb3cdeac8f6cac6747e9b5a5ae021172e719226be2fd5cb616f4",
+      "example": true
+    },
+    "runar/examples/end2end-example/python/test_price_bet.py": {
+      "sha256": "b7da6d495d60388efc5cccda03ead07a38ecee04103992a1f89385955932cf0f",
+      "example": true
+    },
+    "runar/examples/end2end-example/sol/PriceBet.test.ts": {
+      "sha256": "f998f8b55c73f337760a5ac8f68790e70b1cf1bddd7d0115bc976e0baef471b5",
+      "example": true
+    },
+    "runar/examples/end2end-example/ts/dump-compiled.ts": {
+      "sha256": "ad7a42677ee6e72181000b83059fb3ae49547bbf53f5dfd305bed749a5c583e7",
+      "example": true
+    },
+    "runar/examples/end2end-example/ts/PriceBet.runar.ts": {
+      "sha256": "49661f787a94b8083802065d442e3810804bc6f76735db2ca9074a55055ae414",
+      "example": true
+    },
+    "runar/examples/end2end-example/ts/PriceBet.test.ts": {
+      "sha256": "13763193fde28ed7af8b9d0b7f81b6f9e190a07e04de3ddc915afcea07339b7a",
+      "example": true
+    },
+    "runar/examples/end2end-example/ts/regtest-demo-settle.ts": {
+      "sha256": "4e62a8c6aeafb8b650627c51ca72e768f452be47fa0e4581032dd164e2aaae41",
+      "example": true
+    },
+    "runar/examples/end2end-example/ts/regtest-demo.ts": {
+      "sha256": "dafba938d7134d7b578a7fa49fae7edb97815f1e5c5a72bfc449197a758b3420",
+      "example": true
+    },
+    "runar/examples/end2end-example/webapp-blackjack/bitcoin.go": {
+      "sha256": "70b76af8d5ce079076c139d9630a02f63e14420345dd18abef3bc48ae0601be5",
+      "example": true
+    },
+    "runar/examples/end2end-example/webapp-blackjack/blackjack.go": {
+      "sha256": "e4bbc6f9dddf81c5c0b75bdd388852f9d76720af72606227c90f90ee438b6c0a",
+      "example": true
+    },
+    "runar/examples/end2end-example/webapp-blackjack/BlackjackBet.runar.ts": {
+      "sha256": "dd7c402dbe2276ae558d2f76511939c030453b37925b669fae6332aa6319ccec",
+      "example": true
+    },
+    "runar/examples/end2end-example/webapp-blackjack/README.md": {
+      "sha256": "25f419937d8de265e4220fa0d4850e21c9f23caff6e97036c6b520306e03270f",
+      "example": true
+    },
+    "runar/examples/go/sp1_fri_verifier_main.go": {
+      "sha256": "af055fa03fc6b9fd457d18b1df27dc319ca7593c4efdfb40b2e5b67a536c555c",
+      "example": true
+    },
+    "runar/examples/go/sp1_verifier_main.go": {
+      "sha256": "8f94923165d79cbaf338a63d3c0b6783f58686236bb11003495b84fe222fcde3",
+      "example": true
+    },
+    "runar/examples/go/SP1Verifier_README.md": {
+      "sha256": "0a1b352a87ad9578f2600157c3ec814d456cdbf2b9646033c2b3dca32b54b8d8",
+      "example": true
+    },
+    "runar/examples/java/README.md": {
+      "sha256": "8626054c406ba4212adca3a5b710eff08187163142016eb86eaecbffa5e3b877",
+      "example": true
+    },
+    "runar/examples/python/conftest.py": {
+      "sha256": "d4d3c8499553e1ee10d09280b56d7050590c4e85e16ddb50b429ab3fe320e5b2",
+      "example": true
+    },
+    "runar/examples/README.md": {
+      "sha256": "125cd5389a954d51b099ded72e421741322faa3c14001b344bbe94c9084472ab",
+      "example": true
+    },
+    "runar/examples/sdk-usage/sdk-usage-go.go": {
+      "sha256": "a5714aa79a1683729b0263c7ef6bb34c7c43b034a8299e4046c5930243356638",
+      "example": true
+    },
+    "runar/examples/sdk-usage/sdk-usage-typescript.ts": {
+      "sha256": "67424480fd5823e31c2e0a8a4f0e789411f588aaab0ad6b9fca844ea0b420cb5",
+      "example": true
+    },
+    "runar/examples/ts/example-spendability-policy.test.ts": {
+      "sha256": "43b69d50d7c6e12a8ba139f512be475350ba9015bda8380eaa3093922171495e",
+      "example": true
+    },
+    "runar/packages/decompiler/README.md": {
+      "sha256": "4ca5f8d5ae205b6fb7fd97eb994392b189094c25526b9ef4288fc6c22598716f",
+      "example": false
+    },
+    "runar/packages/runar-cli/README.md": {
+      "sha256": "3c8c71a9cb754bf951b2ff391dae84a1aacafdf3149067f7ef00f658e35f4bce",
+      "example": false
+    },
+    "runar/packages/runar-compiler/README.md": {
+      "sha256": "adb2cdba31a9e5495ccad44095b8bd404b225ca8662f23ee387e3541ba25bf9b",
+      "example": false
+    },
+    "runar/packages/runar-go/bn254witness/README.md": {
+      "sha256": "efdb2c917fb233785a4194811545dab16aed0112997803f75eb3266c0a0f9a5a",
+      "example": false
+    },
+    "runar/packages/runar-go/README.md": {
+      "sha256": "dd13596348fb659452d9dd4a47de97c43c1841659f421dbcabc85d7565e137b3",
+      "example": false
+    },
+    "runar/packages/runar-ir-schema/README.md": {
+      "sha256": "58044e32b9e514c648917df3243a13ead01b1eb1286c253a29f82e74720a0eb0",
+      "example": false
+    },
+    "runar/packages/runar-java/README.md": {
+      "sha256": "65a4940763577342f335111fcc754fa9b367b04daf255f9fcfb581495ae861c6",
+      "example": false
+    },
+    "runar/packages/runar-lang/README.md": {
+      "sha256": "303b24615a017f69c31a090adf380f97efbff9e455522deb022e94d421ec8e7e",
+      "example": false
+    },
+    "runar/packages/runar-py/README.md": {
+      "sha256": "ab509500735182b5f6752d9bc6fd9c3d3279d3bfc1124ccb297ecf583bc6ac28",
+      "example": false
+    },
+    "runar/packages/runar-rb/README.md": {
+      "sha256": "e189833670e8bd79002bc0feaa08cce04270ccf62af847665f411a62277050c8",
+      "example": false
+    },
+    "runar/packages/runar-rs/README.md": {
+      "sha256": "07491f420dc40b25aaa0e9e261ec947ff1125c2b82475f0ad4332969ff5917e2",
+      "example": false
+    },
+    "runar/packages/runar-sdk/README.md": {
+      "sha256": "96016f8aec5c8ef2776af47f3344599c088f1413ed684ac5aee4b34e2a1d05ee",
+      "example": false
+    },
+    "runar/packages/runar-testing/README.md": {
+      "sha256": "733d7d58762a6b6be3ad6d7001e335b6f7217a41c8403d11f2680e7dd34fab6f",
+      "example": false
+    },
+    "runar/packages/runar-zig/README.md": {
+      "sha256": "76946a0a54d837316a18367a7053cb1b6e7c0cb3d3df4d3f91d4af5bfd79742f",
+      "example": false
+    },
+    "runar/README.md": {
+      "sha256": "ba3999d096f39a4960306d85827dd0db3f942857166d7bd878df33f37b6af760",
+      "example": false
+    },
+    "ts-sdk/docs/index.md": {
+      "sha256": "d49f46e5439c856ac3272a115baf81dc0135fa6ae0581afe7483dc2b2a1838ce",
+      "example": false
+    },
+    "ts-sdk/docs/performance.md": {
+      "sha256": "0954055200c83175d11574bea19e5e9d01802f4489af90f972a333a67c587947",
+      "example": false
+    },
+    "ts-sdk/docs/reference/auth.md": {
+      "sha256": "e6ddf2b17bfc01d96e5a09fc3ae6ee4ead92a2c7d0de0a64287cf933cf142680",
+      "example": false
+    },
+    "ts-sdk/docs/reference/compat.md": {
+      "sha256": "360d424c2c23dbb396b0b4991901ee9b3677c6572c46b70898705f91c9ff727f",
+      "example": false
+    },
+    "ts-sdk/docs/reference/identity.md": {
+      "sha256": "47a3630ceebc356fd51716d6c47cd5cbd3ec77435d06c22aa60009b4ab38e379",
+      "example": false
+    },
+    "ts-sdk/docs/reference/kvstore.md": {
+      "sha256": "e28b95a9505dc680454fad2bbc29e083b6a944eed574ed6525aab9d58f4debc3",
+      "example": false
+    },
+    "ts-sdk/docs/reference/messages.md": {
+      "sha256": "025ed948ff42c3fd676ab55680ad3ffba69a577ce5789146dfc93c367a560bfa",
+      "example": false
+    },
+    "ts-sdk/docs/reference/overlay-tools.md": {
+      "sha256": "7ea0866929a1036531beccc5d38b6373c14e16cf7d8fa1d87e24694db9f6787c",
+      "example": false
+    },
+    "ts-sdk/docs/reference/primitives.md": {
+      "sha256": "3ac4e3cec6dbd666684997f95acc54532283d6ab1eb37a2b800b359afc33ad89",
+      "example": false
+    },
+    "ts-sdk/docs/reference/registry.md": {
+      "sha256": "a54a7d72407e7055638d6061f6fddafd21d53a52243d7f9c49737fba031b7f67",
+      "example": false
+    },
+    "ts-sdk/docs/reference/remittance.md": {
+      "sha256": "ea52d1efcf1b7a831a2b975f7c0b9175a8cf4e9e79bc385685cc15a719a32475",
+      "example": false
+    },
+    "ts-sdk/docs/reference/script.md": {
+      "sha256": "347c5a5fa3e9f4a3d09e33be14925a4f6273ac58643b5943e665fa50915edf60",
+      "example": false
+    },
+    "ts-sdk/docs/reference/storage.md": {
+      "sha256": "cddabe0a1106928dca72ab4c5d41a7e5a5224edce69f53da31ea492befeb05dc",
+      "example": false
+    },
+    "ts-sdk/docs/reference/totp.md": {
+      "sha256": "52ddf2d816acf8001ef758dee92dc68a2723ecd3cd20ece8d630d71cfa9367e4",
+      "example": false
+    },
+    "ts-sdk/docs/reference/transaction.md": {
+      "sha256": "52b17c7b94639b1bd50d54e69fd3ba75667d914680530f231415aee2be71d764",
+      "example": false
+    },
+    "ts-sdk/docs/reference/wallet.md": {
+      "sha256": "f32977c6060597848761a7492d9de88dbad3bb4d1d86bfff69ed4d670fe6fa12",
+      "example": false
+    },
+    "ts-sdk/docs/remittance-getting-started.md": {
+      "sha256": "68767281326db193691f4d8c5fa7a4d3846cef775c25d529b44c150d55578387",
+      "example": false
+    },
+    "ts-sdk/README.md": {
+      "sha256": "1a4ada733ac726a5b978c6414a0265cf61e28811bf3ab62e16f6397494c132d8",
+      "example": false
+    },
+    "ts-stack/docs/about/contributing.md": {
+      "sha256": "4251d65e660e93ab5b21bd299979c4f45e59ee4f68f36adf55ccc0f2fc16fbf7",
+      "example": false
+    },
+    "ts-stack/docs/about/doc-agent.md": {
+      "sha256": "26893f2d42ff26a2e321e3deb8fd2c13d6b385b78cf344f35f320b0487a8e45b",
+      "example": false
+    },
+    "ts-stack/docs/about/sources.md": {
+      "sha256": "933902f59d379ebc4a1775d50386f93f8290295a0ad8f089116a14ae43e61126",
+      "example": false
+    },
+    "ts-stack/docs/about/versioning.md": {
+      "sha256": "93a4982cc639b4e0e0a4fede76e40d2a0b98e15442e8fb1a33d740cc665f8354",
+      "example": false
+    },
+    "ts-stack/docs/architecture/beef.md": {
+      "sha256": "885a688788febf7c9b6d0bb0dd86cc6dc39f855aa99689ab0f2c95f9d6618a66",
+      "example": false
+    },
+    "ts-stack/docs/architecture/brc-100.md": {
+      "sha256": "33cc13cb5568d023b86e4bda25ae3ecb653c41c09f27a2fcc7156c0f8b965012",
+      "example": false
+    },
+    "ts-stack/docs/architecture/conformance.md": {
+      "sha256": "13c80cf49a0b0f9f0bb4da78d69fa3b99f45e85fb6e90bad210e858c1e01f75c",
+      "example": false
+    },
+    "ts-stack/docs/architecture/identity.md": {
+      "sha256": "0d7364558e218ce8edb5192b46e1a409936cd86047552857551e1d175c304d67",
+      "example": false
+    },
+    "ts-stack/docs/architecture/index.md": {
+      "sha256": "08bc2b68520c0e183ffd6ce3ce86d56ad6d92475f03fa77d5523b741dd8eb89c",
+      "example": false
+    },
+    "ts-stack/docs/architecture/layers.md": {
+      "sha256": "e0a7bb27f34018f3424444120748f1b32562a55c1c23c074f08f2ba2e1e5da05",
+      "example": false
+    },
+    "ts-stack/docs/conformance/contributing-vectors.md": {
+      "sha256": "54dda77f68ec64005615b103996b6da73f0716811d09c9bbae5982c64e63de63",
+      "example": false
+    },
+    "ts-stack/docs/conformance/index.md": {
+      "sha256": "427bdbab96ce0a2a32151c027007db47198642a51022222c5fcbb8ee26455da7",
+      "example": false
+    },
+    "ts-stack/docs/conformance/runner-ts.md": {
+      "sha256": "09352acfdabcbe67a8bd06fd26340652e392c6e62c1078db4d02b5101caff321",
+      "example": false
+    },
+    "ts-stack/docs/conformance/vectors.md": {
+      "sha256": "117efe1bc7177df62f9cb72ebc008b8b78554feea36649f4cf61bf0b2d0c35de",
+      "example": false
+    },
+    "ts-stack/docs/get-started/choose-your-stack.md": {
+      "sha256": "0ba826da641528edcd537715e2cb751fd6a2ed15aae451f6069db89329452fd4",
+      "example": false
+    },
+    "ts-stack/docs/get-started/concepts.md": {
+      "sha256": "81d2cfc7f29ee0e9f68904a235239a45b67511fc6f2a15b5c99429cc14a61b03",
+      "example": false
+    },
+    "ts-stack/docs/get-started/index.md": {
+      "sha256": "91f0c768291b9f7191478cc4d28de110d783c26adf1d8969ee381125ba44485b",
+      "example": false
+    },
+    "ts-stack/docs/get-started/install.md": {
+      "sha256": "4a9b3a32547a21942a243181a127a71b1f8017b407dd02576c517527a5d2714d",
+      "example": false
+    },
+    "ts-stack/docs/guides/compiled-package-examples.md": {
+      "sha256": "b6c7b019c090b66e7f405b16e2d7bc2d3feb0812a953c7ec4ad339e295d232bb",
+      "example": false
+    },
+    "ts-stack/docs/guides/http-402-payments.md": {
+      "sha256": "04e03fd0abe038a55157f13249010f3e7ebd5e27e974d2a95491449ca5dfb410",
+      "example": false
+    },
+    "ts-stack/docs/guides/index.md": {
+      "sha256": "e55963722e84934e244bb73d51877b566fc3788ef287f90c568d1f87e1fc6060",
+      "example": false
+    },
+    "ts-stack/docs/guides/peer-to-peer-messaging.md": {
+      "sha256": "b8bd64dad6f2892670d85efcd47febf7bb2c828356df14808caaaa0a760d1b09",
+      "example": false
+    },
+    "ts-stack/docs/guides/run-overlay-node.md": {
+      "sha256": "28cadaa9222c9fc4a1c7d29878b51890af002fb5e71016e9cdbe3df1dd3a9577",
+      "example": false
+    },
+    "ts-stack/docs/guides/wallet-aware-app.md": {
+      "sha256": "d8cff73db7a22b07dc879c8fc0482f225485cc8174a70e8112adb24e20dbc004",
+      "example": false
+    },
+    "ts-stack/docs/index.md": {
+      "sha256": "629997011c17162d089837cac85bf1c83598fbab666701997342b50211f7d64d",
+      "example": false
+    },
+    "ts-stack/docs/infrastructure/chaintracks-server.md": {
+      "sha256": "c7b4fb7b26e98d45febb386a928a14f8962315af453557f5756c82af3dd18ad8",
+      "example": false
+    },
+    "ts-stack/docs/infrastructure/index.md": {
+      "sha256": "a5c2ba86cfb3407f1825c163552d645852517a7917b1b08229cbe44f6228e06e",
+      "example": false
+    },
+    "ts-stack/docs/infrastructure/message-box-server.md": {
+      "sha256": "ed17de60a1cf6e6591ca674d3bfbe6627fd89ba6609ac336b10f89023da84a29",
+      "example": false
+    },
+    "ts-stack/docs/infrastructure/overlay-server.md": {
+      "sha256": "2c62fce78e138b0968c7d12ed0fc78ab142af4c99ec2d744d38e5282cd6ccc0b",
+      "example": false
+    },
+    "ts-stack/docs/infrastructure/service-edge-security.md": {
+      "sha256": "66728b558b60a51f3dbd87688e88ddb94a9d19335ee92c6e5eab7cf07dfec1ff",
+      "example": false
+    },
+    "ts-stack/docs/infrastructure/uhrp-server-basic.md": {
+      "sha256": "31c1bc7d0a1c69cc2cba7e899bbc784b1aa4d423c9c7390f1a561388e13af980",
+      "example": false
+    },
+    "ts-stack/docs/infrastructure/uhrp-server-cloud-bucket.md": {
+      "sha256": "e181cfb3c77c38937da5c1695a7d146cbb30813c0da957909f17d8b36857d172",
+      "example": false
+    },
+    "ts-stack/docs/infrastructure/wab-ump-account-support.md": {
+      "sha256": "b9da63293c71c105d4608213ef76bb8da07fc9974e0343022284d3f8ec76d626",
+      "example": false
+    },
+    "ts-stack/docs/infrastructure/wab.md": {
+      "sha256": "9d4fd098ef6e11c1060a096f760f704689e031373753276bd13db83bd5f46779",
+      "example": false
+    },
+    "ts-stack/docs/infrastructure/wallet-infra.md": {
+      "sha256": "cdfddfe4f354624cf50370d21a4e72a91ae3554be33bbd2e4ff55678761f5f62",
+      "example": false
+    },
+    "ts-stack/docs/packages/helpers/air-gap.md": {
+      "sha256": "bd58d2ac7db6225a7a02180c4e0129a8fd486dc08bd7a6b02fc50910a9e03b82",
+      "example": false
+    },
+    "ts-stack/docs/packages/helpers/amountinator.md": {
+      "sha256": "295741df21361523ddfeb655222f9b79ced56bd7003ace863e90ad7ec6b50459",
+      "example": false
+    },
+    "ts-stack/docs/packages/helpers/create-bsv-app.md": {
+      "sha256": "b62ab7e5824a25c8c046d36f71db38c755b84995c28dee5b3bee4e9c49edc66e",
+      "example": false
+    },
+    "ts-stack/docs/packages/helpers/did-client.md": {
+      "sha256": "712f079d7062ffe5e896f330d99f70d35e8c1a9ebb756036e32b80f61bbd43de",
+      "example": false
+    },
+    "ts-stack/docs/packages/helpers/did.md": {
+      "sha256": "826e5eb232ebb638a5bf7403703bf15b2357f1e282209bfce63e6d84cb540185",
+      "example": false
+    },
+    "ts-stack/docs/packages/helpers/fund-wallet.md": {
+      "sha256": "0b63c012e7fbfef3e99e4463aa6b959722518bb9158d0ce1a07dc02802d421bc",
+      "example": false
+    },
+    "ts-stack/docs/packages/helpers/index.md": {
+      "sha256": "5be959df02ad7ca069e0291ac52a0ef03287f80240f0721dbeb93907a96f23d0",
+      "example": false
+    },
+    "ts-stack/docs/packages/helpers/simple.md": {
+      "sha256": "95326dc9e8b7d4db1573a79dda96a9ee51a6ed0caf136ba17530a41687bd6e8d",
+      "example": false
+    },
+    "ts-stack/docs/packages/helpers/templates.md": {
+      "sha256": "6b663f244286cc188d68941df1b25e3309a8bcc2a7020d3ef8e814bcfe34bbc2",
+      "example": false
+    },
+    "ts-stack/docs/packages/helpers/wallet-helper.md": {
+      "sha256": "bfa807f637f28b7e6b102e53df1dbba422ef02bd06789ef45ad0fd8a69679cc4",
+      "example": false
+    },
+    "ts-stack/docs/packages/index.md": {
+      "sha256": "07cf6576c51a9826403dd39ffce98b0b0491e543fcf009b74b2e50de27b505af",
+      "example": false
+    },
+    "ts-stack/docs/packages/messaging/authsocket-client.md": {
+      "sha256": "78e8d5e49c3e064468c0f79a042e9e4d8cd1f0bd7e6f29fea8dd7e6bad4e4a79",
+      "example": false
+    },
+    "ts-stack/docs/packages/messaging/authsocket.md": {
+      "sha256": "b1dd3653e989efd9d611b17bdbaa6c753396a851eb8eba996743c26866f14d69",
+      "example": false
+    },
+    "ts-stack/docs/packages/messaging/index.md": {
+      "sha256": "d96aa460d9d2a2b3045d78ce76c5c91243c88667a9359c871bb029871ccd0d70",
+      "example": false
+    },
+    "ts-stack/docs/packages/messaging/message-box-client.md": {
+      "sha256": "315940d7dbc12f08596f8fed37d59d9b8b7dda40ea3915f66e4cfb6ef8985509",
+      "example": false
+    },
+    "ts-stack/infra/chaintracks-server/README.md": {
+      "sha256": "33cb91d3c4cd9be54d6f5710e425bcbd61bb9a815cd2d58e27b24e661d6c5ecf",
+      "example": false
+    },
+    "ts-stack/infra/message-box-server/README.md": {
+      "sha256": "d5d41a5e6906446020b95876713e1bc52675b2afbe1c011486f93ec6687d809f",
+      "example": false
+    },
+    "ts-stack/infra/overlay-server/deploy/README.md": {
+      "sha256": "7bfbce8d576447d825e41ea6954b87d055ea02a8d874bc1ead8dd7bd4a71b8df",
+      "example": false
+    },
+    "ts-stack/infra/overlay-server/README.md": {
+      "sha256": "156de1e32714b11ac07a39595f61441e24c666bebb57447d5a66e3142a2ebea3",
+      "example": false
+    },
+    "ts-stack/infra/uhrp-server-basic/README.md": {
+      "sha256": "c80a2ac644860139dbf6751916281cb965aa411d9d55a83af86b16361667e939",
+      "example": false
+    },
+    "ts-stack/infra/uhrp-server-cloud-bucket/notifier/README.md": {
+      "sha256": "fb15e853975365055aff79387fca9f8b88a8ea1cdf1243d297637a21fbfbe2d4",
+      "example": false
+    },
+    "ts-stack/infra/uhrp-server-cloud-bucket/README.md": {
+      "sha256": "f481397886db82b220a106b71c906d2b4d7eca5767f7035e1e95c206b0fa6674",
+      "example": false
+    },
+    "ts-stack/infra/wab/deploy/README.md": {
+      "sha256": "9d6e6a3c571a2f33d38a00c8e7947ed5d99972c1ef8fd547bca17f00e1b99b21",
+      "example": false
+    },
+    "ts-stack/infra/wab/README.md": {
+      "sha256": "fc82fd305e8121efea8572b3528a42db93e37304ce857d94962f2d9a031a64e0",
+      "example": false
+    },
+    "ts-stack/infra/wallet-infra/guides/kube_samples/README.md": {
+      "sha256": "4ac70a3065ea4064d634884ad77e079d0ef803a549708806e340c2a8cbe5fb14",
+      "example": false
+    },
+    "ts-stack/infra/wallet-infra/README.md": {
+      "sha256": "8750eb9061a60292519730a8030fd501f44fd8ec042facd4645e02c7f39bc3e0",
+      "example": false
+    },
+    "ts-stack/packages/helpers/air-gap/README.md": {
+      "sha256": "c9e3ee46380f7a6463f1d976a06b027d2e579640f13dcefc93a158a3138e54eb",
+      "example": false
+    },
+    "ts-stack/packages/helpers/amountinator/README.md": {
+      "sha256": "17899a3ebb428891ae8f0d0ba520fc88ae9d1a67088781ac9a25e62de0b0c209",
+      "example": false
+    },
+    "ts-stack/packages/helpers/bsv-wallet-helper/README.md": {
+      "sha256": "aa3c2d2ad61b9c93792a7dbaf403ab63d0789a6f3e1e2bfe2acfd4d327b1ce80",
+      "example": false
+    },
+    "ts-stack/packages/helpers/create-bsv-app/README.md": {
+      "sha256": "7b612e0a26f8ecd560ccfb788563e040bb653c85e4f803f4e17d4b21b3047e41",
+      "example": false
+    },
+    "ts-stack/packages/helpers/did-client/README.md": {
+      "sha256": "48e1b626a709113fe1b0c63a2dd461501ce40f3064116111542942d35eca8010",
+      "example": false
+    },
+    "ts-stack/packages/helpers/did/README.md": {
+      "sha256": "2341f1c527f23d9571dcf6ce0c8e94a0f21c98b9c62fc373bd017d1ddffe6d2d",
+      "example": false
+    },
+    "ts-stack/packages/helpers/fund-wallet/README.md": {
+      "sha256": "fededec4f5efe4f78bc566c5d61a301a950e5d8100cfba74ce7b9ebc1e89dae4",
+      "example": false
+    },
+    "ts-stack/packages/helpers/simple/docs/README.md": {
+      "sha256": "5ee3c202473756f7f748f24892c83cab53b7c7051bf8ab83331f03c0ed7ed80a",
+      "example": false
+    },
+    "ts-stack/packages/helpers/simple/README.md": {
+      "sha256": "1921ad984298ac8b6e741bd6296985ee8dbceaeb9069d2789ca8622a5792d957",
+      "example": false
+    },
+    "ts-stack/packages/helpers/ts-templates/README.md": {
+      "sha256": "9a30f5738beccee2e6857e2cc83eba7bea56070c2d0b254ff966f5874eb10a09",
+      "example": false
+    },
+    "ts-stack/packages/messaging/authsocket-client/README.md": {
+      "sha256": "f6ea66df71060d2d2fb4f1c934ceb7637beb2205c974509c2d125475b5406471",
+      "example": false
+    },
+    "ts-stack/packages/messaging/authsocket/README.md": {
+      "sha256": "89d4060c3a8a4b3d7d1f3ced31bbdf4bdd52ad3401ecb3e8b6b67089fa70be23",
+      "example": false
+    },
+    "ts-stack/packages/messaging/message-box-client/README.md": {
+      "sha256": "aae947ad542d2e4aa16cccf5a7c0e2ad0200bf9856ed17a8435cd3c550484798",
+      "example": false
+    },
+    "ts-stack/packages/messaging/ts-paymail/docs/examples/README.md": {
+      "sha256": "3f99035a8806f55090f557c7cecb5ed22b44521dc153461c4dc0aba213998d8a",
+      "example": false
+    },
+    "ts-stack/packages/messaging/ts-paymail/README.md": {
+      "sha256": "6f02157424c3132c91db1ed3b98c8d19062229b3ccf55ea7d547a5ae56c99cea",
+      "example": false
+    },
+    "ts-stack/packages/middleware/402-pay/README.md": {
+      "sha256": "6a10e1a304440b8c7a945b607a016d05d9cf535ba8a71885725ec975de0d239b",
+      "example": false
+    },
+    "ts-stack/packages/middleware/auth-express-middleware/README.md": {
+      "sha256": "24956e60aa613af32e4611be2cf66f94510b212510023effa402b3e677935f25",
+      "example": false
+    },
+    "ts-stack/packages/middleware/auth/README.md": {
+      "sha256": "5a7effe924a12478c8e81665e3aa6f03747d082f7ef86aaa460ad44f39322c89",
+      "example": false
+    },
+    "ts-stack/packages/middleware/payment-express-middleware/README.md": {
+      "sha256": "b85bfbc1fa2499a582056db5c4068ca4691d8787c75b23094883c096799d840e",
+      "example": false
+    },
+    "ts-stack/packages/network/ts-p2p/README.md": {
+      "sha256": "3b4aff0bddcee67705e594f03914155a1563e55d87ba16b15f03e85996031214",
+      "example": false
+    },
+    "ts-stack/packages/overlays/btms-backend/README.md": {
+      "sha256": "98affc74c1602e1e542774b01517172fedb0fe72335ba83303078f209f5a6325",
+      "example": false
+    },
+    "ts-stack/packages/overlays/gasp-core/README.md": {
+      "sha256": "5307ec536795df6a8c7882746b45055587c1df21ce1b3b60a9b160aacb95f481",
+      "example": false
+    },
+    "ts-stack/packages/overlays/overlay-discovery-services/README.md": {
+      "sha256": "65941f1e24d985c65befebe150ddcfa37054531f355b12d2489ff92fd56cafe7",
+      "example": false
+    },
+    "ts-stack/packages/overlays/overlay-express/README.md": {
+      "sha256": "4bb0a202a492c5b8f713609ad5c3e43b04cedce60a43bbf852602c4322185bc6",
+      "example": false
+    },
+    "ts-stack/packages/overlays/overlay-express/src/__tests__/README.md": {
+      "sha256": "5a96db25100027e89d2e7b6d8009583cb157029c4512fb5ec11d2c87a3862c28",
+      "example": false
+    },
+    "ts-stack/packages/overlays/overlay/docs/concepts/README.md": {
+      "sha256": "618a2a6be1d7510af5320554b65b5166db4abe8a7e4735c4490dad8801648c4a",
+      "example": false
+    },
+    "ts-stack/packages/overlays/overlay/docs/examples/README.md": {
+      "sha256": "116ae8dcb2a411139038c96fa17eb13f40e0f42efde32b09cafb2ec62dbb977a",
+      "example": false
+    },
+    "ts-stack/packages/overlays/overlay/docs/internal/README.md": {
+      "sha256": "e53c4269489eb9bb5b37aa931179ddead89e4f83602105108bc487e8d32b6a12",
+      "example": false
+    },
+    "ts-stack/packages/overlays/overlay/docs/README.md": {
+      "sha256": "946689202228939698426948f8cfb3bed507bf867e0597f7a168ac56177229cd",
+      "example": false
+    },
+    "ts-stack/packages/overlays/overlay/README.md": {
+      "sha256": "cde1eda9e67344c850fb881abe99d5c91d013217ab18d7be7b02a65c4e459d08",
+      "example": false
+    },
+    "ts-stack/packages/overlays/topics/README.md": {
+      "sha256": "42d47d9bdf3f8ac87d5c4f05c1f1c2289703ef2ec5190170bfa52448ff2a0b40",
+      "example": false
+    },
+    "ts-stack/packages/sdk/README.md": {
+      "sha256": "d1807870597391aa41bee0f1bf8404eab637dd8f0a232284e0f985477430008f",
+      "example": false
+    },
+    "ts-stack/packages/sdk/src/identity/README.md": {
+      "sha256": "8917b48662bb3ea6f9183e31585c409e5eb292f72c63d7c0648dff4bebffc42a",
+      "example": false
+    },
+    "ts-stack/packages/verifast/README.md": {
+      "sha256": "5eeed0b4cb1ed917d8a01b563f622f9f19a6cb4aaafed8cd795fac099801a1bc",
+      "example": false
+    },
+    "ts-stack/packages/wallet/btms-permission-module/README.md": {
+      "sha256": "a5b98f4cc2ea12ed2d45ae72d44d052fb3512fa82e3c20d9493dc4a47bfb132b",
+      "example": false
+    },
+    "ts-stack/packages/wallet/btms/README.md": {
+      "sha256": "bcea057ed24dcf59609a44b20224eec0d68db00b95ac3311774945335ddc9a09",
+      "example": false
+    },
+    "ts-stack/packages/wallet/ts-wallet-relay/README.md": {
+      "sha256": "4a3f5ef81d811ba30d5a778d6257d6721ace55e5d51d359ca0b2d6b2c29eff81",
+      "example": false
+    },
+    "ts-stack/packages/wallet/wallet-toolbox-examples/docs/README.md": {
+      "sha256": "f1cdc231edb626fe96b8f2607d2a775150ea7bddfdc109c3c226898548d064f8",
+      "example": false
+    },
+    "ts-stack/packages/wallet/wallet-toolbox-examples/README.md": {
+      "sha256": "8ff697255c93c615cd5ce769d18fad6698944fcfc2734a10eed24b9b1c5590e0",
+      "example": false
+    },
+    "ts-stack/README.md": {
+      "sha256": "f5124dfad2bef46b03011a72e0e45dad7b20b238cdc1dd0cd3f03fa050cc5416",
+      "example": false
+    },
+    "ts-templates/README.md": {
+      "sha256": "ac92fed8bc530bec6409e22fc2b721c3303623ce79081e72048d6dc50d5e52ee",
+      "example": false
+    },
+    "ts-templates/src/MultiPushDrop.ts": {
+      "sha256": "816fda16e8f25dfb0f0462dc76f00cebb6f88dfdcc19afa81244b82d209c9e94",
+      "example": true
+    },
+    "ts-templates/src/OpReturn.ts": {
+      "sha256": "4ac3bfdd92b1896da3975d5b62d056a30de3332ca9de9be756eaa48f701b4db4",
+      "example": true
+    },
+    "ts-templates/src/P2MSKH.ts": {
+      "sha256": "592db3614f0364734ebc85a805041154ecea6ed621710ac10a767675685a4ea4",
+      "example": true
+    },
+    "wallet-toolbox/docs/monitor.md": {
+      "sha256": "0d5bb95c4a36f6b7a4c5656818f94f4855a1cf87d782f44354444df6b47ffc82",
+      "example": false
+    },
+    "wallet-toolbox/docs/README.md": {
+      "sha256": "747ef3e7ea7a4a9c8972dfd89adaadaef2f578a1b71992ec9a28251aae7bce79",
+      "example": false
+    },
+    "wallet-toolbox/docs/services.md": {
+      "sha256": "3c78fa1fa5b6b1a9ce30ce3e6e0e47fd43c8fdfe253dea876b47e5a6a8930b83",
+      "example": false
+    },
+    "wallet-toolbox/docs/setup.md": {
+      "sha256": "01ea8c503f9579fccd63f20df4fb4377f7c2e2abeab3bb0d84a645984b76870d",
+      "example": false
+    },
+    "wallet-toolbox/docs/storage.md": {
+      "sha256": "2e4e8b0986111aa0637944db247c9d87110e176834f75f5b6590f4d900210d25",
+      "example": false
+    },
+    "wallet-toolbox/docs/wab-shamir.md": {
+      "sha256": "98ce7f07670f6365f76854478b4ce127b3deabd25380d27cbf20bcc044f6e6dd",
+      "example": false
+    },
+    "wallet-toolbox/README.md": {
+      "sha256": "935dcd9bc89ba2df46ff8e7ec8163b7e80541d2d5598828265cca7b69f9d775c",
+      "example": false
+    }
+  }
+}

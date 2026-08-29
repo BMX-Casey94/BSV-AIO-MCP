@@ -1,0 +1,59 @@
+{
+  "generated": "2026-08-29",
+  "policy": "Query path reads committed cards only. Refresh fetches the GitHub tarball at the pinned SHA when BSV_AIO_ALLOW_REFRESH=1. Tier 1 pins only live or source-intact repos: the June 2026 migration moved overlay-services, gasp-core, message-box-client, ts-p2p and 402-pay into ts-stack packages as archived redirect stubs, so those names are never pinned — their successors are snapshotted from ts-stack itself. overlay-topics never existed as a standalone repo. x402 is an upstream fork, not BSV-native, and is intentionally excluded.",
+  "repos": [
+    {
+      "repo": "bsv-blockchain/arcade",
+      "sha": "03b102c13fab27b4eb7f60da8b167914515fb553",
+      "package": "arcade",
+      "language": "go",
+      "role": "service"
+    },
+    {
+      "repo": "bsv-blockchain/go-p2p",
+      "sha": "09d20bcc35d700bb41bd10b30400da78481f1a06",
+      "package": "go-p2p",
+      "language": "go",
+      "role": "library"
+    },
+    {
+      "repo": "bsv-blockchain/merkle-service",
+      "sha": "015ada23c76821fa9a327a1b18af1ac330a3bba5",
+      "package": "merkle-service",
+      "language": "go",
+      "role": "service"
+    },
+    {
+      "repo": "bsv-blockchain/message-box-server",
+      "sha": "bbb51347c1744c28b32fbbba9500e84dba2e0ade",
+      "package": "messagebox-server",
+      "language": "ts",
+      "role": "service",
+      "status": "archived",
+      "successor": "bsv-blockchain/ts-stack (infra/message-box-server)"
+    },
+    {
+      "repo": "bsv-blockchain/storage-server",
+      "sha": "b30f2281831cf34f2d3c7ffc3e3ec6e11e549050",
+      "package": "@bsv/uhrp-storage-server",
+      "language": "ts",
+      "role": "service",
+      "status": "archived",
+      "successor": "bsv-blockchain/ts-stack (infra/uhrp-server-cloud-bucket)"
+    },
+    {
+      "repo": "bsv-blockchain/uhrp-services",
+      "sha": "7239c3fb051cf5bb33bea2de1e19302d022f129f",
+      "package": "uhrp-services",
+      "language": "ts",
+      "role": "service"
+    },
+    {
+      "repo": "bsv-blockchain/uhrp-react",
+      "sha": "9cc9ea1cec9008cfd01f132660fa44730e199cd9",
+      "package": "@bsv/uhrp-react",
+      "language": "ts",
+      "role": "library"
+    }
+  ]
+}
