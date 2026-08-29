@@ -79,6 +79,15 @@ const EXAMPLES_PER_REPO_CAP = 25;
 const DOC_MAX_BYTES = 256 * 1024;
 const EXAMPLE_MAX_BYTES = 64 * 1024;
 const EXAMPLE_EXTENSIONS = new Set([".ts", ".tsx", ".js", ".jsx", ".mts", ".cts", ".go", ".py", ".md"]);
+
+/**
+ * Upstream mislabels dropped from the mention edges. The go-sdk inscription example calls a
+ * 1Sat ordinals inscription "BRC-43"; real BRC-43 is key-derivation security levels/protocol
+ * IDs. Keeping the edge would attach go-sdk to a BRC it does not implement.
+ */
+const MENTION_SUPPRESSIONS: Record<string, ReadonlySet<number>> = {
+  "go-sdk": new Set([43]),
+};
 const REPO_PATTERN = /^[A-Za-z0-9._-]+\/[A-Za-z0-9._-]+$/;
 const SHA_PATTERN = /^[0-9a-f]{7,40}$/;
 /** The BRC body set only guards against collapse once a real corpus exists. */
@@ -378,12 +387,26 @@ function planRepoDocs(
   for (const source of sources) {
     const shortRepo = source.repo.split("/").pop() ?? source.repo;
     const found = new Set<number>();
+    const suppressed = MENTION_SUPPRESSIONS[source.packageName];
     const consider = (rel: string, example: boolean): void => {
       const abs = join(source.checkout, ...rel.split("/"));
       const text = readFileSync(abs, "utf8");
-      for (const match of text.matchAll(/\bBRC-(\d{1,4})\b/g)) {
+      // Slash continuations count too: "BRC-103/104" cites both 103 and 104; zero-padded
+      // forms ("BRC-0102") normalise through Number().
+      for (const match of text.matchAll(/\bBRC-(\d{1,4})((?:\/\d{1,4})*)\b/g)) {
         if (match[1]) {
-          found.add(Number(match[1]));
+          const n = Number(match[1]);
+          if (!suppressed?.has(n)) {
+            found.add(n);
+          }
+        }
+        for (const extra of (match[2] ?? "").matchAll(/\/(\d{1,4})/g)) {
+          if (extra[1]) {
+            const n = Number(extra[1]);
+            if (!suppressed?.has(n)) {
+              found.add(n);
+            }
+          }
         }
       }
       files.push({ rel: `${shortRepo}/${rel}`, abs, example });

@@ -664,12 +664,45 @@ function loadCapabilityRows(root: string): CapabilityRecord[] {
   }
 }
 
+const CONCEPT_STOP_WORDS = new Set([
+  "and",
+  "the",
+  "for",
+  "with",
+  "what",
+  "which",
+  "does",
+  "that",
+  "this",
+  "from",
+  "into",
+  "use",
+  "using",
+]);
+
 function capabilityMatchesConcept(row: CapabilityRecord, concept: string): boolean {
-  const needle = concept.toLowerCase();
-  if (row.name.toLowerCase().includes(needle) || row.brc.toLowerCase().includes(needle)) {
+  const needle = concept.toLowerCase().trim();
+  // A BRC-shaped concept names exactly one row: "brc-22" must not substring-match BRC-220,
+  // and must not inherit packages from a row whose title merely mentions BRC-22.
+  const brcRef = /^brc[-– ]?0*(\d+)$/i.exec(needle);
+  if (brcRef?.[1]) {
+    return row.brc === `BRC-${Number(brcRef[1])}`;
+  }
+  const words = needle
+    .split(/[^a-z0-9]+/)
+    .filter((word) => word.length >= 3 && !CONCEPT_STOP_WORDS.has(word));
+  if (words.length === 0) {
+    return false;
+  }
+  // Word-set containment, not substring: "wallet interface" matches the BRC-100 title
+  // ("…Wallet-to-Application Interface") because both words appear, without "interface"
+  // substring-matching unrelated titles.
+  const nameWords = new Set(row.name.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean));
+  if (words.every((word) => nameWords.has(word))) {
     return true;
   }
-  if (row.id.toLowerCase().includes(needle)) {
+  const idWords = new Set(row.id.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean));
+  if (words.every((word) => idWords.has(word))) {
     return true;
   }
   return groupingKeys(row.name).some((token) => tokenMatchesName(concept, token));

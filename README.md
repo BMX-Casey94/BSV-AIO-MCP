@@ -110,7 +110,7 @@ data loss.
 ```bash
 npm install          # install workspace deps
 npm run build        # bundle server/dist
-npm test             # 189 tests: goldens (A–D), tools, composition, ingest
+npm test             # 198 tests: goldens (A–D), tools, composition, ingest
 npm run typecheck    # tsc --noEmit
 node server/probe-full-battery.mjs   # adversarial smoke battery against the built server
 ```

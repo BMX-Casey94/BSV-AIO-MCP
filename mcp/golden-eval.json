@@ -3,7 +3,7 @@
   "purpose": "Golden set. Phase A must pass G04, G05, G09, G10. Phase B adds G02, G12, G13. Phase C adds G01, G03, G07, G08 (Tier 1 snapshot) and G14-G29 (Tier 1 deep-dive: hyphenated names, archived-status, evidenced BRC joins, ops cues). Phase D adds G06, G11 (read-only policy tools). BitGenius public Q&A is a canary only — never ingested.",
   "phase_a": ["G04", "G05", "G09", "G10"],
   "phase_b": ["G02", "G12", "G13"],
-  "phase_c": ["G01", "G03", "G07", "G08", "G14", "G15", "G16", "G17", "G18", "G19", "G20", "G21", "G22", "G23", "G24", "G25", "G26", "G27", "G28", "G29"],
+  "phase_c": ["G01", "G03", "G07", "G08", "G14", "G15", "G16", "G17", "G18", "G19", "G20", "G21", "G22", "G23", "G24", "G25", "G26", "G27", "G28", "G29", "G30", "G31", "G32", "G33", "G34"],
   "phase_d": ["G06", "G11"],
   "cases": [
     {
@@ -287,6 +287,50 @@
         "network": "tstn",
         "must_cite": ["ops://testnet"],
         "must_mention": ["uhrp storage server"]
+      }
+    },
+    {
+      "id": "G30",
+      "question": "Which packages implement BRC-100?",
+      "class": "implementation",
+      "expect": {
+        "must_cite": ["BRC-100", "package:@bsv/sdk", "package:@bsv/wallet-toolbox", "package:go-sdk", "package:go-wallet-toolbox"],
+        "must_mention": ["evidences BRC-100"]
+      }
+    },
+    {
+      "id": "G31",
+      "question": "Which packages implement BRC-52?",
+      "class": "implementation",
+      "expect": {
+        "must_mention": ["No confirmed package", "BRC-52"],
+        "must_not": ["arcade"]
+      }
+    },
+    {
+      "id": "G32",
+      "question": "What implements the wallet interface?",
+      "class": "mixed",
+      "expect": {
+        "must_cite": ["BRC-100", "package:@bsv/wallet-toolbox", "package:go-wallet-toolbox"],
+        "must_mention": ["evidences BRC-100"]
+      }
+    },
+    {
+      "id": "G33",
+      "question": "Which SDK handles P2P messaging (BRC-33)?",
+      "class": "spec",
+      "expect": {
+        "must_mention": ["No confirmed package", "BRC-33"]
+      }
+    },
+    {
+      "id": "G34",
+      "question": "Does go-wallet-toolbox support BRC-29?",
+      "class": "mixed",
+      "expect": {
+        "must_mention": ["go-wallet-toolbox", "cites BRC-29"],
+        "must_not": ["does not evidence"]
       }
     }
   ]

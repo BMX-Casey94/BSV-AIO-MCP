@@ -43,9 +43,9 @@ The system is built around three primary abstractions:
 ### Entity Mapping: Engine Components
 The following diagram maps the logical components of the overlay system to their respective code entities.
 
-| Title: Overlay Engine Entity Map |
-| :--- |
-| ```mermaid
+**Overlay Engine Entity Map**
+
+```mermaid
 graph TD
     subgraph "@bsv/overlay"
         Engine["Engine (src/Engine.ts)"]
@@ -63,7 +63,7 @@ graph TD
     Engine --> IStore
     Engine --> GASPRemote
     GASPRemote --> GASP
-``` |
+```
 
 Sources: [packages/overlays/overlay-services/package.json:1-81](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/overlay-services/package.json#L1-L81), [specs/sync/gasp-asyncapi.yaml:1-36](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/sync/gasp-asyncapi.yaml#L1-L36)
 
@@ -81,9 +81,9 @@ The `@bsv/overlay` package integrates GASP through two specialized classes:
 *   **OverlayGASPRemote**: Implements the remote side of the GASP protocol, handling incoming sync requests.
 *   **OverlayGASPStorage**: Adapts the internal `Storage` interface to meet the requirements of the GASP protocol, allowing the sync engine to query for missing transactions and outputs.
 
-| Title: GASP Sync Flow |
-| :--- |
-| ```mermaid
+**GASP Sync Flow**
+
+```mermaid
 sequenceDiagram
     participant I as Initiator (Engine)
     participant R as Responder (Remote Peer)
@@ -98,7 +98,7 @@ sequenceDiagram
     end
     
     Note over I: Engine.submit(GASPNode)
-``` |
+```
 
 Sources: [specs/sync/gasp-asyncapi.yaml:1-110](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/sync/gasp-asyncapi.yaml#L1-L110), [packages/overlays/gasp-core/package.json:1-67](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/gasp-core/package.json#L1-L67)
 
@@ -132,9 +132,9 @@ This package extends the base engine to provide a "Discovery Node" capability, w
 ### UHRP Integration
 The **Universal Hash Resolution Protocol (UHRP)** (BRC-26) is often used alongside overlays for content-addressed storage. Overlay nodes may host advertisement tokens on the `tm_uhrp` topic, which record file hashes and download URLs.
 
-| Title: UHRP Resolution Flow |
-| :--- |
-| ```mermaid
+**UHRP Resolution Flow**
+
+```mermaid
 graph LR
     Client["Client"]
     LS["LookupService (ls_uhrp)"]
@@ -143,7 +143,7 @@ graph LR
     Client -- "1. Resolve uhrp://<hash>" --> LS
     LS -- "2. Return Advertisement (URL)" --> Client
     Client -- "3. GET /download" --> Storage
-``` |
+```
 
 Sources: [specs/storage/uhrp-http.yaml:1-40](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/storage/uhrp-http.yaml#L1-L40), [packages/overlays/overlay-discovery-services/package.json:1-71](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/overlay-discovery-services/package.json#L1-L71)
 

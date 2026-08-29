@@ -110,6 +110,29 @@ describe("capability_graph.json", () => {
       }
     }
   });
+
+  it("keeps BEEF title-token edges on the definitional row only", () => {
+    const { rows } = loadRows();
+    const beef = rows.find((row) => row.brc === "BRC-62");
+    expect(beef?.packages).toEqual(expect.arrayContaining(FOUR_TIER0_PACKAGES));
+    // Paymail BEEF, the multicast BEEF plane/frame and outpoint BEEF are different specs the
+    // SDKs never cite: a shared "beef" title token must not attach them.
+    for (const brc of ["BRC-70", "BRC-148", "BRC-149", "BRC-158"]) {
+      const row = rows.find((candidate) => candidate.brc === brc);
+      expect(row?.packages ?? [], `${brc} packages`).toEqual([]);
+    }
+  });
+
+  it("drops the mislabelled go-sdk BRC-43 mention and parses slash citations", () => {
+    const { rows } = loadRows();
+    // The go-sdk inscription example mislabels a 1Sat ordinals inscription as "BRC-43" (real
+    // BRC-43 is key-derivation security levels); the edge is suppressed at refresh.
+    const brc43 = rows.find((row) => row.brc === "BRC-43");
+    expect((brc43?.packages ?? []).includes("go-sdk")).toBe(false);
+    // The go-sdk README cites "BRC-103/104" — the slash continuation evidences BRC-104 too.
+    const brc104 = rows.find((row) => row.brc === "BRC-104");
+    expect(brc104?.packages).toEqual(expect.arrayContaining(["go-sdk"]));
+  });
 });
 
 describe("tokenMatchesName", () => {

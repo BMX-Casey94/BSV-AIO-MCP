@@ -109,6 +109,28 @@ describe("code tools", () => {
     expect(res.brcs).toEqual([]);
   });
 
+  it("get_package_for_concept anchors BRC-shaped concepts to the exact row", async () => {
+    // "BRC-22" must not substring-match BRC-220's row, nor union packages from a row whose
+    // title merely mentions BRC-22.
+    const res = await callToolJson<PackageForConceptResult>(client, "get_package_for_concept", {
+      concept: "BRC-22",
+    });
+    expect(res.brcs).toEqual(["BRC-22"]);
+    expect(res.packages).toEqual(["uhrp-services"]);
+  });
+
+  it("get_package_for_concept resolves multi-word concepts by word containment", async () => {
+    // "wallet interface" is not a contiguous substring of the BRC-100 title
+    // ("…Wallet-to-Application Interface") but both words appear in it.
+    const res = await callToolJson<PackageForConceptResult>(client, "get_package_for_concept", {
+      concept: "wallet interface",
+    });
+    expect(res.brcs).toContain("BRC-100");
+    expect(res.packages).toEqual(
+      expect.arrayContaining(["@bsv/wallet-toolbox", "go-wallet-toolbox"]),
+    );
+  });
+
   it("inspect_schema truncates an oversized contract and says so", () => {
     const tier0Root = mkdtempSync(join(tmpdir(), "csw-specs-"));
     mkdirSync(join(tier0Root, "specs"), { recursive: true });

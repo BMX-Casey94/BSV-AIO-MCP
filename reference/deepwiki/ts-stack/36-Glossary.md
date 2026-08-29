@@ -165,8 +165,8 @@ graph LR
 | Term | Domain | Definition |
 | :--- | :--- | :--- |
 | **BTMS** | Wallet | Basic Token Management System. Handles UTXO-based tokens using PushDrop scripts. [packages/wallet/btms/src/BTMS.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/src/BTMS.ts) |
-| **Chaintracks** | Network | A service for tracking blockchain headers and verifying Merkle proofs against the longest chain. [packages/network/chaintracks-server](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/chaintracks-server) |
-| **WAB** | Wallet | Wallet Authentication Backend. Manages user sessions, MFA, and identity linking. [packages/wallet/wab](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wab) |
+| **Chaintracks** | Network | A service for tracking blockchain headers and verifying Merkle proofs against the longest chain. [packages/network/chaintracks-server](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/chaintracks-server) |
+| **WAB** | Wallet | Wallet Authentication Backend. Manages user sessions, MFA, and identity linking. [packages/wallet/wab](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/wallet/wab) |
 | **PushDrop** | SDK | A script template pattern used to "push" data into a locking script and "drop" it during unlocking. |
 | **AuthSocket** | Messaging | A WebSocket implementation using BRC-103 for mutual authentication. [packages/messaging/authsocket](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/messaging/authsocket) |
 | **Teranode Listener** | Network | A P2P listener that subscribes to Teranode topics (blocks, subtrees) over a private DHT. [packages/network/ts-p2p](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/ts-p2p) |

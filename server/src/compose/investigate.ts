@@ -362,19 +362,56 @@ export function investigate(
   // unevidenced yes, and the spec's implementations list may not name the package at all.
   const yesNoForm = /^(?:does|is|are|can|has|have|do)\b/i.test(question.trim());
   const joinVerb =
-    /\b(implement\w*|support\w*|use[sd]?|using|mention\w*|integrat\w*|compliant|conform\w*)\b/i.test(
+    /\b(implement\w*|support\w*|use[sd]?|using|mention\w*|integrat\w*|compliant|conform\w*|handles?)\b/i.test(
       question,
     );
   const namedPackages = store
     .listByIdPrefix("package:", 100)
     .map((doc) => doc.id.slice("package:".length))
-    .filter((name) => packageNamedInQuestion(name, question));
+    .filter((name) => packageNamedInQuestion(name, question))
+    // Longest short name first: "go-wallet-toolbox" in the question must resolve to the Go
+    // toolbox, not to "@bsv/wallet-toolbox", whose short name is a suffix of it.
+    .sort((a, b) => (b.split("/").pop() ?? b).length - (a.split("/").pop() ?? a).length);
   const whichBrcsOfPackage =
     /\bwhich\s+brcs?\b/i.test(question) && joinVerb && namedPackages.length > 0;
   const joinBrc =
     yesNoForm && joinVerb && explicitBrcs.length === 1 && missingBrcs.length === 0 && namedPackages.length > 0
       ? explicitBrcs[0]
       : undefined;
+  // "Which packages implement BRC-N?" — the inverse join, answered from the capability graph's
+  // confirmed edges, never from the spec's own prose.
+  const whichPackagesOfBrc =
+    /\bwhich\s+(?:packages?|sdks?|libraries|repos|implementations?|toolchains?)\b/i.test(question) &&
+    joinVerb &&
+    explicitBrcs.length === 1 &&
+    missingBrcs.length === 0 &&
+    namedPackages.length === 0
+      ? explicitBrcs[0]
+      : undefined;
+  // "What implements the wallet interface?" — the concept form of the same join. The object
+  // phrase resolves to a capability row only when its words are contained in exactly ONE row's
+  // name ("wallet interface" → BRC-100; BRC-219's "Wallet Permission Prompt" lacks "interface").
+  let conceptJoinBrc: number | undefined;
+  const whatImplements =
+    namedPackages.length === 0 && explicitBrcs.length === 0
+      ? /^\s*what\s+(?:implements|supports)\s+(.+?)\??\s*$/i.exec(question)?.[1]
+      : undefined;
+  if (whatImplements) {
+    const words = whatImplements
+      .toLowerCase()
+      .split(/[^a-z0-9]+/)
+      .filter((word) => word.length >= 4);
+    if (words.length > 0) {
+      const matches = [...loadCapabilityRows(root).entries()].filter(([, row]) => {
+        const nameWords = new Set(row.name.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean));
+        return words.every((word) => nameWords.has(word));
+      });
+      if (matches.length === 1) {
+        conceptJoinBrc = matches[0]![0];
+      }
+    }
+  }
+  const graphJoinBrc = whichPackagesOfBrc ?? conceptJoinBrc;
 
   if (whichBrcsOfPackage || joinBrc !== undefined) {
     const mentions = loadBrcMentions(root);
@@ -494,6 +531,97 @@ export function investigate(
       const brcExcerpt = excerptWindow(brcDoc.body, tokens, false, 280, true);
       claims.push({
         text: `BRC-${brcNum} (${brcHit.title}): ${brcExcerpt}`,
+        support: [brcHit.id],
+        status: statusForClaim([brcHit], []),
+        confidence: "medium",
+      });
+    }
+    return finish({
+      question,
+      classifiedAs,
+      network,
+      hopsUsed,
+      index,
+      needs,
+      claims,
+      hits,
+      gaps,
+      contradictions,
+      recommendedNext,
+      answerSketch: composeSketch(classifiedAs, claims, hits, ordinalityQuestion, tokens),
+    });
+  }
+
+  if (graphJoinBrc !== undefined) {
+    const brcNum = graphJoinBrc;
+    const graphPackages = loadCapabilityRows(root).get(brcNum)?.packages ?? [];
+    const brcDoc = store.getById(`brc:${brcNum}`);
+    const brcTitle = brcDoc?.title ?? `BRC-${brcNum}`;
+    if (graphPackages.length === 0) {
+      // Fail closed: the spec being pinned says nothing about who implements it.
+      hits.length = 0;
+      gaps.push(
+        `No confirmed snapshot package cites BRC-${brcNum}; the spec is pinned but no package edge exists.`,
+      );
+      const claims: EvidenceClaim[] = [
+        {
+          text: `No confirmed package in the pinned snapshot is evidenced implementing BRC-${brcNum} (${brcTitle}); no package's own documentation cites it, so none is named.`,
+          support: [],
+          status: "insufficient",
+          confidence: "low",
+        },
+      ];
+      return finish({
+        question,
+        classifiedAs,
+        network,
+        hopsUsed,
+        index,
+        needs,
+        claims,
+        hits,
+        gaps,
+        contradictions,
+        recommendedNext,
+        answerSketch: composeSketch(classifiedAs, claims, hits, ordinalityQuestion, tokens),
+      });
+    }
+    const mentions = loadBrcMentions(root);
+    const support: string[] = [];
+    for (const pkg of graphPackages) {
+      const card = store.getById(`package:${pkg}`);
+      if (card) {
+        upsertHit(hits, storedHit(card, tokens));
+        support.push(card.id);
+      }
+    }
+    const mentionBacked = graphPackages.filter((pkg) => mentions.byPackage.get(pkg)?.has(brcNum));
+    const tokenBacked = graphPackages.filter((pkg) => !mentionBacked.includes(pkg));
+    const parts = [
+      `The pinned snapshot evidences BRC-${brcNum} (${brcTitle}) implementation by: ${graphPackages.join(", ")}.`,
+    ];
+    if (mentionBacked.length > 0) {
+      parts.push(`${mentionBacked.join(", ")} — cited in each package's own pinned documentation.`);
+    }
+    if (tokenBacked.length > 0) {
+      parts.push(
+        `${tokenBacked.join(", ")} — exports the definitional symbols the spec names (title-token edge, not a doc citation).`,
+      );
+    }
+    const claims: EvidenceClaim[] = [
+      {
+        text: parts.join(" "),
+        support,
+        status: "supports",
+        confidence: "medium",
+      },
+    ];
+    if (brcDoc) {
+      const brcHit = storedHit(brcDoc, tokens);
+      brcHit.excerpt = excerptWindow(brcDoc.body, tokens, false, 280, true);
+      upsertHit(hits, brcHit);
+      claims.push({
+        text: `BRC-${brcNum} (${brcTitle}): ${brcHit.excerpt}`,
         support: [brcHit.id],
         status: statusForClaim([brcHit], []),
         confidence: "medium",
@@ -1850,7 +1978,7 @@ function composeClaims(
     );
   if (!pinned && implementationPick) {
     lead =
-      ranked.find((hit) => hit.kind === "doc" || hit.kind === "example" || hit.kind === "package") ??
+      ranked.find((hit) => hit.kind === "doc" || hit.kind === "example") ??
       ranked.find((hit) => hit.kind !== "brc");
   }
 
@@ -2072,13 +2200,16 @@ function composeClaims(
 
 /** Distinctive tokens (length ≥ 4) present in the hit's title — a topic signal, not a mention. */
 function titleOverlap(hit: TypedHit, tokens: string[], compounds: string[] = []): number {
-  const title = hit.title.toLowerCase().replace(/\\_/g, "_");
+  const title = hit.title.toLowerCase();
+  // Titles hyphenate compounds ("Wallet-to-Application Interface"): split on every
+  // non-alphanumeric so "wallet" matches the title's "Wallet-…" word. Exact word membership,
+  // never substring: "payment" still does not match an unrelated "Payments" title.
+  const titleWords = new Set(title.split(/[^a-z0-9]+/g).filter(Boolean));
   let score = tokens.filter((token) => {
     if (token.length < 4) {
       return false;
     }
-    // Word-boundary, not substring: "payment" must not match an unrelated "Payments" title.
-    return mentionsWord(title, token);
+    return titleWords.has(token);
   }).length;
   for (const compound of compounds) {
     if (compound.length >= 4 && mentionsWord(title, compound)) {
@@ -2508,6 +2639,44 @@ type BrcMentionIndex = {
   /** Package label → repo short name (docs/examples are keyed by repo, not package name). */
   packageRepo: Map<string, string>;
 };
+
+let capabilityRowsCache: { root: string; byBrc: Map<number, { name: string; packages: string[] }> } | undefined;
+
+/**
+ * capability_graph.json rows keyed by BRC number. The graph is the curated "who implements
+ * BRC-N" index (mention-evidenced plus definitional-symbol rows only); investigate reads it
+ * for which-packages questions instead of guessing from spec prose.
+ */
+function loadCapabilityRows(root: string): Map<number, { name: string; packages: string[] }> {
+  if (capabilityRowsCache?.root === root) {
+    return capabilityRowsCache.byBrc;
+  }
+  const byBrc = new Map<number, { name: string; packages: string[] }>();
+  const abs = join(root, "reference", "capability_graph.json");
+  if (existsSync(abs)) {
+    try {
+      const raw = JSON.parse(readFileSync(abs, "utf8")) as { capabilities?: unknown[] };
+      for (const row of Array.isArray(raw.capabilities) ? raw.capabilities : []) {
+        const rec = row as { brc?: unknown; name?: unknown; packages?: unknown };
+        if (typeof rec.brc !== "string" || !Array.isArray(rec.packages)) {
+          continue;
+        }
+        const match = /^BRC-(\d+)$/.exec(rec.brc);
+        if (!match?.[1]) {
+          continue;
+        }
+        byBrc.set(Number(match[1]), {
+          name: typeof rec.name === "string" ? rec.name : rec.brc,
+          packages: rec.packages.filter((pkg): pkg is string => typeof pkg === "string"),
+        });
+      }
+    } catch {
+      // A malformed graph is non-fatal: which-packages questions fail closed without it.
+    }
+  }
+  capabilityRowsCache = { root, byBrc };
+  return byBrc;
+}
 
 let brcMentionCache: { root: string; index: BrcMentionIndex } | undefined;
 

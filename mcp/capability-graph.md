@@ -13,11 +13,15 @@ Build `reference/capability_graph.json` from, in order:
 1. `reference/brc_index.json` — id, title, category, path
 2. `data/education_index.json` themes that mention the same BRC or concept
 3. `reference/shoprag-successor-map.json` — current package names only
-4. Exported symbol names that match the BRC title tokens (Tier 0+1 `symbols.json`)
+4. Exported symbol names that match the BRC title tokens (Tier 0+1 `symbols.json`) — trusted
+   only on a symbol family's definitional row (BEEF→BRC-62, BUMP→BRC-74). A shared title token
+   never attaches packages to a different spec that merely names the format (Paymail BEEF,
+   the multicast BEEF plane, outpoint BEEF).
 5. Evidenced BRC→package edges: `reference/tier0/docs/brc-mentions.json` and
    `reference/tier1/docs/brc-mentions.json` — BRC numbers cited by each repo's own
-   snapshotted README/docs/examples. These are the only BRC-to-package edges the
-   graph trusts beyond title-token matching.
+   snapshotted README/docs/examples (slash citations like "BRC-103/104" count for each
+   number; upstream mislabels are suppressed at refresh). Beyond the definitional-row
+   token match, these mentions are the only BRC-to-package edges the graph trusts.
 
 **Forbidden:** copying a donor project's capability seed file. Those rows invent
 APIs (`PeerPayClient`, `createPayment`, `serialiseEnvelope`).

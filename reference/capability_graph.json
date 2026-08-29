@@ -11,7 +11,7 @@
     "reference/tier1/symbols.json",
     "reference/tier1/docs/brc-mentions.json"
   ],
-  "policy": "Titles plus confirmed Tier 0/1 cards. packages come from a word-boundary match of grouping tokens of length ≥ 3 against exported symbols, unioned with the evidenced BRC mentions each repo's own documentation makes. api lists only exported names that exact-match a title token. Do not invent API names.",
+  "policy": "Titles plus confirmed Tier 0/1 cards. packages come from evidenced BRC mentions in each repo's own documentation, unioned with a word-boundary match of grouping tokens against exported symbols only on a symbol family's definitional row (BEEF→BRC-62, BUMP→BRC-74). api lists only exported names that exact-match a title token. Do not invent API names.",
   "count": 171,
   "capabilities": [
     {
@@ -496,9 +496,7 @@
       "name": "Security Levels, Protocol IDs, Key IDs and Counterparties",
       "brc": "BRC-43",
       "also": [],
-      "packages": [
-        "go-sdk"
-      ],
+      "packages": [],
       "api": [],
       "education_themes": [
         "security-economics"
@@ -824,12 +822,7 @@
         "BRC-149",
         "BRC-158"
       ],
-      "packages": [
-        "@bsv/sdk",
-        "@bsv/wallet-toolbox",
-        "go-sdk",
-        "go-wallet-toolbox"
-      ],
+      "packages": [],
       "api": [
         "BEEF",
         "Beef"
@@ -1123,10 +1116,7 @@
         "BRC-158"
       ],
       "packages": [
-        "@bsv/sdk",
-        "@bsv/wallet-toolbox",
-        "go-sdk",
-        "go-wallet-toolbox"
+        "@bsv/sdk"
       ],
       "api": [
         "BEEF",
@@ -1147,12 +1137,7 @@
         "BRC-149",
         "BRC-158"
       ],
-      "packages": [
-        "@bsv/sdk",
-        "@bsv/wallet-toolbox",
-        "go-sdk",
-        "go-wallet-toolbox"
-      ],
+      "packages": [],
       "api": [
         "BEEF",
         "Beef"
@@ -1266,6 +1251,7 @@
         "BRC-103"
       ],
       "packages": [
+        "go-sdk",
         "go-wallet-toolbox"
       ],
       "api": [],
@@ -1760,12 +1746,7 @@
         "BRC-149",
         "BRC-158"
       ],
-      "packages": [
-        "@bsv/sdk",
-        "@bsv/wallet-toolbox",
-        "go-sdk",
-        "go-wallet-toolbox"
-      ],
+      "packages": [],
       "api": [
         "BEEF",
         "Beef"
@@ -1785,12 +1766,7 @@
         "BRC-148",
         "BRC-158"
       ],
-      "packages": [
-        "@bsv/sdk",
-        "@bsv/wallet-toolbox",
-        "go-sdk",
-        "go-wallet-toolbox"
-      ],
+      "packages": [],
       "api": [
         "BEEF",
         "Beef"
@@ -1896,12 +1872,7 @@
         "BRC-148",
         "BRC-149"
       ],
-      "packages": [
-        "@bsv/sdk",
-        "@bsv/wallet-toolbox",
-        "go-sdk",
-        "go-wallet-toolbox"
-      ],
+      "packages": [],
       "api": [
         "BEEF",
         "Beef"

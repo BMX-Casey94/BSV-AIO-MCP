@@ -315,16 +315,16 @@ This page documents the automation pipelines, version management strategies, and
 
 ## Continuous Integration (CI)
 
-The CI pipeline is triggered on every push to `main` and on all pull requests targeting `main` [ .github/workflows/ci.yml:3-7 ](https://github.com/bsv-blockchain/ts-stack/blob/main/ .github/workflows/ci.yml:3-7 ). It ensures code quality through a sequence of validation, building, and testing across the entire workspace.
+The CI pipeline is triggered on every push to `main` and on all pull requests targeting `main` [.github/workflows/ci.yml:3-7](https://github.com/bsv-blockchain/ts-stack/blob/main/.github/workflows/ci.yml#L3-L7). It ensures code quality through a sequence of validation, building, and testing across the entire workspace.
 
 ### Build and Test Workflow
-The `build-and-test` job executes on `ubuntu-latest` using Node.js 20.x [ .github/workflows/ci.yml:10-15 ](https://github.com/bsv-blockchain/ts-stack/blob/main/ .github/workflows/ci.yml:10-15 ).
+The `build-and-test` job executes on `ubuntu-latest` using Node.js 20.x [.github/workflows/ci.yml:10-15](https://github.com/bsv-blockchain/ts-stack/blob/main/.github/workflows/ci.yml#L10-L15).
 
-1.  **Dependency Installation**: Uses `pnpm install --frozen-lockfile` to ensure reproducible builds [ .github/workflows/ci.yml:29 ](https://github.com/bsv-blockchain/ts-stack/blob/main/ .github/workflows/ci.yml:29 ).
-2.  **Version Consistency**: Runs `node scripts/check-versions.mjs` to verify that internal workspace dependencies are correctly synchronized [ .github/workflows/ci.yml:32 ](https://github.com/bsv-blockchain/ts-stack/blob/main/ .github/workflows/ci.yml:32 ).
-3.  **Monorepo Build**: Builds all packages in the workspace, specifically excluding non-production or specialized deployment packages like `@bsv/messagebox-services` and `example-paymail` [ .github/workflows/ci.yml:37 ](https://github.com/bsv-blockchain/ts-stack/blob/main/ .github/workflows/ci.yml:37 ).
-4.  **Linting**: Executes `pnpm -r run lint` across all packages [ .github/workflows/ci.yml:41 ](https://github.com/bsv-blockchain/ts-stack/blob/main/ .github/workflows/ci.yml:41 ).
-5.  **Unit Testing**: Runs `pnpm -r run test` to execute Jest/Vitest suites in every package [ .github/workflows/ci.yml:44 ](https://github.com/bsv-blockchain/ts-stack/blob/main/ .github/workflows/ci.yml:44 ).
+1.  **Dependency Installation**: Uses `pnpm install --frozen-lockfile` to ensure reproducible builds [.github/workflows/ci.yml:29](https://github.com/bsv-blockchain/ts-stack/blob/main/.github/workflows/ci.yml#L29).
+2.  **Version Consistency**: Runs `node scripts/check-versions.mjs` to verify that internal workspace dependencies are correctly synchronized [.github/workflows/ci.yml:32](https://github.com/bsv-blockchain/ts-stack/blob/main/.github/workflows/ci.yml#L32).
+3.  **Monorepo Build**: Builds all packages in the workspace, specifically excluding non-production or specialized deployment packages like `@bsv/messagebox-services` and `example-paymail` [.github/workflows/ci.yml:37](https://github.com/bsv-blockchain/ts-stack/blob/main/.github/workflows/ci.yml#L37).
+4.  **Linting**: Executes `pnpm -r run lint` across all packages [.github/workflows/ci.yml:41](https://github.com/bsv-blockchain/ts-stack/blob/main/.github/workflows/ci.yml#L41).
+5.  **Unit Testing**: Runs `pnpm -r run test` to execute Jest/Vitest suites in every package [.github/workflows/ci.yml:44](https://github.com/bsv-blockchain/ts-stack/blob/main/.github/workflows/ci.yml#L44).
 
 ### CI Process Flow
 
@@ -346,18 +346,18 @@ graph TD
         Test
     end
 ```
-Sources: [ .github/workflows/ci.yml:1-45 ](https://github.com/bsv-blockchain/ts-stack/blob/main/ .github/workflows/ci.yml:1-45 ), [ scripts/check-versions.mjs:1-10 ](https://github.com/bsv-blockchain/ts-stack/blob/main/ scripts/check-versions.mjs:1-10 )
+Sources: [.github/workflows/ci.yml:1-45](https://github.com/bsv-blockchain/ts-stack/blob/main/.github/workflows/ci.yml#L1-L45), [scripts/check-versions.mjs:1-10](https://github.com/bsv-blockchain/ts-stack/blob/main/scripts/check-versions.mjs#L1-L10)
 
 ## Conformance Testing
 
 The conformance suite ensures that the TypeScript implementation of cryptographic and transaction primitives remains compatible with other SDK implementations (e.g., Go).
 
 ### Conformance Job Structure
-The conformance job runs after `build-and-test` completes [ .github/workflows/ci.yml:46-49 ](https://github.com/bsv-blockchain/ts-stack/blob/main/ .github/workflows/ci.yml:46-49 ). It uses a specialized runner located in `conformance/runner` [ .github/workflows/ci.yml:62 ](https://github.com/bsv-blockchain/ts-stack/blob/main/ .github/workflows/ci.yml:62 ).
+The conformance job runs after `build-and-test` completes [.github/workflows/ci.yml:46-49](https://github.com/bsv-blockchain/ts-stack/blob/main/.github/workflows/ci.yml#L46-L49). It uses a specialized runner located in `conformance/runner` [.github/workflows/ci.yml:62](https://github.com/bsv-blockchain/ts-stack/blob/main/.github/workflows/ci.yml#L62).
 
-*   **Validation**: Validates the JSON structure of the conformance vectors [ .github/workflows/ci.yml:62 ](https://github.com/bsv-blockchain/ts-stack/blob/main/ .github/workflows/ci.yml:62 ).
-*   **Execution**: Runs the vectors against the TS SDK and generates a JUnit-style XML report (`ts-report.xml`) [ .github/workflows/ci.yml:65 ](https://github.com/bsv-blockchain/ts-stack/blob/main/ .github/workflows/ci.yml:65 ).
-*   **Artifacts**: Publishes the `conformance-vectors` to GitHub Artifacts for 90 days, allowing downstream SDKs to fetch the latest vectors for their own CI [ .github/workflows/ci.yml:77-83 ](https://github.com/bsv-blockchain/ts-stack/blob/main/ .github/workflows/ci.yml:77-83 ).
+*   **Validation**: Validates the JSON structure of the conformance vectors [.github/workflows/ci.yml:62](https://github.com/bsv-blockchain/ts-stack/blob/main/.github/workflows/ci.yml#L62).
+*   **Execution**: Runs the vectors against the TS SDK and generates a JUnit-style XML report (`ts-report.xml`) [.github/workflows/ci.yml:65](https://github.com/bsv-blockchain/ts-stack/blob/main/.github/workflows/ci.yml#L65).
+*   **Artifacts**: Publishes the `conformance-vectors` to GitHub Artifacts for 90 days, allowing downstream SDKs to fetch the latest vectors for their own CI [.github/workflows/ci.yml:77-83](https://github.com/bsv-blockchain/ts-stack/blob/main/.github/workflows/ci.yml#L77-L83).
 
 **Conformance System Architecture**
 ```mermaid
@@ -376,38 +376,38 @@ graph LR
     SDK --> Runner
     Runner --> Report["conformance/reports/ts-report.xml"]
 ```
-Sources: [ .github/workflows/ci.yml:46-84 ](https://github.com/bsv-blockchain/ts-stack/blob/main/ .github/workflows/ci.yml:46-84 ), [ .github/workflows/conformance.yml:24-30 ](https://github.com/bsv-blockchain/ts-stack/blob/main/ .github/workflows/conformance.yml:24-30 )
+Sources: [.github/workflows/ci.yml:46-84](https://github.com/bsv-blockchain/ts-stack/blob/main/.github/workflows/ci.yml#L46-L84), [.github/workflows/conformance.yml:24-30](https://github.com/bsv-blockchain/ts-stack/blob/main/.github/workflows/conformance.yml#L24-L30)
 
 ## Release Pipeline
 
-Releases are triggered by Git tags following the pattern `*/v*` (for specific package releases) or `v*` (for monorepo-wide releases) [ .github/workflows/release.yml:4-7 ](https://github.com/bsv-blockchain/ts-stack/blob/main/ .github/workflows/release.yml:4-7 ).
+Releases are triggered by Git tags following the pattern `*/v*` (for specific package releases) or `v*` (for monorepo-wide releases) [.github/workflows/release.yml:4-7](https://github.com/bsv-blockchain/ts-stack/blob/main/.github/workflows/release.yml#L4-L7).
 
 ### OIDC-Based Publishing
-The release workflow uses GitHub's OpenID Connect (OIDC) to authenticate with npm, eliminating the need for long-lived `NPM_TOKEN` secrets [ .github/workflows/release.yml:34-36 ](https://github.com/bsv-blockchain/ts-stack/blob/main/ .github/workflows/release.yml:34-36 ).
+The release workflow uses GitHub's OpenID Connect (OIDC) to authenticate with npm, eliminating the need for long-lived `NPM_TOKEN` secrets [.github/workflows/release.yml:34-36](https://github.com/bsv-blockchain/ts-stack/blob/main/.github/workflows/release.yml#L34-L36).
 
-1.  **Permissions**: The job requires `id-token: write` to generate the OIDC token and `contents: read` to access the source [ .github/workflows/release.yml:12-14 ](https://github.com/bsv-blockchain/ts-stack/blob/main/ .github/workflows/release.yml:12-14 ).
-2.  **Filtering**: It uses `pnpm -r --filter='...[origin/main]' publish` to identify and publish only the packages that have changed relative to the `main` branch [ .github/workflows/release.yml:41 ](https://github.com/bsv-blockchain/ts-stack/blob/main/ .github/workflows/release.yml:41 ).
-3.  **Provenance**: The `--provenance` flag is used during publishing to provide a verifiable link between the npm package and the GitHub Actions run that created it [ .github/workflows/release.yml:41 ](https://github.com/bsv-blockchain/ts-stack/blob/main/ .github/workflows/release.yml:41 ).
+1.  **Permissions**: The job requires `id-token: write` to generate the OIDC token and `contents: read` to access the source [.github/workflows/release.yml:12-14](https://github.com/bsv-blockchain/ts-stack/blob/main/.github/workflows/release.yml#L12-L14).
+2.  **Filtering**: It uses `pnpm -r --filter='...[origin/main]' publish` to identify and publish only the packages that have changed relative to the `main` branch [.github/workflows/release.yml:41](https://github.com/bsv-blockchain/ts-stack/blob/main/.github/workflows/release.yml#L41).
+3.  **Provenance**: The `--provenance` flag is used during publishing to provide a verifiable link between the npm package and the GitHub Actions run that created it [.github/workflows/release.yml:41](https://github.com/bsv-blockchain/ts-stack/blob/main/.github/workflows/release.yml#L41).
 
-Sources: [ .github/workflows/release.yml:1-42 ](https://github.com/bsv-blockchain/ts-stack/blob/main/ .github/workflows/release.yml:1-42 )
+Sources: [.github/workflows/release.yml:1-42](https://github.com/bsv-blockchain/ts-stack/blob/main/.github/workflows/release.yml#L1-L42)
 
 ## Versioning & Dependency Management
 
 The monorepo maintains internal consistency through a set of scripts that manage cross-package version references.
 
 ### Version Synchronization Scripts
-Because Dependabot is configured to ignore `@bsv/*` workspace packages to avoid noise [ .github/dependabot.yml:12-13, 21-39 ](https://github.com/bsv-blockchain/ts-stack/blob/main/ .github/dependabot.yml:12-13, 21-39 ), version synchronization is handled manually or via CI checks.
+Because Dependabot is configured to ignore `@bsv/*` workspace packages to avoid noise [.github/dependabot.yml:12-13](https://github.com/bsv-blockchain/ts-stack/blob/main/.github/dependabot.yml#L12-L13), [21-39](https://github.com/bsv-blockchain/ts-stack/blob/main/.github/dependabot.yml#L21-L39), version synchronization is handled manually or via CI checks.
 
 | Script | File Path | Purpose |
 | :--- | :--- | :--- |
-| `check-versions` | `scripts/check-versions.mjs` | Scans all `package.json` files and exits with code 1 if an internal dependency range (e.g., `^1.0.0`) does not match the actual version of the package in the workspace [ scripts/check-versions.mjs:32-61 ](https://github.com/bsv-blockchain/ts-stack/blob/main/ scripts/check-versions.mjs:32-61 ). |
-| `sync-versions` | `scripts/sync-versions.mjs` | Automatically updates all internal `dependencies`, `devDependencies`, and `peerDependencies` to match the current workspace versions [ scripts/sync-versions.mjs:54-72 ](https://github.com/bsv-blockchain/ts-stack/blob/main/ scripts/sync-versions.mjs:54-72 ). |
+| `check-versions` | `scripts/check-versions.mjs` | Scans all `package.json` files and exits with code 1 if an internal dependency range (e.g., `^1.0.0`) does not match the actual version of the package in the workspace [scripts/check-versions.mjs:32-61](https://github.com/bsv-blockchain/ts-stack/blob/main/scripts/check-versions.mjs#L32-L61). |
+| `sync-versions` | `scripts/sync-versions.mjs` | Automatically updates all internal `dependencies`, `devDependencies`, and `peerDependencies` to match the current workspace versions [scripts/sync-versions.mjs:54-72](https://github.com/bsv-blockchain/ts-stack/blob/main/scripts/sync-versions.mjs#L54-L72). |
 
 ### Version Management Logic
 The `sync-versions.mjs` script performs the following operations:
-1.  Executes `pnpm -r ls --json` to build a map of package names to their current versions [ scripts/sync-versions.mjs:26-35 ](https://github.com/bsv-blockchain/ts-stack/blob/main/ scripts/sync-versions.mjs:26-35 ).
-2.  Iterates through every `package.json` in the workspace [ scripts/sync-versions.mjs:42-51 ](https://github.com/bsv-blockchain/ts-stack/blob/main/ scripts/sync-versions.mjs:42-51 ).
-3.  Updates version ranges to `^${currentVersion}` unless the range is explicitly set to `workspace:*` [ scripts/sync-versions.mjs:59-67 ](https://github.com/bsv-blockchain/ts-stack/blob/main/ scripts/sync-versions.mjs:59-67 ).
+1.  Executes `pnpm -r ls --json` to build a map of package names to their current versions [scripts/sync-versions.mjs:26-35](https://github.com/bsv-blockchain/ts-stack/blob/main/scripts/sync-versions.mjs#L26-L35).
+2.  Iterates through every `package.json` in the workspace [scripts/sync-versions.mjs:42-51](https://github.com/bsv-blockchain/ts-stack/blob/main/scripts/sync-versions.mjs#L42-L51).
+3.  Updates version ranges to `^${currentVersion}` unless the range is explicitly set to `workspace:*` [scripts/sync-versions.mjs:59-67](https://github.com/bsv-blockchain/ts-stack/blob/main/scripts/sync-versions.mjs#L59-L67).
 
 **Versioning Utility Flow**
 ```mermaid
@@ -424,7 +424,7 @@ graph TD
         Update
     end
 ```
-Sources: [ scripts/check-versions.mjs:1-62 ](https://github.com/bsv-blockchain/ts-stack/blob/main/ scripts/check-versions.mjs:1-62 ), [ scripts/sync-versions.mjs:1-75 ](https://github.com/bsv-blockchain/ts-stack/blob/main/ scripts/sync-versions.mjs:1-75 ), [ .github/dependabot.yml:1-44 ](https://github.com/bsv-blockchain/ts-stack/blob/main/ .github/dependabot.yml:1-44 )
+Sources: [scripts/check-versions.mjs:1-62](https://github.com/bsv-blockchain/ts-stack/blob/main/scripts/check-versions.mjs#L1-L62), [scripts/sync-versions.mjs:1-75](https://github.com/bsv-blockchain/ts-stack/blob/main/scripts/sync-versions.mjs#L1-L75), [.github/dependabot.yml:1-44](https://github.com/bsv-blockchain/ts-stack/blob/main/.github/dependabot.yml#L1-L44)
 
 ---
 
@@ -2027,9 +2027,9 @@ The system is built around three primary abstractions:
 ### Entity Mapping: Engine Components
 The following diagram maps the logical components of the overlay system to their respective code entities.
 
-| Title: Overlay Engine Entity Map |
-| :--- |
-| ```mermaid
+**Overlay Engine Entity Map**
+
+```mermaid
 graph TD
     subgraph "@bsv/overlay"
         Engine["Engine (src/Engine.ts)"]
@@ -2047,7 +2047,7 @@ graph TD
     Engine --> IStore
     Engine --> GASPRemote
     GASPRemote --> GASP
-``` |
+```
 
 Sources: [packages/overlays/overlay-services/package.json:1-81](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/overlay-services/package.json#L1-L81), [specs/sync/gasp-asyncapi.yaml:1-36](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/sync/gasp-asyncapi.yaml#L1-L36)
 
@@ -2065,9 +2065,9 @@ The `@bsv/overlay` package integrates GASP through two specialized classes:
 *   **OverlayGASPRemote**: Implements the remote side of the GASP protocol, handling incoming sync requests.
 *   **OverlayGASPStorage**: Adapts the internal `Storage` interface to meet the requirements of the GASP protocol, allowing the sync engine to query for missing transactions and outputs.
 
-| Title: GASP Sync Flow |
-| :--- |
-| ```mermaid
+**GASP Sync Flow**
+
+```mermaid
 sequenceDiagram
     participant I as Initiator (Engine)
     participant R as Responder (Remote Peer)
@@ -2082,7 +2082,7 @@ sequenceDiagram
     end
     
     Note over I: Engine.submit(GASPNode)
-``` |
+```
 
 Sources: [specs/sync/gasp-asyncapi.yaml:1-110](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/sync/gasp-asyncapi.yaml#L1-L110), [packages/overlays/gasp-core/package.json:1-67](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/gasp-core/package.json#L1-L67)
 
@@ -2116,9 +2116,9 @@ This package extends the base engine to provide a "Discovery Node" capability, w
 ### UHRP Integration
 The **Universal Hash Resolution Protocol (UHRP)** (BRC-26) is often used alongside overlays for content-addressed storage. Overlay nodes may host advertisement tokens on the `tm_uhrp` topic, which record file hashes and download URLs.
 
-| Title: UHRP Resolution Flow |
-| :--- |
-| ```mermaid
+**UHRP Resolution Flow**
+
+```mermaid
 graph LR
     Client["Client"]
     LS["LookupService (ls_uhrp)"]
@@ -2127,7 +2127,7 @@ graph LR
     Client -- "1. Resolve uhrp://<hash>" --> LS
     LS -- "2. Return Advertisement (URL)" --> Client
     Client -- "3. GET /download" --> Storage
-``` |
+```
 
 Sources: [specs/storage/uhrp-http.yaml:1-40](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/storage/uhrp-http.yaml#L1-L40), [packages/overlays/overlay-discovery-services/package.json:1-71](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/overlays/overlay-discovery-services/package.json#L1-L71)
 
@@ -2469,7 +2469,7 @@ graph TD
     style MBS stroke-width:2px
     style ASS stroke-width:2px
 ```
-Sources: [`packages/messaging/message-box-client/package.json:2-87`](https://github.com/bsv-blockchain/ts-stack/blob/main/`packages/messaging/message-box-client/package.json:2-87`), [`packages/messaging/message-box-server/package.json:2-80`](https://github.com/bsv-blockchain/ts-stack/blob/main/`packages/messaging/message-box-server/package.json:2-80`), [`packages/messaging/authsocket/package.json:2-59`](https://github.com/bsv-blockchain/ts-stack/blob/main/`packages/messaging/authsocket/package.json:2-59`)
+Sources: [`packages/messaging/message-box-client/package.json:2-87`](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/message-box-client/package.json#L2-L87), [`packages/messaging/message-box-server/package.json:2-80`](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/message-box-server/package.json#L2-L80), [`packages/messaging/authsocket/package.json:2-59`](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/authsocket/package.json#L2-L59)
 
 ---
 
@@ -2478,9 +2478,9 @@ Sources: [`packages/messaging/message-box-client/package.json:2-87`](https://git
 MessageBox is a reliable messaging system designed for scenarios where the recipient may be offline. It follows a "mailbox" metaphor where messages are stored on a server until retrieved by the authenticated owner.
 
 ### MessageBox Client & Server
-The `@bsv/message-box-client` provides the `MessageBoxClient` class for interacting with the 9 standard REST endpoints defined in the message-box specification [`packages/messaging/message-box-client/package.json:15-15`](https://github.com/bsv-blockchain/ts-stack/blob/main/`packages/messaging/message-box-client/package.json:15-15`). It includes `PeerPayClient` for handling payment-related messaging workflows.
+The `@bsv/message-box-client` provides the `MessageBoxClient` class for interacting with the 9 standard REST endpoints defined in the message-box specification [`packages/messaging/message-box-client/package.json:15-15`](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/message-box-client/package.json#L15). It includes `PeerPayClient` for handling payment-related messaging workflows.
 
-The `@bsv/messagebox-server` is a reference implementation using Express [`packages/messaging/message-box-server/package.json:71-71`](https://github.com/bsv-blockchain/ts-stack/blob/main/`packages/messaging/message-box-server/package.json:71-71`). It supports multiple persistence layers via Knex (SQL) or MongoDB [`packages/messaging/message-box-server/package.json:73-74`](https://github.com/bsv-blockchain/ts-stack/blob/main/`packages/messaging/message-box-server/package.json:73-74`) and integrates Firebase Cloud Messaging (FCM) or Web-Push for real-time notifications to mobile or web clients [`packages/messaging/message-box-server/package.json:72-79`](https://github.com/bsv-blockchain/ts-stack/blob/main/`packages/messaging/message-box-server/package.json:72-79`).
+The `@bsv/messagebox-server` is a reference implementation using Express [`packages/messaging/message-box-server/package.json:71-71`](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/message-box-server/package.json#L71). It supports multiple persistence layers via Knex (SQL) or MongoDB [`packages/messaging/message-box-server/package.json:73-74`](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/message-box-server/package.json#L73-L74) and integrates Firebase Cloud Messaging (FCM) or Web-Push for real-time notifications to mobile or web clients [`packages/messaging/message-box-server/package.json:72-79`](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/message-box-server/package.json#L72-L79).
 
 For details, see [MessageBox Client & Server](19-MessageBox-Client---Server.md).
 
@@ -2491,12 +2491,12 @@ For details, see [MessageBox Client & Server](19-MessageBox-Client---Server.md).
 AuthSocket implements the BRC-103 protocol over Socket.IO to provide a mutually authenticated, real-time communication channel.
 
 ### Mutual Authentication
-Unlike standard WebSockets, AuthSocket requires both the client and server to prove possession of private keys during the connection handshake. This is handled by the `AuthSocketServer` in `@bsv/authsocket` [`packages/messaging/authsocket/package.json:7-7`](https://github.com/bsv-blockchain/ts-stack/blob/main/`packages/messaging/authsocket/package.json:7-7`) and the corresponding client in `@bsv/authsocket-client` [`packages/messaging/authsocket-client/package.json:7-7`](https://github.com/bsv-blockchain/ts-stack/blob/main/`packages/messaging/authsocket-client/package.json:7-7`).
+Unlike standard WebSockets, AuthSocket requires both the client and server to prove possession of private keys during the connection handshake. This is handled by the `AuthSocketServer` in `@bsv/authsocket` [`packages/messaging/authsocket/package.json:7-7`](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/authsocket/package.json#L7) and the corresponding client in `@bsv/authsocket-client` [`packages/messaging/authsocket-client/package.json:7-7`](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/authsocket-client/package.json#L7).
 
 ### Event Exchange
 Once authenticated, the protocol allows for:
 - **Room Management**: Organizing connections into secure groups.
-- **Signed Events**: Every event exchanged can be cryptographically verified using the `@bsv/sdk` primitives [`packages/messaging/authsocket/package.json:57-57`](https://github.com/bsv-blockchain/ts-stack/blob/main/`packages/messaging/authsocket/package.json:57-57`).
+- **Signed Events**: Every event exchanged can be cryptographically verified using the `@bsv/sdk` primitives [`packages/messaging/authsocket/package.json:57-57`](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/authsocket/package.json#L57).
 - **Integration**: Works seamlessly with the BRC-31 handshake for initial session establishment.
 
 For details, see [AuthSocket: Authenticated WebSocket Protocol](20-AuthSocket--Authenticated-WebSocket-Protocol.md).
@@ -2521,12 +2521,12 @@ sequenceDiagram
     S->>AS: notifyRecipient(pubkey)
     AS->>C: emit("new_message")
 ```
-Sources: [`packages/messaging/messagebox-services/backend/package.json:47-51`](https://github.com/bsv-blockchain/ts-stack/blob/main/`packages/messaging/messagebox-services/backend/package.json:47-51`)
+Sources: [`packages/messaging/messagebox-services/backend/package.json:47-51`](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/messagebox-services/backend/package.json#L47-L51)
 
 ### Backend Services
-The `@bsv/backend` package within `messagebox-services` acts as a coordinator, integrating the messaging layer with the `@bsv/overlay` services [`packages/messaging/messagebox-services/backend/package.json:47-47`](https://github.com/bsv-blockchain/ts-stack/blob/main/`packages/messaging/messagebox-services/backend/package.json:47-47`). It utilizes Knex for relational data management and the BSV SDK for signature verification [`packages/messaging/messagebox-services/backend/package.json:48-49`](https://github.com/bsv-blockchain/ts-stack/blob/main/`packages/messaging/messagebox-services/backend/package.json:48-49`).
+The `@bsv/backend` package within `messagebox-services` acts as a coordinator, integrating the messaging layer with the `@bsv/overlay` services [`packages/messaging/messagebox-services/backend/package.json:47-47`](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/messagebox-services/backend/package.json#L47). It utilizes Knex for relational data management and the BSV SDK for signature verification [`packages/messaging/messagebox-services/backend/package.json:48-49`](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/messagebox-services/backend/package.json#L48-L49).
 
-Sources: [`packages/messaging/messagebox-services/backend/package.json:2-51`](https://github.com/bsv-blockchain/ts-stack/blob/main/`packages/messaging/messagebox-services/backend/package.json:2-51`)
+Sources: [`packages/messaging/messagebox-services/backend/package.json:2-51`](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/messaging/messagebox-services/backend/package.json#L2-L51)
 
 ---
 
@@ -3266,7 +3266,7 @@ Sources: [specs/payments/brc121.yaml:106-171](https://github.com/bsv-blockchain/
 
 | Mechanism | Implementation | Requirement |
 | :--- | :--- | :--- |
-| **Timestamp Freshness** | Server checks `|serverTime - x-bsv-time|` | Must be < 30 seconds [specs/payments/brc121.yaml:33-34](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/payments/brc121.yaml#L33-L34) |
+| **Timestamp Freshness** | Server checks `\|serverTime - x-bsv-time\|` | Must be < 30 seconds [specs/payments/brc121.yaml:33-34](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/payments/brc121.yaml#L33-L34) |
 | **Double Spend / Replay** | Wallet `internalizeAction` checks `isMerge` | Must be `false` (new transaction) [specs/payments/brc121.yaml:35-36](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/payments/brc121.yaml#L35-L36) |
 | **Uniqueness** | `x-bsv-nonce` + `x-bsv-time` | Forms a unique BRC-42 derivation path [specs/payments/brc121.yaml:21-28](https://github.com/bsv-blockchain/ts-stack/blob/main/specs/payments/brc121.yaml#L21-L28) |
 
@@ -3322,7 +3322,7 @@ graph TD
     TL -->|Uses libp2p| SDK
     WT --> SDK
 ```
-Sources: [@bsv/chaintracks-server:29-33](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/chaintracks-server), [@bsv/teranode-listener:16-32](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/teranode-listener)
+Sources: [@bsv/chaintracks-server](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/chaintracks-server), [@bsv/teranode-listener](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/teranode-listener)
 
 ---
 
@@ -3341,7 +3341,7 @@ The server supports multiple entry points and configuration modes via the `CHAIN
 
 For details, see [Chaintracks Server](25-Chaintracks-Server.md).
 
-**Sources:** [@bsv/chaintracks-server:1-42](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/chaintracks-server), [@bsv/chaintracks-server:5-6](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/chaintracks-server), [@bsv/chaintracks-server:11-13](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/chaintracks-server)
+**Sources:** [@bsv/chaintracks-server](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/chaintracks-server), [@bsv/chaintracks-server](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/chaintracks-server), [@bsv/chaintracks-server](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/chaintracks-server)
 
 ---
 
@@ -3383,7 +3383,7 @@ graph LR
 
 For details, see [Teranode P2P Listener](26-Teranode-P2P-Listener.md).
 
-**Sources:** [@bsv/teranode-listener:1-60](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/teranode-listener), [@bsv/teranode-listener:18-32](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/teranode-listener), [@bsv/teranode-listener:39-45](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/teranode-listener)
+**Sources:** [@bsv/teranode-listener](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/teranode-listener), [@bsv/teranode-listener](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/teranode-listener), [@bsv/teranode-listener](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/teranode-listener)
 
 ---
 
@@ -3404,7 +3404,7 @@ sequenceDiagram
     CT-->>App: Header Data + Merkle Proof
 ```
 
-**Sources:** [@bsv/chaintracks-server:5-6](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/chaintracks-server), [@bsv/teranode-listener:39-44](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/teranode-listener)
+**Sources:** [@bsv/chaintracks-server](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/chaintracks-server), [@bsv/teranode-listener](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/teranode-listener)
 
 ---
 
@@ -5304,8 +5304,8 @@ graph LR
 | Term | Domain | Definition |
 | :--- | :--- | :--- |
 | **BTMS** | Wallet | Basic Token Management System. Handles UTXO-based tokens using PushDrop scripts. [packages/wallet/btms/src/BTMS.ts](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/btms/src/BTMS.ts) |
-| **Chaintracks** | Network | A service for tracking blockchain headers and verifying Merkle proofs against the longest chain. [packages/network/chaintracks-server](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/network/chaintracks-server) |
-| **WAB** | Wallet | Wallet Authentication Backend. Manages user sessions, MFA, and identity linking. [packages/wallet/wab](https://github.com/bsv-blockchain/ts-stack/blob/main/packages/wallet/wab) |
+| **Chaintracks** | Network | A service for tracking blockchain headers and verifying Merkle proofs against the longest chain. [packages/network/chaintracks-server](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/chaintracks-server) |
+| **WAB** | Wallet | Wallet Authentication Backend. Manages user sessions, MFA, and identity linking. [packages/wallet/wab](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/wallet/wab) |
 | **PushDrop** | SDK | A script template pattern used to "push" data into a locking script and "drop" it during unlocking. |
 | **AuthSocket** | Messaging | A WebSocket implementation using BRC-103 for mutual authentication. [packages/messaging/authsocket](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/messaging/authsocket) |
 | **Teranode Listener** | Network | A P2P listener that subscribes to Teranode topics (blocks, subtrees) over a private DHT. [packages/network/ts-p2p](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/ts-p2p) |

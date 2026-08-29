@@ -170,7 +170,7 @@ golden eval, refresh policy, BRC index, ShopRAG successor map.
 | A | Knowledge plane over existing snapshots + real `get_index_status` + `investigate` | **Shipped in 1.0.0** | G04, G05, G09, G10 |
 | B | Code intelligence for Tier 0 + `inspect_schema` / `error_taxonomy` / vectors | **Shipped in 1.0.0** | G02, G12, G13 |
 | — | Academy opcode/Script + Rúnar snapshot, BRC bodies, conformance vectors | **Shipped in 1.0.0** | — |
-| C | Tier 1 (arcade, overlays, merkle-service, message-box, UHRP, go-p2p, gasp-core) + BRC↔impl edges | **Shipped in 1.1.0** | G01, G03, G07, G08, G14–G29 |
+| C | Tier 1 (arcade, overlays, merkle-service, message-box, UHRP, go-p2p, gasp-core) + BRC↔impl edges | **Shipped in 1.1.0** | G01, G03, G07, G08, G14–G34 |
 | D | Read-only policy tools: `network_guard`, `check_dependency` | **Shipped in 1.1.0** | G06, G11 |
 | D (deferred) | design_review, scaffold_flow, concept_map, actuate plane | Future | — |
 

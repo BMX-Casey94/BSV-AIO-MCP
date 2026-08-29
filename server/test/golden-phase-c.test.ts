@@ -31,6 +31,11 @@ const PHASE_C_IDS = [
   "G27",
   "G28",
   "G29",
+  "G30",
+  "G31",
+  "G32",
+  "G33",
+  "G34",
 ] as const;
 
 type GoldenExpect = {

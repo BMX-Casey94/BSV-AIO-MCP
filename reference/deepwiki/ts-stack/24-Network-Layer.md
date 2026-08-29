@@ -46,7 +46,7 @@ graph TD
     TL -->|Uses libp2p| SDK
     WT --> SDK
 ```
-Sources: [@bsv/chaintracks-server:29-33](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/chaintracks-server), [@bsv/teranode-listener:16-32](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/teranode-listener)
+Sources: [@bsv/chaintracks-server](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/chaintracks-server), [@bsv/teranode-listener](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/teranode-listener)
 
 ---
 
@@ -65,7 +65,7 @@ The server supports multiple entry points and configuration modes via the `CHAIN
 
 For details, see [Chaintracks Server](25-Chaintracks-Server.md).
 
-**Sources:** [@bsv/chaintracks-server:1-42](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/chaintracks-server), [@bsv/chaintracks-server:5-6](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/chaintracks-server), [@bsv/chaintracks-server:11-13](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/chaintracks-server)
+**Sources:** [@bsv/chaintracks-server](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/chaintracks-server), [@bsv/chaintracks-server](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/chaintracks-server), [@bsv/chaintracks-server](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/chaintracks-server)
 
 ---
 
@@ -107,7 +107,7 @@ graph LR
 
 For details, see [Teranode P2P Listener](26-Teranode-P2P-Listener.md).
 
-**Sources:** [@bsv/teranode-listener:1-60](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/teranode-listener), [@bsv/teranode-listener:18-32](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/teranode-listener), [@bsv/teranode-listener:39-45](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/teranode-listener)
+**Sources:** [@bsv/teranode-listener](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/teranode-listener), [@bsv/teranode-listener](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/teranode-listener), [@bsv/teranode-listener](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/teranode-listener)
 
 ---
 
@@ -128,6 +128,6 @@ sequenceDiagram
     CT-->>App: Header Data + Merkle Proof
 ```
 
-**Sources:** [@bsv/chaintracks-server:5-6](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/chaintracks-server), [@bsv/teranode-listener:39-44](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/teranode-listener)
+**Sources:** [@bsv/chaintracks-server](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/chaintracks-server), [@bsv/teranode-listener](https://github.com/bsv-blockchain/ts-stack/tree/main/packages/network/teranode-listener)
 
 ---

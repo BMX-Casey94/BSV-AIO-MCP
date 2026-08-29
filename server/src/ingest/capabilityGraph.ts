@@ -117,6 +117,14 @@ const GENERIC_THEME_PARTS = new Set([
 
 const DISTINCTIVE_TITLE_PHRASES = ["beef", "dpp", "mandala", "paymail", "peerserv", "1sat"] as const;
 
+/**
+ * Title-token symbol matching is trusted only on the definitional row of a symbol family.
+ * "BEEF" in a title attaches Beef-exporting packages to BRC-62 (the format spec), but Paymail
+ * BEEF (70), the multicast BEEF plane (148), the multicast frame (149) and outpoint BEEF (158)
+ * are different specs those packages never claim to implement — edges there need a mention.
+ */
+const DEFINITIONAL_TOKEN_ROWS: Readonly<Record<string, number>> = { beef: 62, bump: 74 };
+
 export function buildCapabilityGraph(root: string): CapabilityRecord[] {
   const brcIndex = JSON.parse(readFileSync(join(root, "reference", "brc_index.json"), "utf8")) as BrcIndexFile;
   const education = JSON.parse(readFileSync(join(root, "data", "education_index.json"), "utf8")) as EducationIndexFile;
@@ -141,12 +149,15 @@ export function buildCapabilityGraph(root: string): CapabilityRecord[] {
     // the repo publishes no package (ts-stack). Only confirmed packages may enter the graph.
     const confirmed = new Set(cards.packages);
     const evidenced = (brcMentions.get(row.brc) ?? []).filter((name) => confirmed.has(name));
+    const definitionalTokens = tokens.filter(
+      (token) => DEFINITIONAL_TOKEN_ROWS[token] === row.number,
+    );
     return {
       id: capabilityId(row),
       name: row.title,
       brc: row.brc,
       also,
-      packages: [...new Set([...packagesForTokens(tokens, cards), ...evidenced])].sort(),
+      packages: [...new Set([...packagesForTokens(definitionalTokens, cards), ...evidenced])].sort(),
       api: apiForTokens(tokens, cards.symbols),
       education_themes: matchEducationThemes(row.title, themes),
       authority_hint: row.authority,
@@ -172,7 +183,7 @@ export function writeCapabilityGraph(root: string): string {
       "reference/tier1/docs/brc-mentions.json",
     ],
     policy:
-      "Titles plus confirmed Tier 0/1 cards. packages come from a word-boundary match of grouping tokens of length ≥ 3 against exported symbols, unioned with the evidenced BRC mentions each repo's own documentation makes. api lists only exported names that exact-match a title token. Do not invent API names.",
+      "Titles plus confirmed Tier 0/1 cards. packages come from evidenced BRC mentions in each repo's own documentation, unioned with a word-boundary match of grouping tokens against exported symbols only on a symbol family's definitional row (BEEF→BRC-62, BUMP→BRC-74). api lists only exported names that exact-match a title token. Do not invent API names.",
     count: capabilities.length,
     capabilities,
   };
