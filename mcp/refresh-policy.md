@@ -17,14 +17,44 @@ non-reproducible, hit GitHub rate limits, and mix “what we audited” with
 | Hot snapshot | education, essays, contradictions, `brc_index.json`, BRC markdown, ts-stack wiki, testnet-ops, Tier 0/1 symbol indexes | Weekly, or on git tag of that repo | Local only |
 | Warm | remaining active `bsv-blockchain` repos, CHANGELOGs | Weekly | Local; mark `stale` if registry `pushed_at` > `fetched_at` |
 | Cold | full file bodies, issues/PRs, archived `bitcoin-sv/*`, LARS/CARS | On demand, TTL cache | Fetch then cache |
-| Live (future) | Arcade / WoC / faucet health and tx status | 30–60 s cache, back-off on 429/503 | Declared as `needs` in 1.0.0 |
-| Actuate (future) | faucet claim, broadcast | n/a | Refused in 1.0.0 |
+| Live (future) | Arcade / WoC / faucet health and tx status | 30–60 s cache, back-off on 429/503 | Declared as `needs` in 1.1.0 |
+| Actuate (future) | faucet claim, broadcast | n/a | Refused in 1.1.0 |
+
+## Operator weekly refresh (manual)
+
+The shipped MCP never fetches. People who install via `npx bsv-aio-mcp` see the
+snapshot that was inside the last published npm package. Updating that snapshot
+is an operator job — there is no GitHub Action and no in-process timer.
+
+From a clone of this repo, on Windows PowerShell:
+
+```powershell
+$env:BSV_AIO_ALLOW_REFRESH = "1"
+npm run refresh:tier0 --workspace=server   # SDKs, wallets, BRC bodies, vectors
+npm run refresh:tier1 --workspace=server   # arcade, overlays, UHRP, messaging
+npm run fetch:academy --workspace=server   # Academy opcode/Script + Rúnar
+npm test
+```
+
+A successful Tier 0/1 refresh regenerates `reference/capability_graph.json` from
+the new mentions and cards. Then:
+
+1. Read the git diff. The 80% retention guards refuse a collapsed corpus, but
+   they do not review whether a new mention edge is a mislabel (see the go-sdk
+   BRC-43 suppression in `refreshTier0.ts`).
+2. Commit the snapshot, bump the patch version (`1.1.0` → `1.1.1`), push, and
+   `npm publish` so `npx` users pick up the new pin.
+3. Essay / contradiction top-ups are separate (new Substack/Medium posts only).
+   DeepWiki pages are a committed export, not part of these three jobs.
+
+On a week when nothing moved, the jobs may rewrite the same bytes — do not
+publish an empty bump.
 
 ## BRC catalogue specifically
 
-- Built from `bsv-blockchain/BRCs` `SUMMARY.md` (local pipeline script)
-- Stored at `reference/brc_index.json` with the tree SHA
-- Full markdown for a BRC is snapshotted under `reference/brcs/` on refresh
+- Indexed at `reference/brc_index.json` (SHA-pinned). Full markdown lives under
+  `reference/brcs/` and is rewritten by `refresh:tier0` when the BRCs checkout
+  is in the Tier 0 manifest.
 - If a user asks “is there a new BRC since our snapshot?”, that is a **cold**
   GitHub compare (`revision` vs `master`), not the default path
 - **Integrity:** refuse to write if the new count is below 80% of the previous

@@ -1,8 +1,8 @@
 # BSV-AIO-MCP — Design
 
-Status: **implemented; shipped as `bsv-aio-mcp` 1.0.0** (contract frozen 2026-08-14;
-addenda the same day). The contract files under `mcp/` remain the specification; the
-implementation is in `server/`. This document is the rationale.
+Status: **implemented; shipped as `bsv-aio-mcp` 1.1.0** (Phases A–D read-only). The
+contract files under `mcp/` remain the specification; the implementation is in
+`server/`. This document is the rationale.
 
 ## 1. Purpose
 
@@ -56,10 +56,10 @@ Tools (model-invokable):
 - `get_conformance_vector(domain, case)` — ts/go shared test vectors as the
   cross-language source of truth
 
-Not in 1.0.0 (future phases): `trace_dependency`, `repo_lookup`.
+Not in 1.1.0 (future phases): `trace_dependency`, `repo_lookup`.
 
-### Plane 3 — Synthesis (the differentiator; future phases, not in 1.0.0)
-Tools that join the planes — this is what a plain doc-search MCP cannot do. In 1.0.0
+### Plane 3 — Synthesis (the differentiator; future phases, not in 1.1.0)
+Tools that join the planes — this is what a plain doc-search MCP cannot do. In 1.1.0
 the `investigate` tool performs this synthesis internally and returns an
 EvidencePackage; the dedicated tools below remain design goals:
 
@@ -130,9 +130,13 @@ request. The model is **versioned snapshots + a refresh pipeline**:
    source revision (repo commit SHA / DeepWiki "last indexed" date) recorded in a
    manifest. The MCP serves only from snapshots — deterministic, offline-capable,
    auditable.
-2. **Refresh pipeline** (the gated TypeScript jobs `npm run refresh:tier0` and
-   `npm run fetch:academy`, each requiring `BSV_AIO_ALLOW_REFRESH=1`): re-run on a
-   schedule (weekly is ample for docs; on-tag for pinned repos) or on demand.
+2. **Refresh pipeline** (the gated TypeScript jobs `npm run refresh:tier0`,
+   `npm run refresh:tier1` and `npm run fetch:academy`, each requiring
+   `BSV_AIO_ALLOW_REFRESH=1`): run by the operator weekly, or on a git tag of a
+   pinned repo. There is no scheduled GitHub Action — the snapshot does not
+   update itself. After a successful refresh, commit, bump the patch version and
+   republish so `npx bsv-aio-mcp` users receive the new pin. See
+   [mcp/refresh-policy.md](mcp/refresh-policy.md).
 3. **Incremental reindex**: content-hash each source file; only changed files are
    re-chunked/re-embedded. Produces a changelog ("BRC-1029 amended; go-sdk v1.2.3
    re-indexed") so downstream users know what moved.
@@ -146,7 +150,7 @@ request. The model is **versioned snapshots + a refresh pipeline**:
 ## 6. Security & quality constraints
 
 - Knowledge, code, and `investigate` are read-only. There is no actuate plane in
-  1.0.0: the server never broadcasts, never creates wallets, never claims faucets;
+  1.1.0: the server never broadcasts, never creates wallets, never claims faucets;
   live facts are declared in `needs` for the host to resolve. Tool arguments are
   schema-validated with length caps.
 - Every response carries citations (essay slug, BRC section, repo file:line) and

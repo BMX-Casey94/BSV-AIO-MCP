@@ -99,11 +99,22 @@ testnet operations notes; ordinality/provenance rules; and 476 summarised Craig 
 (Medium 2018–2022 and Substack 2025–2026) with a curated contradiction map. See
 [CORPUS.md](CORPUS.md) for the full corpus documentation.
 
-The snapshot is the product: answers are reproducible and auditable against it. Operators
-refresh it with `npm run refresh:tier0 --workspace=server` (Tier 0 cards),
-`npm run refresh:tier1 --workspace=server` (Tier 1 services/libraries) and
-`npm run fetch:academy --workspace=server` (academy docs), each guarded against accidental
-data loss.
+The snapshot is the product: answers are reproducible and auditable against it. It does
+**not** update itself. `npx bsv-aio-mcp` serves whatever pin was inside the last npm
+publish. The operator refreshes weekly (or on a repo tag) with the gated jobs below,
+then republishes so consumers receive the new pin. Full policy:
+[mcp/refresh-policy.md](mcp/refresh-policy.md).
+
+```powershell
+$env:BSV_AIO_ALLOW_REFRESH = "1"
+npm run refresh:tier0 --workspace=server   # Tier 0 SDKs/wallets + BRC bodies
+npm run refresh:tier1 --workspace=server   # Tier 1 services/libraries
+npm run fetch:academy --workspace=server   # Academy + Rúnar
+npm test
+```
+
+Each job is guarded against accidental corpus collapse (80% retention). Review the
+diff, commit, bump the patch version, and `npm publish`.
 
 ## Development
 

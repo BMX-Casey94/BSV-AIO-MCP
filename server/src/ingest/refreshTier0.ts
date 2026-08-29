@@ -13,6 +13,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import { dirname, join } from "node:path";
+import { writeCapabilityGraph } from "./capabilityGraph.js";
 import { scanExports, type ScannedSymbol } from "./exportScan.js";
 
 /** A row of `reference/tier0/manifest.json`. `sha` and `package` stay null until refresh confirms them. */
@@ -188,6 +189,15 @@ export async function refreshTier0(options: RefreshTier0Options): Promise<Refres
   const brcs = brcPlan ? writeBrcBodies(brcDest, brcPlan) : 0;
   const vectors = vectorPlan ? writeVectors(vectorDest, vectorPlan) : 0;
   const docsResult = writeRepoDocs(join(options.tier0Root, "docs"), docsPlan);
+  // The graph is derived from the mentions + cards just written. Only regenerate
+  // when this job wrote the real committed tier (fixture tests use a temp dir).
+  const productionTiers = [
+    join(options.root, "reference", "tier0"),
+    join(options.root, "reference", "tier1"),
+  ];
+  if (productionTiers.includes(options.tier0Root)) {
+    writeCapabilityGraph(options.root);
+  }
 
   return {
     repos: pinned.length,

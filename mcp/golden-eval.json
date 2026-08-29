@@ -1,6 +1,6 @@
 {
   "generated": "2026-08-14",
-  "purpose": "Golden set. Phase A must pass G04, G05, G09, G10. Phase B adds G02, G12, G13. Phase C adds G01, G03, G07, G08 (Tier 1 snapshot) and G14-G29 (Tier 1 deep-dive: hyphenated names, archived-status, evidenced BRC joins, ops cues). Phase D adds G06, G11 (read-only policy tools). BitGenius public Q&A is a canary only — never ingested.",
+  "purpose": "Golden set. Phase A must pass G04, G05, G09, G10. Phase B adds G02, G12, G13. Phase C adds G01, G03, G07, G08 (Tier 1 snapshot) and G14-G34 (Tier 1 deep-dive: hyphenated names, archived-status, evidenced BRC joins, graph-backed implementation answers, ops cues). Phase D adds G06, G11 (read-only policy tools). BitGenius public Q&A is a canary only — never ingested.",
   "phase_a": ["G04", "G05", "G09", "G10"],
   "phase_b": ["G02", "G12", "G13"],
   "phase_c": ["G01", "G03", "G07", "G08", "G14", "G15", "G16", "G17", "G18", "G19", "G20", "G21", "G22", "G23", "G24", "G25", "G26", "G27", "G28", "G29", "G30", "G31", "G32", "G33", "G34"],
