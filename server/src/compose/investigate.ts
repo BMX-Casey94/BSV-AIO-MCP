@@ -582,6 +582,19 @@ export function investigate(
     upsertHit(hits, withOpenedExcerpt(card.hit, card.text, tokens));
   }
 
+  // Bitcoin-history questions (block size war, funding concentration, Epstein record) are
+  // answered by the attributed analysis card — authority 4, so mixed-classified questions
+  // ("Did Epstein fund Blockstream?") never see it without this hop.
+  if (
+    isBitcoinHistoryQuestion(question, tokens) &&
+    !hits.some((hit) => hit.locator === "analysis://bitcoin-scaling-history") &&
+    hopsUsed < MAX_HOPS
+  ) {
+    hopsUsed += 1;
+    const card = getResource(root, store, "analysis://bitcoin-scaling-history");
+    upsertHit(hits, withOpenedExcerpt(card.hit, card.text, tokens));
+  }
+
   if (classifiedAs === "spec" && missingBrcs.length === 0 && !hasMatchingBrc(hits, tokens) && hopsUsed < MAX_HOPS) {
     hopsUsed += 1;
     const catalogue = getResource(root, store, "brc://index");
@@ -1474,6 +1487,32 @@ function isBenchmarkQuestion(question: string, tokens: string[]): boolean {
   );
 }
 
+// A Bitcoin-history question asks about the 2014–2017 governance/funding record (the block
+// size war, the funding concentration, the moderation era, the Epstein-documented
+// connections) — answered by the attributed analysis card, not by Craig's essays. The
+// Craig-guard keeps "what does Craig say about X" with the essay corpus: his writings are
+// the authority on his own positions.
+function isBitcoinHistoryQuestion(question: string, tokens: string[]): boolean {
+  const q = question.toLowerCase();
+  const craigGuard =
+    tokens.includes("craig") || tokens.includes("wright")
+      ? /\b(essays?|writings?|says|claims?|argues|philosophy|corpus)\b/.test(q)
+      : false;
+  if (craigGuard) {
+    return false;
+  }
+  return (
+    tokens.some((token) => /^(epstein|blockstream|theymos|chaincode|kyara)$/.test(token)) ||
+    /\bblock[ -]size (war|debate|limit|cap)s?\b/.test(q) ||
+    /\bscaling (war|debate)s?\b/.test(q) ||
+    /\bhijack(ed|ing|s)?\b/.test(q) && /\bbitcoin\b/.test(q) ||
+    /\bdigital gold\b/.test(q) ||
+    /\bsettlement layer\b/.test(q) ||
+    /\bwhy did bitcoin (become|change|move|shift|abandon)\b/.test(q) ||
+    /\bpeer-to-peer (electronic )?cash\b/.test(q) && /\b(instead|became|become|shift|no longer|abandon)\b/.test(q)
+  );
+}
+
 const BEEF_SYMBOL_IDS = ["symbol:ts-sdk:Beef", "symbol:go-sdk:Beef"] as const;
 
 function takeBeefSymbolCards(
@@ -1867,6 +1906,11 @@ function composeClaims(
   const benchmarkCard = isBenchmarkQuestion(question, tokens)
     ? hits.find((hit) => hit.locator === "fact://teranode-benchmarks")
     : undefined;
+  // And for the attributed history card on a 2014–2017 governance question: the analysis
+  // with its documented/disputed/unproven tiers IS the answer the corpus has.
+  const historyCard = isBitcoinHistoryQuestion(question, tokens)
+    ? hits.find((hit) => hit.locator === "analysis://bitcoin-scaling-history")
+    : undefined;
   // The BEEF family has a definitional hierarchy: Atomic BEEF is BRC-95, the V2 txid-only
   // extension is BRC-96, and BRC-62 is the base format. Never let multicast/outpoint BEEF
   // BRCs outrank the member the question is actually about.
@@ -1937,6 +1981,7 @@ function composeClaims(
     namedPackageCard ??
     openedCard ??
     benchmarkCard ??
+    historyCard ??
     beefCard ??
     opcodeCard ??
     packageCard;

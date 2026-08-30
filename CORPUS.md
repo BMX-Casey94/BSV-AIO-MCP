@@ -37,8 +37,8 @@ substack-articles/
   contradictions.json      unified machine-readable consistency audit (84 findings)
 mcp/                       the MCP tool contract and evidence-package schema
 reference/                 BRC index + bodies, academy/opcode docs, Tier 0 cards, testnet-ops,
-                           deny list, ordinality rules, Teranode benchmark facts, DeepWiki
-                           pages, registries
+                           deny list, ordinality rules, Teranode benchmark facts, Bitcoin
+                           2014–2017 history analysis, DeepWiki pages, registries
 server/                    the MCP server (TypeScript source, tests, build scripts)
 ```
 

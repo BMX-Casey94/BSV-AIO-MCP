@@ -27,26 +27,45 @@ not live public-network throughput measurements.
 
 - **Paper:** "Horizontal Scaling of UTXO-Based Transaction Processing:
   Architecture, Empirical Validation, and Fleet-Scale Projection",
-  Craig S. Wright (University of Exeter). SSRN preprint, DOI
-  10.2139/ssrn.6341941 (written 27 April 2026; posted August 2026).
-  **Status: preprint in peer review — not yet peer-reviewed.**
-- **Headline result:** a 100-node fleet across 10 geographic regions sustained
-  **79.09 × 10⁹ pipeline-processed TPS at peak** (scaling efficiency η = 0.783);
-  the more conservative measured figure is ≈61.2 × 10⁹ TPS.
-- **Idealised conditions (must be quoted with the headline):** DRAM-resident
-  P2PKH workload, compact gRPC injection, reduced proof-of-work difficulty,
-  within a **single administrative trust domain**. Byzantine faults and
-  open-network P2P ingress were **out of scope**. The paper does not claim
-  end-to-end throughput on the public BSV network.
-- **Production-realistic projection:** ≈**33 × 10⁹ TPS** (95% CI:
-  [19, 48] × 10⁹) once NVMe-spill UTXO storage, P2P ingress overhead, and a
-  mixed transaction workload are modelled. This figure is a projection, not a
-  measurement.
+  Craig S. Wright (University of Exeter). SSRN preprint (original April 2026;
+  revised version posted 10 August 2026), DOI 10.2139/ssrn.6341941; SSRN
+  abstract 7219719. **Status: preprint — SSRN does not peer review, and the
+  result has not yet been independently replicated.**
+- **Measured results (three distinct measurements, not estimates):**
+  - **79.09 × 10⁹ TPS** peak pipeline-processed, 100-server fleet across 10
+    geographic regions, scaling efficiency η = 0.783.
+  - **61.2 × 10⁹ TPS** — conservative measured distributed baseline.
+  - **65.8 × 10⁹ TPS** — measured 24-hour sustained floor.
+- **Fleet:** 100 servers (high-end AMD/Intel, 1 TB RAM, NVMe, 400 GbE host
+  link, InfiniBand/Terabit-Ethernet interconnect), each running 919 validator
+  replicas — 91,900 replicas in total. Fleets of 1, 5, 10, 50 and 100 were
+  tested; runs sustained target load for 1,000 seconds after an 80-second ramp.
+- **Idealised conditions (must be quoted with the headline):** P2PKH-only
+  workload (~500 bytes/tx, ~2 inputs + 2 outputs); compact ~40-byte injection
+  messages with full transactions rebuilt internally; DRAM-resident UTXO set;
+  proof-of-work difficulty set to 1; **single administrative trust domain** —
+  Byzantine faults and open-network P2P ingress were **out of scope**. The paper
+  does not claim end-to-end throughput on the public BSV network.
+- **Production-realistic projections (estimates, not measurements):** NVMe-spill
+  UTXO store ≈49 × 10⁹ TPS; adding P2P ingress overhead and a mixed workload
+  ≈36–42 × 10⁹; interaction-corrected ≈**33 × 10⁹ TPS** (95% CI: [19, 48] × 10⁹).
+- **Beyond 100 servers is projection, not demonstration:** the sharded
+  thousand-server architecture is not yet implemented; cross-shard-input
+  transactions are identified as unresolved, and the paper warns that
+  extrapolation models diverge at larger fleet sizes.
 - **Safety result:** zero double-spend violations across 520 million UTXOs with
-  12.8 million deliberate double-spend attempts injected.
-- **Architecture measured:** Teranode decomposed into fourteen microservices
-  connected by Apache Kafka with a shared Aerospike UTXO store, operating under
-  crash-fault semantics.
+  12.8 million deliberate double-spend attempts — including during a deliberate
+  Kafka-broker throttle fault, which cut throughput ~43% before recovery to ~82%
+  of pre-fault level (~100 s convergence). Safety holds under the stated
+  crash-fault trust assumptions, not against malicious insiders.
+- **Storage constraint:** at the headline rate the fleet would generate ~1.25
+  zettabytes/year; the paper's pruning proposal (spent-history removal, per
+  Bitcoin's original design) reduces that to ~4.75 exabytes/year (>250×).
+- **Scale context:** Visa's peak is ~65,000 TPS; 79.09 × 10⁹ is ~1.2 million
+  times that, and even the 33 × 10⁹ projection is ~500,000 times.
+- **Architecture measured:** fourteen microservices connected by Apache Kafka
+  and gRPC with a shared Aerospike UTXO store; double-spend prevention via
+  per-record atomic compare-and-swap on the UTXO, not global consensus.
 - **Companion dataset:** Zenodo DOI 10.5281/zenodo.18825443 — raw exports for
   1–100 node runs (1000-second), including a single-node aggregate of
   1.0112 × 10⁹ TPS (919 validator replicas × 1.10 × 10⁶ TPS each) and
@@ -59,7 +78,8 @@ not live public-network throughput measurements.
   test-environment result, not live public-network capacity.
 - The highest reported BSV throughput is **79.09 × 10⁹ TPS peak
   pipeline-processed** from the 2026 SSRN preprint (100-node fleet, idealised
-  conditions, single administrative trust domain; **preprint in peer review**).
-  Its production-realistic projection is ≈33 × 10⁹ TPS.
+  conditions, single administrative trust domain; **preprint, not yet
+  peer-reviewed or replicated**). Measured baselines: 61.2 × 10⁹ conservative,
+  65.8 × 10⁹ 24-hour floor. The production-realistic projection is ≈33 × 10⁹.
 - Neither figure is a live public-network measurement; both are
   controlled-environment results and must be presented as such.

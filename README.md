@@ -96,7 +96,9 @@ The snapshot pins: the BRC index and full BRC bodies; BSV Academy opcode/Script
 documentation; the Rúnar documentation set; Tier 0 package/symbol/spec cards plus Tier 0/1
 repo documentation (READMEs, docs, examples) with evidenced BRC-to-package edges; a deny list;
 testnet operations notes; ordinality/provenance rules; curated Teranode throughput benchmark
-facts (AWS 1M TPS trial, SSRN 79.09B TPS preprint — conditions and sources inline); and 476
+facts (AWS 1M TPS trial, SSRN 79.09B TPS preprint — conditions and sources inline); an
+attributed analysis card on Bitcoin's 2014–2017 direction change (documented / disputed /
+unproven kept separate); and 476
 summarised Craig Wright essays
 (Medium 2018–2022 and Substack 2025–2026) with a curated contradiction map. See
 [CORPUS.md](CORPUS.md) for the full corpus documentation.
@@ -123,7 +125,7 @@ diff, commit, bump the patch version, and `npm publish`.
 ```bash
 npm install          # install workspace deps
 npm run build        # bundle server/dist
-npm test             # 207 tests: goldens (A–D), tools, composition, ingest
+npm test             # 210 tests: goldens (A–D), tools, composition, ingest
 npm run typecheck    # tsc --noEmit
 node server/probe-full-battery.mjs   # adversarial smoke battery against the built server
 ```

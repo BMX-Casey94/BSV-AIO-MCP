@@ -301,6 +301,20 @@ function ingestCuratedCards(root: string, fetchedAt: string, revision: string): 
       fetchedAt,
       revision,
     }),
+    markdownDoc({
+      root,
+      rel: "reference/bitcoin-scaling-history.md",
+      id: "analysis:bitcoin-scaling-history",
+      locator: "analysis://bitcoin-scaling-history",
+      fallbackTitle: "Bitcoin's 2014–2017 direction change",
+      // Attributed third-party analysis (Casey Atkins) with documented/disputed/unproven
+      // tiers inline. Essay-tier authority: one analyst's sourced interpretation, never
+      // corpus-verified fact.
+      authority: 4,
+      language: "prose",
+      fetchedAt,
+      revision,
+    }),
   ].filter((doc): doc is StoredDocument => doc !== undefined);
 }
 
