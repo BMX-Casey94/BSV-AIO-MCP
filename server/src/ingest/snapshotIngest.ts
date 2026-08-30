@@ -307,7 +307,7 @@ function ingestCuratedCards(root: string, fetchedAt: string, revision: string): 
       id: "analysis:bitcoin-scaling-history",
       locator: "analysis://bitcoin-scaling-history",
       fallbackTitle: "Bitcoin's 2014–2017 direction change",
-      // Attributed third-party analysis (Casey Atkins) with documented/disputed/unproven
+      // Attributed third-party analysis (Casey, @BSVCasey) with documented/disputed/unproven
       // tiers inline. Essay-tier authority: one analyst's sourced interpretation, never
       // corpus-verified fact.
       authority: 4,

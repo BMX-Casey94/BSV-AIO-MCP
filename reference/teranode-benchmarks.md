@@ -23,6 +23,22 @@ not live public-network throughput measurements.
   release, 14 Oct 2025 (prnewswire.com); milestone notes at
   teranode.bsvblockchain.org/updates.
 
+### Post-benchmark improvements (not fleet re-measurements)
+
+- The BSV Association's Teranode page states Teranode Unbounded "could produce
+  5,000,000 TPS" — a **capability statement**, not a measured fleet result
+  (bsvassociation.org/protocol/teranode).
+- The public Teranode repository shows continuing pipeline optimisation after
+  the trial — e.g. PR #912 (txmeta v2 wire format) benchmarks **11.1M tx/s**
+  through the txmeta producer→receiver path. A single-component microbenchmark,
+  not a fleet-scale figure.
+- The corpus operator reports (private communication, **not publicly
+  documented** at pin time) that the six-region trial was conducted in 2024 and
+  that current throughput on the same hardware is around **6M TPS** following
+  subsequent optimisation. Treat as an unverified insider claim until a public
+  benchmark is published; the pinned public fleet measurement remains 1M TPS
+  sustained.
+
 ## Wright (Exeter): 79.09 billion TPS fleet-scale measurement (2026 preprint)
 
 - **Paper:** "Horizontal Scaling of UTXO-Based Transaction Processing:
