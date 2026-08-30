@@ -483,6 +483,53 @@ describe("refreshTier0", () => {
     expect(manifest.sources).toEqual([{ repo: "bsv-blockchain/BRCs", sha: "1a2b3c4" }]);
     expect(Object.keys(manifest.files).sort()).toEqual(["0062.md", "0100.md"]);
     expect(manifest.files["0062.md"]).toMatch(/^[0-9a-f]{64}$/);
+
+    // The catalogue is regenerated from the same checkout, so the index can never lag the
+    // pinned bodies (a stale hand-built index once hid every BRC merged after the pin).
+    const index = JSON.parse(readFileSync(join(root, "reference", "brc_index.json"), "utf8")) as {
+      revision: string;
+      count: number;
+      by_category: Record<string, number>;
+      brcs: Array<{
+        number: number;
+        id: string;
+        title: string;
+        category: string;
+        path: string;
+        authority: number;
+      }>;
+    };
+    expect(index.revision).toBe("1a2b3c4");
+    expect(index.count).toBe(2);
+    expect(index.by_category).toEqual({ transactions: 1, wallet: 1 });
+    expect(index.brcs).toEqual([
+      {
+        number: 62,
+        id: "BRC-62",
+        title: "Background Evaluation Extended Format (BEEF)",
+        category: "transactions",
+        path: "transactions/0062.md",
+        raw_url: "https://raw.githubusercontent.com/bsv-blockchain/BRCs/master/transactions/0062.md",
+        html_url: "https://github.com/bsv-blockchain/BRCs/blob/master/transactions/0062.md",
+        in_tree: true,
+        authority: 1,
+        implementations: [],
+        education_themes: [],
+      },
+      {
+        number: 100,
+        id: "BRC-100",
+        title: "Wallet-to-Application Interface",
+        category: "wallet",
+        path: "wallet/0100.md",
+        raw_url: "https://raw.githubusercontent.com/bsv-blockchain/BRCs/master/wallet/0100.md",
+        html_url: "https://github.com/bsv-blockchain/BRCs/blob/master/wallet/0100.md",
+        in_tree: true,
+        authority: 1,
+        implementations: [],
+        education_themes: [],
+      },
+    ]);
   });
 
   it("merges vector args/result pairs into one card per case", async () => {

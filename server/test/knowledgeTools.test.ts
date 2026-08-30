@@ -112,6 +112,12 @@ describe("knowledge tools", () => {
     expect(hits.some((row) => row.kind === "principle" || row.kind === "essay")).toBe(true);
   });
 
+  it("search_knowledge pins an explicitly numbered BRC ahead of digit collisions", async () => {
+    const payload = await callToolJson(client, "search_knowledge", { query: "BRC-166" });
+    const hits = payload.hits as TypedHit[];
+    expect(hits[0]?.id).toBe("brc:166");
+  });
+
   it("get_resource for ops://ordinality mentions fail closed", async () => {
     const payload = await callToolJson(client, "get_resource", { uri: "ops://ordinality" });
     expect(payload.uri).toBe("ops://ordinality");
@@ -133,5 +139,41 @@ describe("knowledge tools", () => {
     const payload = await callToolJson(client, "list_contradictions", { topic: "SPV" });
     const findings = payload.findings as Array<{ id?: string }>;
     expect(findings.some((finding) => finding.id === "IT-01")).toBe(true);
+  });
+
+  it("list_contradictions conflicts_only drops alignments and verbatim continuities", async () => {
+    const all = await callToolJson(client, "list_contradictions", {});
+    const conflicts = await callToolJson(client, "list_contradictions", { conflicts_only: true });
+    const allFindings = all.findings as Array<{ nature?: string }>;
+    const conflictFindings = conflicts.findings as Array<{ nature?: string }>;
+    expect(allFindings.length).toBeGreaterThan(conflictFindings.length);
+    expect(
+      conflictFindings.some(
+        (finding) => finding.nature === "alignment" || finding.nature === "restated-verbatim",
+      ),
+    ).toBe(false);
+    expect(
+      conflictFindings.some((finding) => finding.nature === "direct-contradiction"),
+    ).toBe(true);
+  });
+
+  it("search_knowledge relaxes a long multi-concept query instead of returning nothing", async () => {
+    // Pure AND over all eight tokens zeroes the pile; the relaxed pass must still surface the
+    // Nash essay and the fee-dominant contradiction card (CC's reported failure mode).
+    const payload = await callToolJson(client, "search_knowledge", {
+      query: "mining timing nash simulations fee dominant regimes deviation",
+    });
+    const hits = payload.hits as TypedHit[];
+    expect(hits.length).toBeGreaterThan(0);
+    expect(hits.some((row) => row.id.includes("nash"))).toBe(true);
+  });
+
+  it("search_knowledge ranks a doc carrying the literal phrase first", async () => {
+    // "Why I troll" contains the exact phrase "first-seen rule"; a coincidental co-occurrence
+    // must not outrank it. (Reported as a misranking; verified the top hit is phrase-bearing.)
+    const payload = await callToolJson(client, "search_knowledge", { query: "first seen rule" });
+    const hits = payload.hits as TypedHit[];
+    expect(hits.length).toBeGreaterThan(0);
+    expect(hits[0]?.id).toContain("why-i-troll");
   });
 });

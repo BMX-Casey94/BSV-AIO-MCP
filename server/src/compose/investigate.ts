@@ -16,136 +16,9 @@ import {
   type TypedHit,
 } from "../types.js";
 import { claimStatus, pickWinner } from "./winner.js";
+import { STOP_WORDS } from "./stopWords.js";
 
 const MAX_HOPS = 4;
-
-const STOP_WORDS = new Set([
-  "a",
-  "an",
-  "and",
-  "are",
-  "about",
-  "also",
-  "any",
-  "all",
-  "at",
-  "be",
-  "between",
-  "both",
-  "by",
-  "can",
-  "could",
-  "currently",
-  "did",
-  "do",
-  "does",
-  "each",
-  "every",
-  "few",
-  "for",
-  "from",
-  "get",
-  "gets",
-  "give",
-  "given",
-  "gives",
-  "got",
-  "govern",
-  "governs",
-  "governing",
-  "how",
-  "i",
-  "in",
-  "into",
-  "is",
-  "it",
-  "its",
-  "just",
-  "keep",
-  "keeps",
-  "let",
-  "like",
-  "made",
-  "make",
-  "makes",
-  "many",
-  "may",
-  "me",
-  "more",
-  "most",
-  "much",
-  "my",
-  "need",
-  "needs",
-  "no",
-  "not",
-  "now",
-  "of",
-  "on",
-  "only",
-  "or",
-  "other",
-  "others",
-  "our",
-  "ours",
-  "own",
-  "right",
-  "run",
-  "same",
-  "should",
-  "so",
-  "some",
-  "status",
-  "still",
-  "such",
-  "support",
-  "supports",
-  "supported",
-  "take",
-  "takes",
-  "than",
-  "that",
-  "the",
-  "their",
-  "them",
-  "then",
-  "these",
-  "they",
-  "thing",
-  "things",
-  "this",
-  "those",
-  "to",
-  "too",
-  "us",
-  "use",
-  "used",
-  "uses",
-  "using",
-  "versus",
-  "very",
-  "via",
-  "vs",
-  "want",
-  "wants",
-  "was",
-  "we",
-  "were",
-  "what",
-  "when",
-  "where",
-  "which",
-  "who",
-  "will",
-  "with",
-  "without",
-  "would",
-  "why",
-  "yes",
-  "you",
-  "your",
-  "yours",
-]);
 
 type ContradictionFinding = {
   id?: unknown;
@@ -168,7 +41,11 @@ export function investigate(
   const classifiedAs = classifyQuestion(question);
   const network = inferNetwork(question);
   const needs = detectNeeds(question, classifiedAs);
-  const tokens = distinctiveTokens(question, context);
+  // Question tokens drive the ask (gaps, lead selection); context tokens only steer retrieval.
+  const questionTokens = distinctiveTokens(question);
+  const tokens = context
+    ? [...new Set([...questionTokens, ...distinctiveTokens(context)])]
+    : questionTokens;
   const ordinalityQuestion = isOrdinalityQuestion(question, tokens);
 
   let hopsUsed = 0;
@@ -326,7 +203,9 @@ export function investigate(
 
   // A distinctive token the corpus never contains is a typo or a foreign concept; name it in
   // the gaps so the surviving answer is not presented as complete ("configure zqxwv arcade").
-  const unknownTokens = tokens
+  // Question tokens only: the context parameter steers retrieval but is not part of the ask, so
+  // its words must never be reported as corpus gaps.
+  const unknownTokens = questionTokens
     .filter((token) => token.length >= 4 && !/^\d+$/.test(token))
     .filter((token) => searchKnowledge(store, token, { limit: 1 }).totalCount === 0)
     .slice(0, 4);
@@ -689,11 +568,50 @@ export function investigate(
     }
   }
 
+  // Benchmark/capability questions ("highest throughput demonstrated", "can BSV handle a
+  // million TPS") are answered by the curated benchmarks card, which carries the conditions
+  // and sources with every figure — an authority-3 card, so retrieval alone never opens it
+  // for spec/mixed classifications.
+  if (
+    isBenchmarkQuestion(question, tokens) &&
+    !hits.some((hit) => hit.locator === "fact://teranode-benchmarks") &&
+    hopsUsed < MAX_HOPS
+  ) {
+    hopsUsed += 1;
+    const card = getResource(root, store, "fact://teranode-benchmarks");
+    upsertHit(hits, withOpenedExcerpt(card.hit, card.text, tokens));
+  }
+
   if (classifiedAs === "spec" && missingBrcs.length === 0 && !hasMatchingBrc(hits, tokens) && hopsUsed < MAX_HOPS) {
     hopsUsed += 1;
     const catalogue = getResource(root, store, "brc://index");
     const match = matchBrcFromCatalogue(catalogue.text, tokens);
     if (match && hopsUsed < MAX_HOPS) {
+      hopsUsed += 1;
+      const spec = getResource(root, store, `brc://spec/${match}`);
+      upsertHit(hits, withOpenedExcerpt(spec.hit, spec.text, tokens));
+    }
+  }
+
+  // A governance ask is answered from the catalogue, not from whoever's body happened to match
+  // the FTS pile ("latest BRC for overlay services" AND-matches infra docs mentioning "latest",
+  // never the overlay BRCs). When no retrieved BRC's title covers the topic, consult the full
+  // BRC index directly; a catalogue miss fails closed in composeClaims.
+  // The hop must judge the same set composeClaims will: authority-eligible, non-superseded
+  // hits. A demoted spec (BRC-91, Mandala — authority 4) stays in hits but can never lead, so
+  // its incidental title word must not suppress the catalogue hop.
+  const governancePool = hits.filter(
+    (hit) => hit.authority <= authorityForClass(classifiedAs) && !hit.successor,
+  );
+  if (
+    isGovernanceQuestion(question) &&
+    missingBrcs.length === 0 &&
+    scoreGovernanceTitles(governancePool, tokens).bestScore === 0 &&
+    hopsUsed < MAX_HOPS
+  ) {    hopsUsed += 1;
+    const catalogue = getResource(root, store, "brc://index");
+    const match = matchBrcFromCatalogue(catalogue.text, governanceTopicTokens(tokens));
+    if (match !== undefined && hopsUsed < MAX_HOPS) {
       hopsUsed += 1;
       const spec = getResource(root, store, `brc://spec/${match}`);
       upsertHit(hits, withOpenedExcerpt(spec.hit, spec.text, tokens));
@@ -961,7 +879,13 @@ function classifyQuestion(question: string): ClassifiedAs {
   ) {
     return "spec";
   }
-  if (/\b(craig|principle|corpus|consistent|essay|why does|why do)\b/.test(q)) {
+  // Rationale questions are answered by the writings, so they classify design-why — but a
+  // troubleshooting "why does X fail" is looking for the error taxonomy, not an essay.
+  const whyCue = /\b(craig|principle|corpus|consistent|essay|writings?|rationale|philosophy|why)\b/.test(q);
+  const troubleshooting = /\b(err_\w*|errors?|fail(?:s|ed|ing)?|exception|stack trace|debug|troubleshoot)\b/i.test(
+    question,
+  );
+  if (whyCue && !troubleshooting) {
     return "design-why";
   }
   // A how-to that names a BRC and a network-ops cue spans spec + operations + implementation
@@ -1253,8 +1177,7 @@ function authorityForClass(classified: ClassifiedAs): number {
   }
 }
 
-function distinctiveTokens(question: string, context?: string): string[] {
-  const text = context ? `${question} ${context}` : question;
+function distinctiveTokens(text: string): string[] {
   const tokens = text
     .toLowerCase()
     .split(/[^\p{L}\p{N}]+/u)
@@ -1292,9 +1215,11 @@ function byCorpusDistinctiveness(store: KnowledgeStore, tokens: string[]): strin
   for (const token of tokens) {
     frequency.set(token, searchKnowledge(store, token, { limit: 20 }).totalCount);
   }
-  return [...tokens].sort(
-    (a, b) => (frequency.get(a) ?? 0) - (frequency.get(b) ?? 0) || b.length - a.length,
-  );
+  // A token the corpus never contains can only zero a probe; drop it from the ladder entirely
+  // (the nonsense-token gap already names it for the user).
+  return [...tokens]
+    .filter((token) => (frequency.get(token) ?? 0) > 0)
+    .sort((a, b) => (frequency.get(a) ?? 0) - (frequency.get(b) ?? 0) || b.length - a.length);
 }
 
 /**
@@ -1364,12 +1289,35 @@ function retrieveHits(
     // pile. Fall back to pairs of the most corpus-distinctive tokens, accumulating — each pair
     // is a self-contained concept probe ("teratestnet faucet", "payout wallet").
     const ordered = byCorpusDistinctiveness(store, tokens);
-    const probe = ordered.slice(0, 5);
-    outer: for (let i = 0; i < probe.length; i++) {
-      for (let j = i + 1; j < probe.length; j++) {
-        take(searchKnowledge(store, `${probe[i]} ${probe[j]}`, { filters, limit: 20 }).hits);
-        if (collected.length >= 8) {
-          break outer;
+    // A long multi-clause question is a conjunction of concepts; its concept probe is a triple
+    // of the most distinctive tokens ("nash deviation dominant"), tighter than a pair and far
+    // looser than the full AND. Pairs of a 15-token question mostly co-occur by accident.
+    if (ordered.length >= 6) {
+      const probe = ordered.slice(0, 8);
+      triple: for (let i = 0; i < probe.length - 2; i++) {
+        for (let j = i + 1; j < probe.length - 1; j++) {
+          for (let k = j + 1; k < probe.length; k++) {
+            take(
+              searchKnowledge(store, `${probe[i]} ${probe[j]} ${probe[k]}`, {
+                filters,
+                limit: 20,
+              }).hits,
+            );
+            if (collected.length >= 8) {
+              break triple;
+            }
+          }
+        }
+      }
+    }
+    if (collected.length < 3) {
+      const probe = ordered.slice(0, 5);
+      outer: for (let i = 0; i < probe.length; i++) {
+        for (let j = i + 1; j < probe.length; j++) {
+          take(searchKnowledge(store, `${probe[i]} ${probe[j]}`, { filters, limit: 20 }).hits);
+          if (collected.length >= 8) {
+            break outer;
+          }
         }
       }
     }
@@ -1504,6 +1452,25 @@ function isOrdinalityQuestion(question: string, tokens: string[]): boolean {
   return (
     tokens.some((token) => /^(ordinals?|ordinality|1sat|provenance|inscriptions?)$/.test(token)) ||
     /\b(ordinal|ordinality|1sat|provenance|inscription)\b/.test(q)
+  );
+}
+
+// A benchmark/capability question asks what the network or node software has demonstrably
+// achieved ("highest throughput", "can BSV handle a million TPS"), as opposed to tuning a
+// specific service ("Kafka throughput in merkle-service") — the latter keeps its repo docs.
+// Both a measurement cue AND a network-capability context are required so service-tuning
+// questions never hijack the curated benchmarks card.
+function isBenchmarkQuestion(question: string, tokens: string[]): boolean {
+  const q = question.toLowerCase();
+  const measurementCue =
+    tokens.some((token) => /^(tps|throughput|benchmarks?|highest|fastest)$/.test(token)) ||
+    /\b(transactions per second|how many transactions|million tps|billion tps)\b/.test(q);
+  if (!measurementCue) {
+    return false;
+  }
+  return (
+    tokens.some((token) => /^(teranode|bsv|bitcoin|node|nodes|network|scale|scaling|scalability)$/.test(token)) ||
+    /\b(can|could|does) (bsv|bitcoin|teranode|the network) (scale|handle|process|sustain)\b/.test(q)
   );
 }
 
@@ -1895,6 +1862,11 @@ function composeClaims(
   const openedCard = ordinalityQuestion
     ? hits.find((hit) => hit.locator === "ops://ordinality")
     : undefined;
+  // Same standing for the curated benchmarks card on a capability question: the figures with
+  // their conditions ARE the answer, and no spec or repo README should outrank them.
+  const benchmarkCard = isBenchmarkQuestion(question, tokens)
+    ? hits.find((hit) => hit.locator === "fact://teranode-benchmarks")
+    : undefined;
   // The BEEF family has a definitional hierarchy: Atomic BEEF is BRC-95, the V2 txid-only
   // extension is BRC-96, and BRC-62 is the base format. Never let multicast/outpoint BEEF
   // BRCs outrank the member the question is actually about.
@@ -1913,9 +1885,11 @@ function composeClaims(
       : undefined;
   // "Which BRC governs X?" is answered by the spec whose title covers the topic — a body that
   // merely mentions the same words often must not out-score it.
-  const governanceCard = isGovernanceQuestion(question)
-    ? pinGovernanceBrc(eligible, tokens)
+  const governance = isGovernanceQuestion(question)
+    ? scoreGovernanceTitles(eligible, tokens)
     : undefined;
+  const governanceCard =
+    governance && !governance.tied && governance.bestScore >= 2 ? governance.best : undefined;
   // "What is X?" is answered by the prose document whose title defines X, if one is pinned.
   const bareTerm = bareDefinitionTerm(question);
   const definitionCard = bareTerm ? findDefinitionCard(eligible, bareTerm) : undefined;
@@ -1962,10 +1936,46 @@ function composeClaims(
     namedRepoDoc ??
     namedPackageCard ??
     openedCard ??
+    benchmarkCard ??
     beefCard ??
     opcodeCard ??
     packageCard;
   let lead = pinned ?? ranked[0];
+
+  // Kind-aware lead: a why-question is answered by the writings, not by a spec that happens to
+  // share its words (BRC-114's timestamp filters must not outrank "Time Is Not Consensus" on a
+  // mining-timing question). When no address pin fired, the best on-topic essay or principle
+  // leads; BRCs stay in the pile as secondary citations.
+  if (!pinned && classified === "design-why") {
+    const essayLead = ranked.find(
+      (hit) =>
+        (hit.kind === "essay" || hit.kind === "principle") &&
+        (titleOverlap(hit, tokens, compounds) > 0 ||
+          scoreHit(hit, [...tokens, ...compounds]) >= 2),
+    );
+    if (essayLead) {
+      lead = essayLead;
+    }
+  }
+
+  // A governance ask ("which BRC governs X?", "is there a BRC for X?") is answered only by a
+  // BRC whose title covers the topic. When NO BRC title covers any of it, body mentions are
+  // incidental — fail closed rather than let a BRC that merely contains the words pose as the
+  // governing spec. A coverage TIE abstains to the usual scoring order, as before.
+  if (!pinned && governance && governance.topicCount >= 2 && governance.bestScore === 0) {
+    hits.length = 0;
+    gaps.push(
+      "No pinned BRC's title covers this topic; body mentions are incidental, so no governing spec is named.",
+    );
+    return [
+      {
+        text: "The pinned catalogue contains no BRC whose remit names this topic; documents that merely mention the words in passing were discarded.",
+        support: [],
+        status: "insufficient",
+        confidence: "low",
+      },
+    ];
+  }
 
   // "Which package/implementation should I use?" is answered by a package or its docs, never
   // by a BRC that merely shares topic words (BRC-35's title names "Overlay Services" but
@@ -2068,7 +2078,14 @@ function composeClaims(
     );
     // A topic-hopped package card needs no further proof: the hop itself is the relevance
     // signal, and hyphen boundaries can zero its word score ("storage" in "uhrp-storage-server").
-    const rescued = passing ?? ranked.find((hit) => isHopCard(hit));
+    // Failing those, the pile may still hold the answer under a lexical collision: a document
+    // whose TITLE is about the topic ("Double-Spend Assurance…" for a double-spend question)
+    // demotes the coincidental leader. Body-word co-occurrence alone never rescues — common
+    // words co-occur in nonsense queries too ("drop", "table", "documents").
+    const rescued =
+      passing ??
+      ranked.find((hit) => isHopCard(hit)) ??
+      ranked.find((hit) => titleOverlap(hit, tokens, compounds) > 0);
     if (rescued) {
       lead = rescued;
     } else {
@@ -2219,12 +2236,17 @@ function titleOverlap(hit: TypedHit, tokens: string[], compounds: string[] = [])
   return score;
 }
 
+/** Namespace words that name the catalogue rather than the topic; excluded from wordScore. */
+const STRUCTURAL_TOKENS = new Set(["brc"]);
+
 /** Word-level token matches across id/title/excerpt. A match inside a hyphenated compound
  * ("scrypt" inside the "scrypt-offchain" URL scheme) is a different token and does not count. */
 function wordScore(hit: TypedHit, tokens: string[], compounds: string[] = []): number {
   const hay = `${hit.id} ${hit.title} ${hit.excerpt ?? ""}`.toLowerCase().replace(/\\_/g, "_");
   let score = tokens.filter((token) => {
-    if (token.length < 3) {
+    // Namespace words name the catalogue, not the topic: "brc" appears in every brc:* id, so
+    // it must never help a hit earn the floor ("is there a BRC for X?" is about X, not "brc").
+    if (token.length < 3 || STRUCTURAL_TOKENS.has(token)) {
       return false;
     }
     const re = new RegExp(`(?<![\\w-])${token.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?![\\w-])`);
@@ -2250,8 +2272,7 @@ function wordScore(hit: TypedHit, tokens: string[], compounds: string[] = []): n
 }
 
 /** Hyphenated compounds from the question text ("message-box-client", "go-p2p"). */
-function hyphenCompounds(question: string): string[] {
-  const matches = question.toLowerCase().match(/[\p{L}\p{N}]+(?:-[\p{L}\p{N}]+)+/gu) ?? [];
+function hyphenCompounds(question: string): string[] {  const matches = question.toLowerCase().match(/[\p{L}\p{N}]+(?:-[\p{L}\p{N}]+)+/gu) ?? [];
   return [...new Set(matches)];
 }
 
@@ -2299,12 +2320,14 @@ function isPlaceholderDoc(body: string): boolean {
   );
 }
 
-/** "Which BRC governs X?" / "what governs Y?" — a request for the spec that owns the topic. */
+/** "Which BRC governs X?" / "what governs Y?" / "is there a BRC for Z?" — a request for the
+ * spec that owns the topic. */
 function isGovernanceQuestion(question: string): boolean {
   return (
     /\bwhich\s+brc\b/i.test(question) ||
     /\bwhat\s+brc\b/i.test(question) ||
     /\b(?:latest|newest)\s+brc\b/i.test(question) ||
+    /\b(?:is|are)\s+there\s+(?:a\s+|an\s+|any\s+)?brc\b/i.test(question) ||
     /\bgoverns?\b/i.test(question)
   );
 }
@@ -2337,14 +2360,17 @@ function governanceTopicTokens(tokens: string[]): string[] {
 }
 
 /**
- * Pins the BRC whose title covers the most topic tokens, provided one covers at least two and
- * no runner-up ties it. Returns undefined when no title is a clear owner, in which case the
- * usual scoring order decides the lead.
+ * The best BRC title coverage for a governance topic. The composer pins the best card when it
+ * covers at least two topic tokens with no tie; a zero score on a governance ask fails closed
+ * (no BRC's remit names the topic); a tie abstains to the usual scoring order.
  */
-function pinGovernanceBrc(hits: TypedHit[], tokens: string[]): TypedHit | undefined {
+function scoreGovernanceTitles(
+  hits: TypedHit[],
+  tokens: string[],
+): { best: TypedHit | undefined; bestScore: number; tied: boolean; topicCount: number } {
   const topic = governanceTopicTokens(tokens);
   if (topic.length < 2) {
-    return undefined;
+    return { best: undefined, bestScore: 0, tied: false, topicCount: topic.length };
   }
   let best: TypedHit | undefined;
   let bestScore = 0;
@@ -2375,7 +2401,7 @@ function pinGovernanceBrc(hits: TypedHit[], tokens: string[]): TypedHit | undefi
       tied = true;
     }
   }
-  return !tied && bestScore >= 2 ? best : undefined;
+  return { best, bestScore, tied, topicCount: topic.length };
 }
 
 /** BRC numbers the question names explicitly: "BRC-62", "BRC 62", "brc62" all resolve. */
@@ -2567,7 +2593,9 @@ function overlayContradictions(
 ): void {
   const findings = loadContradictionFindings(root);
   const topic = contradictionTopic(tokens, question);
-  const listed = listContradictions(findings, topic);
+  // Alignments and verbatim continuities are audit context; the contradictions[] overlay
+  // surfaces conflicts only.
+  const listed = listContradictions(findings, topic, true);
   const relevant =
     overlapTokens.length >= 2
       ? listed.findings.filter((finding) => findingOverlap(finding, overlapTokens) >= 2)

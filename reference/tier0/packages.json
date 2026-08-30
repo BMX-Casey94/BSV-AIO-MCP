@@ -1,5 +1,5 @@
 {
-  "revision": "9dae02063f58",
+  "revision": "f43e6e9db517",
   "packages": [
     "@bsv/sdk",
     "@bsv/wallet-toolbox",

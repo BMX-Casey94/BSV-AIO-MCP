@@ -86,7 +86,7 @@ export function ingestSnapshots(
   documents.push(...ingestEducation(root, fetchedAt, snapshotRevision));
   documents.push(...ingestBrcs(root, fetchedAt, brcRevision));
   documents.push(...ingestContradictions(root, fetchedAt, snapshotRevision));
-  documents.push(...ingestOpsDocs(root, fetchedAt, snapshotRevision));
+  documents.push(...ingestCuratedCards(root, fetchedAt, snapshotRevision));
   documents.push(...ingestDenyList(root, fetchedAt, snapshotRevision));
   documents.push(...ingestTrainingGuide(root, fetchedAt, snapshotRevision));
   documents.push(...ingestAcademy(root, fetchedAt, snapshotRevision));
@@ -263,7 +263,7 @@ function ingestContradictions(root: string, fetchedAt: string, revision: string)
   return out;
 }
 
-function ingestOpsDocs(root: string, fetchedAt: string, revision: string): StoredDocument[] {
+function ingestCuratedCards(root: string, fetchedAt: string, revision: string): StoredDocument[] {
   return [
     markdownDoc({
       root,
@@ -284,6 +284,18 @@ function ingestOpsDocs(root: string, fetchedAt: string, revision: string): Store
       fallbackTitle: "Ordinality and provenance",
       // An operator playbook, not a spec: the card itself defers to brc://spec/150, and the
       // authority model puts ops cards at 3.
+      authority: 3,
+      language: "prose",
+      fetchedAt,
+      revision,
+    }),
+    markdownDoc({
+      root,
+      rel: "reference/teranode-benchmarks.md",
+      id: "fact:teranode-benchmarks",
+      locator: "fact://teranode-benchmarks",
+      fallbackTitle: "Teranode throughput benchmarks",
+      // Curated benchmark facts with conditions and sources inline; not a spec, not an essay.
       authority: 3,
       language: "prose",
       fetchedAt,

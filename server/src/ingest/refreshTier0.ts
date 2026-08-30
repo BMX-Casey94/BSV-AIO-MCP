@@ -187,6 +187,9 @@ export async function refreshTier0(options: RefreshTier0Options): Promise<Refres
     replaceDirectory(source, join(options.tier0Root, "specs"));
   }
   const brcs = brcPlan ? writeBrcBodies(brcDest, brcPlan) : 0;
+  if (brcPlan) {
+    writeBrcIndex(options.root, brcPlan, brcSources, label);
+  }
   const vectors = vectorPlan ? writeVectors(vectorDest, vectorPlan) : 0;
   const docsResult = writeRepoDocs(join(options.tier0Root, "docs"), docsPlan);
   // The graph is derived from the mentions + cards just written. Only regenerate
@@ -211,7 +214,7 @@ export async function refreshTier0(options: RefreshTier0Options): Promise<Refres
 
 /** A planned BRC-body snapshot: which `NNNN.md` files to pin, plus provenance for the manifest. */
 type BrcBodyPlan = {
-  files: Array<{ name: string; abs: string }>;
+  files: Array<{ name: string; rel: string; abs: string; repo: string }>;
   sources: Array<{ repo: string; sha: string }>;
 };
 
@@ -233,19 +236,19 @@ function planBrcBodies(
   if (sources.length === 0) {
     return undefined;
   }
-  const byName = new Map<string, string>();
+  const byName = new Map<string, { rel: string; abs: string; repo: string }>();
   for (const source of sources) {
     for (const rel of walkFiles(source.checkout)) {
       const name = rel.split("/").pop() ?? "";
       if (!/^\d{4}\.md$/.test(name) || byName.has(name)) {
         continue;
       }
-      byName.set(name, join(source.checkout, ...rel.split("/")));
+      byName.set(name, { rel, abs: join(source.checkout, ...rel.split("/")), repo: source.repo });
     }
   }
   const files = [...byName.entries()]
     .sort(([a], [b]) => a.localeCompare(b, "en-GB"))
-    .map(([name, abs]) => ({ name, abs }));
+    .map(([name, entry]) => ({ name, rel: entry.rel, abs: entry.abs, repo: entry.repo }));
   assertRetention(
     label,
     "BRC bodies",
@@ -273,6 +276,113 @@ function writeBrcBodies(dest: string, plan: BrcBodyPlan): number {
     files: hashes,
   });
   return plan.files.length;
+}
+
+/** One row of `reference/brc_index.json` — the BRC catalogue the query path ingests from. */
+type BrcIndexRow = {
+  number: number;
+  id: string;
+  title: string;
+  category: string;
+  path: string;
+  raw_url: string;
+  html_url: string;
+  in_tree: boolean;
+  authority: number;
+  implementations: string[];
+  education_themes: string[];
+};
+
+/** Parses a standards checkout's SUMMARY.md into a `path → title` map for catalogue titles. */
+function parseSummaryTitles(checkout: string): Map<string, string> {
+  const summaryPath = join(checkout, "SUMMARY.md");
+  const titles = new Map<string, string>();
+  if (!existsSync(summaryPath)) {
+    return titles;
+  }
+  for (const line of readFileSync(summaryPath, "utf8").split("\n")) {
+    const match = /^\s*\*\s+\[(.+)\]\(\.\/([^)]+)\)\s*$/.exec(line);
+    const title = match?.[1];
+    const path = match?.[2];
+    if (title && path) {
+      titles.set(path, title.trim());
+    }
+  }
+  return titles;
+}
+
+/** Falls back to the body's own `# BRC-N: Title` heading when SUMMARY.md doesn't list the file. */
+function titleFromBody(abs: string, number: number): string {
+  const head = readFileSync(abs, "utf8").slice(0, 4096);
+  const title = /^#\s+BRC-\d+:\s*(.+)$/m.exec(head)?.[1];
+  return title ? title.trim() : `BRC-${number}`;
+}
+
+/**
+ * Regenerates `reference/brc_index.json` from the same standards checkout that pinned the bodies,
+ * so the catalogue and the pinned bodies can never drift apart (a stale index once hid every BRC
+ * merged after the pin). Retention-guarded like the bodies; runs only when a standards repo is
+ * pinned, so Tier 1 refreshes leave the catalogue untouched.
+ */
+function writeBrcIndex(
+  root: string,
+  plan: BrcBodyPlan,
+  sources: Array<{ checkout: string; sha: string; repo: string }>,
+  label: string,
+): number {
+  const titles = new Map<string, string>();
+  for (const source of sources) {
+    for (const [path, title] of parseSummaryTitles(source.checkout)) {
+      if (!titles.has(path)) {
+        titles.set(path, title);
+      }
+    }
+  }
+  const rows: BrcIndexRow[] = [];
+  for (const file of plan.files) {
+    const number = Number(file.name.slice(0, 4));
+    const category = file.rel.includes("/") ? (file.rel.split("/")[0] ?? "") : "";
+    rows.push({
+      number,
+      id: `BRC-${number}`,
+      title: titles.get(file.rel) ?? titleFromBody(file.abs, number),
+      category,
+      path: file.rel,
+      raw_url: `https://raw.githubusercontent.com/${file.repo}/master/${file.rel}`,
+      html_url: `https://github.com/${file.repo}/blob/master/${file.rel}`,
+      in_tree: true,
+      authority: category === "opinions" ? 4 : 1,
+      implementations: [],
+      education_themes: [],
+    });
+  }
+  rows.sort((a, b) => a.number - b.number);
+  const indexPath = join(root, "reference", "brc_index.json");
+  const previous = existsSync(indexPath)
+    ? (JSON.parse(readFileSync(indexPath, "utf8")) as { count?: unknown }).count
+    : 0;
+  assertRetention(
+    label,
+    "BRC catalogue entries",
+    typeof previous === "number" ? previous : 0,
+    rows.length,
+    BRC_RETENTION_APPLIES_FROM,
+  );
+  const byCategory: Record<string, number> = {};
+  for (const row of rows) {
+    byCategory[row.category] = (byCategory[row.category] ?? 0) + 1;
+  }
+  writeJsonFile(indexPath, {
+    generated: new Date().toISOString().slice(0, 10),
+    source: `https://github.com/${plan.sources[0]?.repo ?? "bsv-blockchain/BRCs"}`,
+    revision: plan.sources[0]?.sha ?? "",
+    policy:
+      "Hot snapshot. Regenerated by the gated refresh from the pinned standards checkout; the query path never live-fetches.",
+    count: rows.length,
+    by_category: byCategory,
+    brcs: rows,
+  });
+  return rows.length;
 }
 
 /** Matches the universal-test-vectors layout: `{case}-args.json` / `{case}-result.json` pairs. */

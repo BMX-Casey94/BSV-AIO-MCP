@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-29",
+  "generated": "2026-08-30",
   "policy": "BRC numbers cited by each repo's own snapshotted README/docs/examples. The only BRC-to-package edges the capability graph trusts.",
   "mentions": {
     "@bsv/sdk": [
@@ -9,6 +9,7 @@
       62,
       95,
       98,
+      99,
       100
     ],
     "go-sdk": [
@@ -23,9 +24,12 @@
       2,
       14,
       20,
+      21,
+      22,
       26,
       29,
       31,
+      40,
       42,
       43,
       48,

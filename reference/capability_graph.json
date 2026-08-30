@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-14",
+  "generated": "2026-08-30",
   "source": [
     "reference/brc_index.json",
     "data/education_index.json",
@@ -12,7 +12,7 @@
     "reference/tier1/docs/brc-mentions.json"
   ],
   "policy": "Titles plus confirmed Tier 0/1 cards. packages come from evidenced BRC mentions in each repo's own documentation, unioned with a word-boundary match of grouping tokens against exported symbols only on a symbol family's definitional row (BEEF→BRC-62, BUMP→BRC-74). api lists only exported names that exact-match a title token. Do not invent API names.",
-  "count": 171,
+  "count": 184,
   "capabilities": [
     {
       "id": "brc-1-transaction-creation",
@@ -530,7 +530,8 @@
       "name": "Wallet Transaction Output Tracking (Output Baskets)",
       "brc": "BRC-46",
       "also": [
-        "BRC-147"
+        "BRC-147",
+        "BRC-163"
       ],
       "packages": [],
       "api": [],
@@ -1174,7 +1175,9 @@
       "name": "P Baskets: Allowing Future Wallet Basket and Digital Asset Permission Schemes",
       "brc": "BRC-99",
       "also": [],
-      "packages": [],
+      "packages": [
+        "@bsv/sdk"
+      ],
       "api": [],
       "education_themes": [
         "wallets-keys"
@@ -1191,6 +1194,7 @@
         "BRC-151",
         "BRC-152",
         "BRC-153",
+        "BRC-163",
         "BRC-164"
       ],
       "packages": [
@@ -1709,16 +1713,6 @@
       "authority_hint": 1
     },
     {
-      "id": "brc-146-access-gates-for-metanet",
-      "name": "Access Gates for Metanet Rooms",
-      "brc": "BRC-146",
-      "also": [],
-      "packages": [],
-      "api": [],
-      "education_themes": [],
-      "authority_hint": 1
-    },
-    {
       "id": "brc-147-1sat",
       "name": "1Sat Ordinals Basket Profile for BRC-46 / BRC-100",
       "brc": "BRC-147",
@@ -1726,8 +1720,10 @@
         "BRC-46",
         "BRC-100",
         "BRC-150",
+        "BRC-156",
         "BRC-159",
-        "BRC-160"
+        "BRC-160",
+        "BRC-165"
       ],
       "packages": [],
       "api": [],
@@ -1780,8 +1776,10 @@
       "brc": "BRC-150",
       "also": [
         "BRC-147",
+        "BRC-156",
         "BRC-159",
-        "BRC-160"
+        "BRC-160",
+        "BRC-165"
       ],
       "packages": [],
       "api": [],
@@ -1851,6 +1849,22 @@
       "authority_hint": 1
     },
     {
+      "id": "brc-156-withdrawn",
+      "name": "Latched 1Sat Provenance for Basket `1sat` (Withdrawn)",
+      "brc": "BRC-156",
+      "also": [
+        "BRC-147",
+        "BRC-150",
+        "BRC-159",
+        "BRC-160",
+        "BRC-165"
+      ],
+      "packages": [],
+      "api": [],
+      "education_themes": [],
+      "authority_hint": 1
+    },
+    {
       "id": "brc-157-entropy-rooted-backup-and",
       "name": "Entropy-Rooted Backup and Recovery with Mnemonics and Backup Shares",
       "brc": "BRC-157",
@@ -1887,7 +1901,9 @@
       "also": [
         "BRC-147",
         "BRC-150",
-        "BRC-160"
+        "BRC-156",
+        "BRC-160",
+        "BRC-165"
       ],
       "packages": [],
       "api": [],
@@ -1904,7 +1920,46 @@
       "also": [
         "BRC-147",
         "BRC-150",
-        "BRC-159"
+        "BRC-156",
+        "BRC-159",
+        "BRC-165"
+      ],
+      "packages": [],
+      "api": [],
+      "education_themes": [],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-161-bsv-21-fungible-tokens",
+      "name": "BSV-21 Fungible Tokens (JSON / Legacy)",
+      "brc": "BRC-161",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [
+        "tokenisation"
+      ],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-162-binary",
+      "name": "BSV-21 Fungible Tokens (Binary)",
+      "brc": "BRC-162",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [
+        "tokenisation"
+      ],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-163-bsv-21-basket-profile",
+      "name": "BSV-21 Basket Profile for BRC-46 / BRC-100",
+      "brc": "BRC-163",
+      "also": [
+        "BRC-46",
+        "BRC-100"
       ],
       "packages": [],
       "api": [],
@@ -1927,6 +1982,42 @@
       "authority_hint": 1
     },
     {
+      "id": "brc-165-1sat",
+      "name": "P1Sat Permission Scheme for Basket `1sat`",
+      "brc": "BRC-165",
+      "also": [
+        "BRC-147",
+        "BRC-150",
+        "BRC-156",
+        "BRC-159",
+        "BRC-160"
+      ],
+      "packages": [],
+      "api": [],
+      "education_themes": [],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-166-p2pkh-payments-for-http",
+      "name": "P2PKH Payments for HTTP 402",
+      "brc": "BRC-166",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-167-chirp",
+      "name": "Chunked, Hashed, Interleaved Resolution Protocol (CHIRP)",
+      "brc": "BRC-167",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [],
+      "authority_hint": 1
+    },
+    {
       "id": "brc-168-verifiable-time-allocation",
       "name": "Verifiable Time Allocation",
       "brc": "BRC-168",
@@ -1940,6 +2031,78 @@
       "id": "brc-169-universal-handle-addressing-and",
       "name": "Universal Handle Addressing and Resolution for the Metanet",
       "brc": "BRC-169",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-170-lch",
+      "name": "Locked Content Header (LCH) — Licensed, Micropayment-Enabled Content",
+      "brc": "BRC-170",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [
+        "micropayments"
+      ],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-171-fixed-width-state-in",
+      "name": "Fixed-Width State in a Covenant's Own Locking Script",
+      "brc": "BRC-171",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [
+        "script-technical"
+      ],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-172-giving-an-ai-agent",
+      "name": "Giving an AI Agent Control of a Delivery Vehicle Without Giving It a Wallet",
+      "brc": "BRC-172",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [
+        "wallets-keys"
+      ],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-173-basic",
+      "name": "Bitcoin Script to and from Bitcoin BASIC — a compiler and a decompiler",
+      "brc": "BRC-173",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [
+        "script-technical"
+      ],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-174-consensus-unique-name-tokens",
+      "name": "Consensus-Unique Name Tokens — Identity Binding and Verified Resolution",
+      "brc": "BRC-174",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [
+        "identity",
+        "mining-consensus",
+        "tokenisation"
+      ],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-190-access-gates-for-metanet",
+      "name": "Access Gates for Metanet Rooms",
+      "brc": "BRC-190",
       "also": [],
       "packages": [],
       "api": [],
@@ -2045,6 +2208,16 @@
       "education_themes": [
         "identity"
       ],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-369-keyed-content-and-conditional",
+      "name": "Keyed Content and Conditional Key Release",
+      "brc": "BRC-369",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [],
       "authority_hint": 1
     }
   ]

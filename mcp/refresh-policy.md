@@ -54,7 +54,10 @@ publish an empty bump.
 
 - Indexed at `reference/brc_index.json` (SHA-pinned). Full markdown lives under
   `reference/brcs/` and is rewritten by `refresh:tier0` when the BRCs checkout
-  is in the Tier 0 manifest.
+  is in the Tier 0 manifest. `refresh:tier0` also **regenerates `brc_index.json`
+  from the snapshotted bodies** (titles from each repo's `SUMMARY.md`, falling
+  back to the file's first heading), so the index can never drift ahead of or
+  behind the bodies again.
 - If a user asks “is there a new BRC since our snapshot?”, that is a **cold**
   GitHub compare (`revision` vs `master`), not the default path
 - **Integrity:** refuse to write if the new count is below 80% of the previous

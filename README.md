@@ -95,7 +95,9 @@ Then point the client at the built entry directly:
 The snapshot pins: the BRC index and full BRC bodies; BSV Academy opcode/Script
 documentation; the Rúnar documentation set; Tier 0 package/symbol/spec cards plus Tier 0/1
 repo documentation (READMEs, docs, examples) with evidenced BRC-to-package edges; a deny list;
-testnet operations notes; ordinality/provenance rules; and 476 summarised Craig Wright essays
+testnet operations notes; ordinality/provenance rules; curated Teranode throughput benchmark
+facts (AWS 1M TPS trial, SSRN 79.09B TPS preprint — conditions and sources inline); and 476
+summarised Craig Wright essays
 (Medium 2018–2022 and Substack 2025–2026) with a curated contradiction map. See
 [CORPUS.md](CORPUS.md) for the full corpus documentation.
 
@@ -107,7 +109,7 @@ then republishes so consumers receive the new pin. Full policy:
 
 ```powershell
 $env:BSV_AIO_ALLOW_REFRESH = "1"
-npm run refresh:tier0 --workspace=server   # Tier 0 SDKs/wallets + BRC bodies
+npm run refresh:tier0 --workspace=server   # Tier 0 SDKs/wallets + BRC bodies (regenerates brc_index.json)
 npm run refresh:tier1 --workspace=server   # Tier 1 services/libraries
 npm run fetch:academy --workspace=server   # Academy + Rúnar
 npm test
@@ -121,7 +123,7 @@ diff, commit, bump the patch version, and `npm publish`.
 ```bash
 npm install          # install workspace deps
 npm run build        # bundle server/dist
-npm test             # 198 tests: goldens (A–D), tools, composition, ingest
+npm test             # 207 tests: goldens (A–D), tools, composition, ingest
 npm run typecheck    # tsc --noEmit
 node server/probe-full-battery.mjs   # adversarial smoke battery against the built server
 ```

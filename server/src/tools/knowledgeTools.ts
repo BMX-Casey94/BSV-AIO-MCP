@@ -10,6 +10,7 @@ import {
 } from "../ingest/indexManifest.js";
 import type { KnowledgeStore, StoredDocument } from "../store/knowledgeStore.js";
 import type { HitKind, Language, Network, TypedHit } from "../types.js";
+import { STOP_WORDS } from "../compose/stopWords.js";
 import { resolveSpec, resolveVector } from "./codeTools.js";
 
 export const SEARCH_DEFAULT_LIMIT = 20;
@@ -144,12 +145,13 @@ export function registerKnowledgeTools(
 
   server.tool(
     "list_contradictions",
-    "List corpus contradiction findings from the pinned snapshot. Optionally filter by topic.",
+    "List corpus contradiction findings from the pinned snapshot. Optionally filter by topic. Set conflicts_only to drop declared alignments and verbatim continuities (audit context, not conflicts).",
     {
       topic: z.string().min(1).max(512).optional(),
+      conflicts_only: z.boolean().optional(),
     },
-    async ({ topic }) => {
-      const result = listContradictions(findings, topic);
+    async ({ topic, conflicts_only }) => {
+      const result = listContradictions(findings, topic, conflicts_only);
       return {
         content: [{ type: "text", text: JSON.stringify(result) }],
       };
@@ -171,20 +173,83 @@ export function searchKnowledge(
     return { hits: [], totalCount: 0 };
   }
   const limit = clampLimit(options?.limit);
+  const tokens = ftsTokens(trimmed);
   const ftsHits = safeSearchFts(store, trimmed);
+
+  // Progressive relaxation: pure AND over many tokens is brittle — one absent word zeroes an
+  // otherwise-perfect document (a 9-word query returned nothing; its 4-word core answered it).
+  // When AND under-fills on a genuinely multi-concept query (4+ distinctive tokens), back off
+  // to OR and keep only documents still covering at least half the distinctive tokens, best
+  // coverage first, BM25 breaking ties. Shorter queries stay strict AND: at 2-3 tokens a
+  // co-occurrence is as likely to be coincidence as coverage, so relaxation must not admit
+  // them ("'; DROP TABLE documents; --" gains no hits from relaxation). Note the strict-AND
+  // path itself still applies FTS5 Porter stemming, so that probe can match docs containing
+  // "dropped"/"document"/"table" — ranked retrieval noise a caller may inspect; the
+  // fail-closed guarantee for nonsense input lives in `investigate`, not in this primitive.
+  // Stop words never count toward coverage, and every rare token (under 2% document frequency)
+  // must be present — rare tokens are the query's identity; dropping one changes the question.
+  const distinctive = tokens.filter(
+    (token) => token.length > 1 && !STOP_WORDS.has(token.toLowerCase()),
+  );
+  const orderedIds = ftsHits.map((hit) => hit.id);
+  if (distinctive.length >= 4 && ftsHits.length < Math.min(limit, 3)) {
+    const andIds = new Set(orderedIds);
+    const floor = Math.max(2, Math.ceil(distinctive.length / 2));
+    const totalDocs = Math.max(1, store.ftsCount());
+    const rare = new Set(
+      distinctive.filter((token) => documentFrequency(store, token) / totalDocs < 0.02),
+    );
+    const relaxed: Array<{ id: string; coverage: number; score: number }> = [];
+    for (const hit of safeSearchFtsOr(store, tokens)) {
+      if (andIds.has(hit.id)) {
+        continue;
+      }
+      const doc = store.getById(hit.id);
+      if (!doc) {
+        continue;
+      }
+      const docTokens = documentTokens(doc);
+      const coverage = distinctive.filter((token) => docTokens.has(token.toLowerCase())).length;
+      if (coverage >= floor && [...rare].every((token) => docTokens.has(token.toLowerCase()))) {
+        relaxed.push({ id: hit.id, coverage, score: hit.score ?? 0 });
+      }
+    }
+    relaxed.sort(
+      (a, b) => b.coverage - a.coverage || a.score - b.score || a.id.localeCompare(b.id, "en-GB"),
+    );
+    for (const row of relaxed) {
+      orderedIds.push(row.id);
+    }
+  }
+
+  // An explicit BRC-N reference names its document: "BRC-166" tokenises as BRC AND 166, which
+  // lets digit-collisions (BRC-2, BRC-106) out-rank the very card named. Pin the exact id to
+  // the front — general over all BRC-N forms, not a per-query patch.
+  const explicitBrc = /\bbrc[- ]?(\d{1,4})\b/i.exec(trimmed);
+  if (explicitBrc) {
+    const id = `brc:${Number(explicitBrc[1])}`;
+    const idx = orderedIds.indexOf(id);
+    if (idx > 0) {
+      orderedIds.splice(idx, 1);
+      orderedIds.unshift(id);
+    } else if (idx === -1 && store.getById(id)) {
+      orderedIds.unshift(id);
+    }
+  }
+
+  // Sequential ranks in merged order: AND hits keep their BM25 order, relaxed hits follow by
+  // coverage. compareSearchDocs still applies the definition-title boost above both.
   const scoreById = new Map<string, number>();
-  ftsHits.forEach((hit, index) => {
-    scoreById.set(hit.id, hit.score ?? index);
-  });
   const matched: StoredDocument[] = [];
-  for (const fts of ftsHits) {
-    const doc = store.getById(fts.id);
+  for (const id of orderedIds) {
+    const doc = store.getById(id);
     if (!doc) {
       continue;
     }
     if (!matchesFilters(doc, options?.filters, options?.themes)) {
       continue;
     }
+    scoreById.set(id, matched.length);
     matched.push(doc);
   }
   matched.sort((a, b) => compareSearchDocs(a, b, trimmed, scoreById));
@@ -192,6 +257,35 @@ export function searchKnowledge(
     totalCount: matched.length,
     hits: matched.slice(0, limit).map((doc) => toHit(doc)),
   };
+}
+
+/** The document's own token set, lowercased — the membership test for coverage counting. */
+function documentTokens(doc: StoredDocument): Set<string> {
+  return new Set(`${doc.title}\n${doc.body}`.toLowerCase().split(/[^\p{L}\p{N}]+/u));
+}
+
+/** How many pinned documents contain the token — the rarity signal behind the coverage floor. */
+function documentFrequency(store: KnowledgeStore, token: string): number {
+  try {
+    return store.searchFts(`"${token.replaceAll('"', "")}"`).length;
+  } catch {
+    return 0;
+  }
+}
+
+/** The OR-query scan is bounded: relaxation only needs enough rows to refill a small limit. */
+const RELAXED_SCAN_CAP = 500;
+
+function safeSearchFtsOr(store: KnowledgeStore, tokens: string[]): ReturnType<KnowledgeStore["searchFts"]> {
+  if (tokens.length === 0) {
+    return [];
+  }
+  const ftsQuery = tokens.map((token) => `"${token.replaceAll('"', "")}"`).join(" OR ");
+  try {
+    return store.searchFts(ftsQuery).slice(0, RELAXED_SCAN_CAP);
+  } catch {
+    return [];
+  }
 }
 
 export function getResource(
@@ -394,17 +488,30 @@ export function getResource(
 export function listContradictions(
   findings: unknown[],
   topic?: string,
+  conflictsOnly?: boolean,
 ): ListContradictionsResult {
+  const pool = conflictsOnly ? findings.filter(isConflictFinding) : findings;
   if (!topic) {
-    return { findings };
+    return { findings: pool };
   }
   const needle = topic.trim().toLowerCase();
   if (!needle) {
-    return { findings };
+    return { findings: pool };
   }
   return {
-    findings: findings.filter((finding) => findingMatchesTopic(finding, needle)),
+    findings: pool.filter((finding) => findingMatchesTopic(finding, needle)),
   };
+}
+
+/**
+ * Declared alignments and verbatim continuities are audit context, not conflicts; a tool named
+ * list_contradictions should be able to exclude them. Unknown natures are kept (fail-open).
+ */
+const NON_CONFLICT_NATURES = new Set(["alignment", "restated-verbatim"]);
+
+function isConflictFinding(finding: unknown): boolean {
+  const nature = (finding as { nature?: unknown }).nature;
+  return typeof nature !== "string" || !NON_CONFLICT_NATURES.has(nature);
 }
 
 function safeSearchFts(store: KnowledgeStore, query: string): ReturnType<KnowledgeStore["searchFts"]> {
@@ -420,12 +527,16 @@ function safeSearchFts(store: KnowledgeStore, query: string): ReturnType<Knowled
 
 const FTS_TOKEN_CAP = 32;
 
-function toFtsQuery(query: string): string {
-  const tokens = query
+function ftsTokens(query: string): string[] {
+  return query
     .trim()
     .split(/[^\p{L}\p{N}]+/u)
     .filter((token) => token.length > 0)
     .slice(0, FTS_TOKEN_CAP);
+}
+
+function toFtsQuery(query: string): string {
+  const tokens = ftsTokens(query);
   if (tokens.length === 0) {
     return '""';
   }
