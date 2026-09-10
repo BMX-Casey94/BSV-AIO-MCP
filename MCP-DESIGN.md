@@ -43,6 +43,10 @@ Code retrieval (Plane 2) is FTS + symbols.
 - `brc://guide/{section}` — BRC training guide sections
 - `brc://spec/{number}` — per-standard summaries (to be built)
 - `wiki://ts-stack/{page}` — DeepWiki architecture pages
+- `patent://index` / `patent://concept-map` — the patent family manifest and the
+  concept-to-family navigation map
+- `patent://family/{KEY}` — per-family summary card (the retrievable prior-art layer)
+- `patent://family/{KEY}/full` — full specification text, served from disk on demand
 
 ### Plane 2 — Code intelligence (the "where" and "how")
 Structured, per-repo indexes so the agent retrieves exact symbols instead of guessing

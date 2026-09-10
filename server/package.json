@@ -1,13 +1,13 @@
 {
   "name": "bsv-aio-mcp-server",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "private": true,
   "type": "module",
   "engines": {
     "node": ">=22.13"
   },
   "scripts": {
-    "build": "node build-server.mjs && node build-refresh.mjs && node build-refresh-tier1.mjs && node build-fetch-academy.mjs",
+    "build": "node build-server.mjs && node build-refresh.mjs && node build-refresh-tier1.mjs && node build-fetch-academy.mjs && node build-fetch-patents.mjs",
     "start": "node dist/index.mjs",
     "build:server": "node build-server.mjs",
     "build:refresh": "node build-refresh.mjs",
@@ -18,7 +18,10 @@
     "fetch:academy": "npm run build:fetch-academy && node dist/fetch-academy.mjs",
     "smoke": "node scripts/smoke.mjs",
     "test": "vitest run",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "build:fetch-patents": "node build-fetch-patents.mjs",
+    "fetch:patents": "npm run build:fetch-patents && node dist/fetch-patents.mjs",
+    "patents:concept-map": "node build-concept-map.mjs"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.17.0",

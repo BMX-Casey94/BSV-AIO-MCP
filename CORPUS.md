@@ -38,7 +38,9 @@ substack-articles/
 mcp/                       the MCP tool contract and evidence-package schema
 reference/                 BRC index + bodies, academy/opcode docs, Tier 0 cards, testnet-ops,
                            deny list, ordinality rules, Teranode benchmark facts, Bitcoin
-                           2014–2017 history analysis, DeepWiki pages, registries
+                           2014–2017 history analysis, DeepWiki pages, registries,
+                           patents/ (prior-art domain: index, family texts, summary cards,
+                           concept map — see "Patent prior-art domain" below)
 server/                    the MCP server (TypeScript source, tests, build scripts)
 ```
 
@@ -51,6 +53,48 @@ of the shipped repo (see `.gitignore`).
 The intelligence layer over this corpus is implemented in [`server/`](server/) and specified
 in [`mcp/`](mcp/README.md) and [`MCP-DESIGN.md`](MCP-DESIGN.md). Install and client
 configuration are in the root [`README.md`](README.md); `npm run mcp` starts the server.
+
+## Patent prior-art domain
+
+`reference/patents/` pins the patent side of Craig Wright's research output: every patent
+**family** naming him as an inventor, fetched from primary sources and structured for
+retrieval. The unit is the family (one invention; WO/US/EP/etc. members kept as metadata),
+never the individual publication.
+
+- **272 families**, priority dates 2011-10-28 (the YDF *Registry* family) to 2024-08-14.
+  Enumerated from Google Patents inventor search with country/year slicing; family membership
+  verified against publication-office data.
+- **96 families with full specification text** (biblio, description, claims), fetched from the
+  EPO publication server's canonical EP grant XML and formatted to Markdown. 129 further
+  families are biblio-only (Euro-PCT front pages); 47 are deferred (no EP member, or a member
+  list that failed the identity check) and await a future slow pass.
+- **A summary card per family** (all 272) — the retrievable layer. Cards for full-text
+  families summarise the problem, the core mechanism and the independent claims (labelled
+  "gist — not legal scope"); catalogue-only families get a thin card that says so honestly.
+- **`concept-map.md`** — a generated navigation layer: 21 concept themes (key-management,
+  tokens, smart-contracts, mining-consensus, …) mapping to the families that carry them.
+- **`patent_index.json`** — the family manifest: members, legal-status rollup, CPC/IPC,
+  concept tags, licence-coverage verdict, per-family source URLs.
+- **`SCHEMA.md`** — the design contract (layout, manifest schema, card template, advisories);
+  **`licensing-findings.md`** — the licensing audit trail; **`fetch-recipe.md`** — the
+  validated fetch/extraction pipeline for regeneration.
+
+Licensing posture (verified 2026-09-10): **no enumerable BSV-free patent licence exists.** The
+Open BSV License is a software copyright licence with no patent grant; the 2018 nChain Open
+Bitcoin Cash License was BCH-limited, Nakasendo-tied, unscheduled and is no longer offered.
+Every family therefore carries the `no-coverage-found` advisory; a family may only be tagged
+`covered` when a currently offered legal instrument with an enumerable covered-patent schedule
+names it. The corpus routes to ideas, not to licence grants — and every card says so.
+
+Retrieval posture: summary cards ingest as kind `patent`, authority 4. Patent material is
+prior-art input to ideation — it leads only prior-art questions ("has anyone proposed X",
+"patents on Y", an explicit publication number) and never outranks specs or essays on ordinary
+how-to questions. Full texts stay on disk and open on demand via `patent://family/{KEY}/full`.
+
+Regeneration: `npm run fetch:patents` (gated, resumable, EPO-first) rebuilds family texts and
+thin cards; `node server/build-concept-map.mjs` rebuilds the concept map and the manifest's
+concept tags. Legal status drifts: the weekly OPS INPADOC refresh (requires a free EPO OPS
+key) is the legal pin; IFI statuses are assumptions until then.
 
 ## Methodology
 

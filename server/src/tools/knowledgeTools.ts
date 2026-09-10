@@ -28,6 +28,7 @@ const HIT_KINDS = [
   "web",
   "live",
   "contradiction",
+  "patent",
   "capability",
 ] as const satisfies readonly HitKind[];
 
@@ -332,6 +333,39 @@ export function getResource(
     if (text !== undefined) {
       return { uri, text, hit: fileHit(uri, "BRC catalogue index", "brc", 1, text, pin) };
     }
+  }
+
+  if (uri === "patent://index") {
+    const text = readSnapshotFile(root, "reference/patents/patent_index.json");
+    if (text !== undefined) {
+      return { uri, text, hit: fileHit(uri, "Patent family index", "patent", 4, text, pin) };
+    }
+  }
+
+  // The concept map is served from disk, not ingested (its breadth would swamp generic FTS).
+  if (uri === "patent://concept-map") {
+    const text = readSnapshotFile(root, "reference/patents/concept-map.md");
+    if (text !== undefined) {
+      return { uri, text, hit: fileHit(uri, "Patent prior-art concept map", "patent", 4, text, pin) };
+    }
+  }
+
+  // Full family texts stay on disk (100-300 KB each); only summary cards are ingested. The
+  // summary card itself resolves via the store at patent://family/<KEY>.
+  const patentFull = /^patent:\/\/family\/([A-Z]{2}\d+)\/full$/.exec(uri);
+  if (patentFull) {
+    const key = patentFull[1] ?? "";
+    const text = readSnapshotFile(root, `reference/patents/families/${key}.md`);
+    if (text !== undefined) {
+      return { uri, text, hit: fileHit(uri, `Patent family ${key} (full text)`, "patent", 4, text, pin) };
+    }
+    return missingResource(
+      uri,
+      "patent",
+      4,
+      "This patent family text is not present in the pinned snapshot (deferred or biblio-only). Catalogue metadata only; live fetch is refused.",
+      pin,
+    );
   }
 
   const spec = /^brc:\/\/spec\/(\d+)$/.exec(uri);

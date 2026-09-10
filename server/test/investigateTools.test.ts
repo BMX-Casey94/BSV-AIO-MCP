@@ -965,4 +965,36 @@ describe("investigate", () => {
     expect(gap).toBeTruthy();
     expect(gap).toContain(`${pkg.index.counts.brcs} BRCs pinned`);
   });
+
+  it("answers an explicit patent publication number with the family summary card", async () => {
+    const pkg = await callToolJson(client, "investigate", {
+      question: "What does the patent WO2013059871 cover?",
+    });
+
+    assertMatchesEvidenceSchema(pkg);
+    expect(pkg.hits.some((hit) => hit.id === "patent:WO2013059871")).toBe(true);
+    expect(pkg.claims[0]?.support).toContain("patent:WO2013059871");
+  });
+
+  it("leads a prior-art question with a patent summary card, not a spec", async () => {
+    const pkg = await callToolJson(client, "investigate", {
+      question: "Has anyone patented tokenisation methods for exchanges on a blockchain?",
+    });
+
+    assertMatchesEvidenceSchema(pkg);
+    const patentHits = pkg.hits.filter((hit) => hit.kind === "patent");
+    expect(patentHits.length).toBeGreaterThan(0);
+    expect(pkg.claims[0]?.support[0]).toMatch(/^patent:/);
+  });
+
+  it("never lets a patent card lead an ordinary spec or how-to question", async () => {
+    for (const question of [
+      "Which BRC governs the wallet-to-application interface?",
+      "How do I create a transaction with the TS SDK?",
+    ]) {
+      const pkg = await callToolJson(client, "investigate", { question });
+      assertMatchesEvidenceSchema(pkg);
+      expect(pkg.claims[0]?.support[0] ?? "").not.toMatch(/^patent:/);
+    }
+  });
 });

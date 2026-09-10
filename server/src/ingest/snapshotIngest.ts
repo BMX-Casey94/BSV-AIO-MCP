@@ -90,6 +90,7 @@ export function ingestSnapshots(
   documents.push(...ingestDenyList(root, fetchedAt, snapshotRevision));
   documents.push(...ingestTrainingGuide(root, fetchedAt, snapshotRevision));
   documents.push(...ingestAcademy(root, fetchedAt, snapshotRevision));
+  documents.push(...ingestPatents(root, fetchedAt, snapshotRevision));
 
   return store.transaction(() => {
     store.clearDocuments();
@@ -107,6 +108,7 @@ export function ingestSnapshots(
     store.setMeta("count.essays", String(countKind(documents, "essay")));
     store.setMeta("count.education", String(countKind(documents, "principle")));
     store.setMeta("count.contradictions", String(countKind(documents, "contradiction")));
+    store.setMeta("count.patents", String(countKind(documents, "patent")));
     store.setMeta("count.documents", String(total));
     return {
       documents: total,
@@ -316,6 +318,42 @@ function ingestCuratedCards(root: string, fetchedAt: string, revision: string): 
       revision,
     }),
   ].filter((doc): doc is StoredDocument => doc !== undefined);
+}
+
+/**
+ * Patent prior-art domain (reference/patents/, see SCHEMA.md). Summary cards are the
+ * retrievable layer (kind "patent", authority 4 — analysis-tier, never a spec source);
+ * family full texts stay on disk and open via get_resource("patent://family/<KEY>/full").
+ * The concept map is a curated navigation card. Absent directory => domain not yet built.
+ */
+function ingestPatents(root: string, fetchedAt: string, revision: string): StoredDocument[] {
+  const base = join(root, "reference", "patents");
+  if (!existsSync(base)) {
+    return [];
+  }
+  const out: StoredDocument[] = [];
+  for (const abs of listMarkdown(join(base, "summaries"))) {
+    const text = readFileSync(abs, "utf8");
+    const key = basename(abs, ".md");
+    out.push(
+      document({
+        id: `patent:${key}`,
+        kind: "patent",
+        authority: 4,
+        title: firstHeading(text) || `Patent family ${key}`,
+        locator: `patent://family/${key}`,
+        revision,
+        fetched_at: fetchedAt,
+        language: "prose",
+        era: null,
+        body: text,
+      }),
+    );
+  }
+  // concept-map.md is deliberately NOT ingested: a 95 KB navigation doc mentioning every
+  // theme would win generic FTS on any technical question. It is served on demand via
+  // getResource("patent://concept-map"), exactly as brc://index serves the BRC catalogue.
+  return out;
 }
 
 function ingestDenyList(root: string, fetchedAt: string, revision: string): StoredDocument[] {

@@ -98,7 +98,9 @@ repo documentation (READMEs, docs, examples) with evidenced BRC-to-package edges
 testnet operations notes; ordinality/provenance rules; curated Teranode throughput benchmark
 facts (AWS 1M TPS trial, SSRN 79.09B TPS preprint — conditions and sources inline); an
 attributed analysis card on Bitcoin's 2014–2017 direction change (documented / disputed /
-unproven kept separate); and 476
+unproven kept separate); a patent prior-art domain covering all 272 Craig-Wright-named-inventor
+patent families (96 full specification texts, 272 summary cards, a concept map, and per-family
+licensing advisories — no BSV licensing programme coverage was found for any family); and 476
 summarised Craig Wright essays
 (Medium 2018–2022 and Substack 2025–2026) with a curated contradiction map. See
 [CORPUS.md](CORPUS.md) for the full corpus documentation.

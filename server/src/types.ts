@@ -12,6 +12,7 @@ export type HitKind =
   | "web"
   | "live"
   | "contradiction"
+  | "patent"
   | "capability";
 
 export type Language = "spec" | "ts" | "go" | "py" | "prose";
@@ -120,6 +121,7 @@ export type IndexCounts = {
   brcs: number;
   essays: number;
   education: number;
+  patents: number;
   packages: number;
 };
 

@@ -19,6 +19,7 @@ export function buildIndexStatus(root: string, store?: KnowledgeStore): IndexSta
       brcs: metaCount(store, "count.brcs") ?? brc.count,
       essays: metaCount(store, "count.essays") ?? 0,
       education: metaCount(store, "count.education") ?? 0,
+      patents: metaCount(store, "count.patents") ?? 0,
       packages: store?.countByIdPrefix("package:") ?? 0,
     },
     policy_version: POLICY_VERSION,

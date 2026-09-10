@@ -595,6 +595,40 @@ export function investigate(
     upsertHit(hits, withOpenedExcerpt(card.hit, card.text, tokens));
   }
 
+  // Prior-art / ideation questions ("has anyone proposed X", "patents on Y", an explicit
+  // publication number) are answered by the patent summary cards and concept map — authority 4,
+  // so spec/mixed classifications never see them without this hop.
+  if (isPriorArtQuestion(question, tokens) && hopsUsed < MAX_HOPS) {
+    const explicitFamily = /\b((?:WO|EP|US)\d{6,})\b/i.exec(question);
+    const explicitKey = explicitFamily?.[1]?.toUpperCase();
+    // missingResource returns its message as text, so gate on the store, not on text — a
+    // family with no pinned card (full text still being summarised) must not upsert a miss.
+    if (
+      explicitKey &&
+      store.getByLocator(`patent://family/${explicitKey}`) &&
+      !hits.some((hit) => hit.id === `patent:${explicitKey}`)
+    ) {
+      hopsUsed += 1;
+      const card = getResource(root, store, `patent://family/${explicitKey}`);
+      upsertHit(hits, withOpenedExcerpt(card.hit, card.text ?? "", tokens));
+    }
+    if (!hits.some((hit) => hit.kind === "patent") && hopsUsed < MAX_HOPS) {
+      hopsUsed += 1;
+      for (const hit of searchKnowledge(store, question, { filters: { kind: ["patent"] }, limit: 8 }).hits) {
+        upsertHit(hits, hit);
+      }
+    }
+    // The concept map is file-backed (not ingested); a missing file yields a miss stub, which
+    // must not be upserted.
+    if (!hits.some((hit) => hit.locator === "patent://concept-map") && hopsUsed < MAX_HOPS) {
+      const map = getResource(root, store, "patent://concept-map");
+      if (map.text !== undefined && map.hit.title !== "Resource not present in snapshot") {
+        hopsUsed += 1;
+        upsertHit(hits, withOpenedExcerpt(map.hit, map.text, tokens));
+      }
+    }
+  }
+
   if (classifiedAs === "spec" && missingBrcs.length === 0 && !hasMatchingBrc(hits, tokens) && hopsUsed < MAX_HOPS) {
     hopsUsed += 1;
     const catalogue = getResource(root, store, "brc://index");
@@ -1513,6 +1547,22 @@ function isBitcoinHistoryQuestion(question: string, tokens: string[]): boolean {
   );
 }
 
+// A prior-art / ideation question asks what has been proposed, patented or invented for a
+// topic ("has anyone proposed X", "patents on Y", "prior art for Z") — answered by the patent
+// summary cards and concept map, never by a spec. Kept deliberately tight so ordinary
+// design/how-to questions never route here.
+function isPriorArtQuestion(question: string, tokens: string[]): boolean {
+  const q = question.toLowerCase();
+  return (
+    tokens.some((token) => /^(patent|patents|patented|patentable|invention|inventions)$/.test(token)) ||
+    /\bprior[\s-]?art\b/.test(q) ||
+    /\bintellectual property\b/.test(q) ||
+    /\b(has|have) (anyone|anybody|someone) (proposed|patented|invented|claimed|suggested)\b/.test(q) ||
+    /\b(what|which) (approaches|ways|ideas|mechanisms) (exist|have been (proposed|suggested|explored))\b/.test(q) ||
+    /\b(?:WO|EP|US)\d{6,}\b/i.test(question)
+  );
+}
+
 const BEEF_SYMBOL_IDS = ["symbol:ts-sdk:Beef", "symbol:go-sdk:Beef"] as const;
 
 function takeBeefSymbolCards(
@@ -1911,6 +1961,17 @@ function composeClaims(
   const historyCard = isBitcoinHistoryQuestion(question, tokens)
     ? hits.find((hit) => hit.locator === "analysis://bitcoin-scaling-history")
     : undefined;
+  // Prior-art questions lead with the explicitly named family when one was given, else the
+  // best title-matching patent summary, else the concept map (the navigation card), else any
+  // patent card the hop retrieved. Authority 4, so the card is found in hits, not the
+  // eligible pool. A missing-resource stub never leads.
+  const explicitPatentKey = /\b((?:WO|EP|US)\d{6,})\b/i.exec(question)?.[1]?.toUpperCase();
+  const priorArtCard = isPriorArtQuestion(question, tokens)
+    ? (explicitPatentKey ? hits.find((hit) => hit.id === `patent:${explicitPatentKey}`) : undefined) ??
+      hits.find((hit) => hit.kind === "patent" && titleOverlap(hit, tokens, compounds) > 0) ??
+      hits.find((hit) => hit.locator === "patent://concept-map") ??
+      hits.find((hit) => hit.kind === "patent" && hit.title !== "Resource not present in snapshot")
+    : undefined;
   // The BEEF family has a definitional hierarchy: Atomic BEEF is BRC-95, the V2 txid-only
   // extension is BRC-96, and BRC-62 is the base format. Never let multicast/outpoint BEEF
   // BRCs outrank the member the question is actually about.
@@ -1982,10 +2043,16 @@ function composeClaims(
     openedCard ??
     benchmarkCard ??
     historyCard ??
+    priorArtCard ??
     beefCard ??
     opcodeCard ??
     packageCard;
-  let lead = pinned ?? ranked[0];
+  // Patent summaries are prior-art material: they lead only through the prior-art pin above,
+  // never by out-scoring specs or essays on ordinary questions.
+  const leadPool = isPriorArtQuestion(question, tokens)
+    ? ranked
+    : ranked.filter((hit) => hit.kind !== "patent");
+  let lead = pinned ?? leadPool[0];
 
   // Kind-aware lead: a why-question is answered by the writings, not by a spec that happens to
   // share its words (BRC-114's timestamp filters must not outrank "Time Is Not Consensus" on a

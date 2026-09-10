@@ -101,6 +101,12 @@ See `evidence-package.schema.json`. Return type of `investigate` / `design_revie
 | `spec://ts-stack/{service}` | `reference/tier0/specs/` |
 | `symbol://{repo}/{name}` | `reference/tier0/symbols.json` row — `{repo}` is the **short** name (e.g. `ts-sdk`, not `bsv-blockchain/ts-sdk`); `{name}` is the exact exported identifier |
 | `vector://{domain}/{case}` | `reference/tier0/vectors/` |
+| `fact://teranode-benchmarks` | `reference/teranode-benchmarks.md` |
+| `analysis://bitcoin-scaling-history` | `reference/bitcoin-scaling-history.md` |
+| `patent://index` | `reference/patents/patent_index.json` |
+| `patent://concept-map` | `reference/patents/concept-map.md` (served from disk; not ingested) |
+| `patent://family/{KEY}` | `reference/patents/summaries/{KEY}.md` summary card (ingested, kind `patent`) |
+| `patent://family/{KEY}/full` | `reference/patents/families/{KEY}.md` full specification text (disk only) |
 
 ## Tools
 
