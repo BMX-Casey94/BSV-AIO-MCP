@@ -15,6 +15,8 @@ const FIXTURE = resolve(import.meta.dirname, "fixtures/mini-tier0");
 const TARBALLS = resolve(import.meta.dirname, "fixtures/mini-tier0/tarballs");
 
 describe("tier0 ingest", () => {
+  // These still ingest the full essay/BRC corpus; only the tier0/tier1 roots are fixtures.
+  // That ingest exceeds the 5s default under suite load.
   it("counts confirmed packages on the index pin and serves repo://tier0", () => {
     const store = createKnowledgeStore(openDatabase(":memory:"));
     const config = { ...defaultConfig(ROOT), tier0Root: FIXTURE };
@@ -27,7 +29,7 @@ describe("tier0 ingest", () => {
     expect(manifest.text).toContain("bsv-blockchain/ts-sdk");
     expect(store.countByKind("symbol")).toBeGreaterThanOrEqual(1);
     store.close();
-  });
+  }, 60_000);
 
   it("ingests spec and vector cards from the pinned card set", () => {
     const store = createKnowledgeStore(openDatabase(":memory:"));
@@ -55,7 +57,7 @@ describe("tier0 ingest", () => {
     expect(store.countByIdPrefix("package:")).toBe(2);
     expect(store.ftsCount()).toBe(result.documents);
     store.close();
-  });
+  }, 60_000);
 
   // Full production ingests are heavyweight; allow well over the 5s default under load.
   it("reports the refreshed production cards on the index pin", () => {

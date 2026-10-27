@@ -542,6 +542,7 @@ describe("investigate", () => {
     expect(pkg.gaps.some((gap) => gap.includes("BRC-999"))).toBe(true);
   });
 
+  // Opening BRC-100 walks the full snapshot. Under suite load that exceeds the 5s default.
   it("opens an explicitly named BRC even when FTS misses the question's terms", async () => {
     const pkg = await callToolJson(client, "investigate", {
       question: "How do I internalize a faucet payout into a BRC-100 wallet?",
@@ -551,7 +552,7 @@ describe("investigate", () => {
     expect(pkg.claims[0]?.support[0]).toBe("brc:100");
     const lead = pkg.hits.find((hit) => hit.id === "brc:100");
     expect(lead?.excerpt).toMatch(/internalizeAction/);
-  });
+  }, 20_000);
 
   it("fails closed on a bare definition question no pinned document defines", async () => {
     const pkg = await callToolJson(client, "investigate", {

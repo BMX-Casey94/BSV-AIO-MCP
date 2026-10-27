@@ -67,6 +67,7 @@ describe("ingestSnapshots", () => {
     expect(ftsHits.some((hit) => hit.id === "ops:testnet" || /testnet/i.test(hit.title))).toBe(true);
   }, 20_000);
 
+  // Second full ingest in this file. The first often fits in 20s; this one does not under suite load.
   it("persists ingest counts so get_index_status can report them", () => {
     store = createKnowledgeStore(openDatabase(":memory:"));
     ingestSnapshots(ROOT, store);
@@ -75,7 +76,7 @@ describe("ingestSnapshots", () => {
     expect(status.counts.brcs).toBeGreaterThanOrEqual(171);
     expect(status.counts.essays).toBeGreaterThanOrEqual(400);
     expect(status.counts.education).toBeGreaterThanOrEqual(400);
-  }, 20_000);
+  }, 60_000);
 });
 
 describe("knowledge tools", () => {

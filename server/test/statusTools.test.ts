@@ -15,6 +15,7 @@ describe("get_index_status", () => {
     store.close();
   });
 
+  // createServerWithStore ingests the full snapshot inside the test. Several seconds, and over 5s under load.
   it("returns a real pin, never empty after construct", async () => {
     const created = createServerWithStore({ ...defaultConfig(ROOT), dbPath: ":memory:" });
     store = created.store;
@@ -33,5 +34,5 @@ describe("get_index_status", () => {
     expect(status.counts.brcs).toBeGreaterThanOrEqual(171);
     expect(status.counts.essays).toBeGreaterThanOrEqual(400);
     expect(status.counts.education).toBeGreaterThanOrEqual(400);
-  });
+  }, 60_000);
 });

@@ -646,14 +646,16 @@ export function investigate(
   // BRC index directly; a catalogue miss fails closed in composeClaims.
   // The hop must judge the same set composeClaims will: authority-eligible, non-superseded
   // hits. A demoted spec (BRC-91, Mandala — authority 4) stays in hits but can never lead, so
-  // its incidental title word must not suppress the catalogue hop.
+  // its incidental title word must not suppress the catalogue hop. A one-token title match is
+  // the same kind of miss: BRC-194 ("Overlay Capabilities…") scores "overlay" and not
+  // "services", which is below the pin threshold of 2, so it must not suppress the hop either.
   const governancePool = hits.filter(
     (hit) => hit.authority <= authorityForClass(classifiedAs) && !hit.successor,
   );
   if (
     isGovernanceQuestion(question) &&
     missingBrcs.length === 0 &&
-    scoreGovernanceTitles(governancePool, tokens).bestScore === 0 &&
+    scoreGovernanceTitles(governancePool, tokens).bestScore < 2 &&
     hopsUsed < MAX_HOPS
   ) {    hopsUsed += 1;
     const catalogue = getResource(root, store, "brc://index");
@@ -1998,6 +2000,21 @@ function composeClaims(
   // "What is X?" is answered by the prose document whose title defines X, if one is pinned.
   const bareTerm = bareDefinitionTerm(question);
   const definitionCard = bareTerm ? findDefinitionCard(eligible, bareTerm) : undefined;
+  // "What is gasp-core?" is named by the repo doc whose id contains that compound. A
+  // higher-authority BRC that only co-mentions the separate words (BRC-188's "core fields"
+  // plus one "GASP") must not wipe that doc via the bare-definition fail-closed path.
+  // A title that actually defines the term still wins.
+  const compoundNamedCard =
+    bareTerm && compounds.length > 0
+      ? ranked.find(
+          (hit) =>
+            (hit.kind === "doc" ||
+              hit.kind === "essay" ||
+              hit.kind === "principle" ||
+              hit.kind === "brc") &&
+            compounds.some((compound) => hit.id.toLowerCase().includes(compound)),
+        )
+      : undefined;
   // A single-opcode question leads with the definitional academy page, not a BRC that applies it.
   const opcodeCard = routing.opcodeLeadId
     ? eligible.find((hit) => hit.id === routing.opcodeLeadId)
@@ -2038,6 +2055,7 @@ function composeClaims(
     explicitCard ??
     governanceCard ??
     definitionCard ??
+    compoundNamedCard ??
     namedRepoDoc ??
     namedPackageCard ??
     openedCard ??
@@ -2131,6 +2149,7 @@ function composeClaims(
     !explicitCard &&
     !governanceCard &&
     !definitionCard &&
+    !compoundNamedCard &&
     !opcodeCard &&
     !namedPackageCard &&
     !namedRepoDoc &&
@@ -2242,13 +2261,21 @@ function composeClaims(
     ];
   }
 
-  // The lead never mentions a distinctive question token, yet another hit explicitly declares
-  // that token out of scope: the exclusion is the honest answer, not the coincidental lead
-  // ("Should I use BitCom protocols?" — BRC-44 shares "protocols" but BRC-160 names BitCom
-  // only to exclude it).
+  // Another hit explicitly puts a distinctive token out of scope. That exclusion is the honest
+  // answer when this lead does not mention the token, and also when an unpinned lead only
+  // co-mentions it in the body (BRC-44 shares "protocols"; BRC-217's Bitcom pipe is the same
+  // kind of miss; BRC-160 says the encoding is specified separately).
   const leadHay = `${lead.id} ${lead.title} ${lead.excerpt ?? ""}`;
+  const leadTitleCoversTopic = titleOverlap(lead, tokens, compounds) > 0;
   for (const token of tokens) {
-    if (token.length < 4 || mentionsWord(leadHay, token)) {
+    if (token.length < 4) {
+      continue;
+    }
+    // A pinned lead, or a lead whose title covers the topic, may mention the token and still
+    // answer. An unpinned body co-occurrence may not outrank an explicit exclusion: BRC-217's
+    // "Bitcom pipe … different protocols" is not an answer to "Should I use BitCom protocols?"
+    // while BRC-160 states that Bitcom encoding is specified separately.
+    if (mentionsWord(leadHay, token) && (pinned !== undefined || leadTitleCoversTopic)) {
       continue;
     }
     const anti = eligible.find(
@@ -2364,10 +2391,12 @@ function wordScore(hit: TypedHit, tokens: string[], compounds: string[] = []): n
     const re = new RegExp(`(?<![\\w-])${token.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?![\\w-])`);
     return re.test(hay);
   }).length;
-  // Long tokens are unambiguous ("peerpayclient", "internalizeaction"): count them double so a
-  // single rare match earns the floor without a second common-word match.
+  // Concatenated identifiers ("peerpayclient", "internalizeaction") are unambiguous: count
+  // them double so a single rare match earns the floor. Ordinary words the length of
+  // "documents" must not — one such word was enough for BRC-369 to answer
+  // "'; DROP TABLE documents; --".
   score += tokens.filter((token) => {
-    if (token.length < 8) {
+    if (token.length < 12) {
       return false;
     }
     const re = new RegExp(`(?<![\\w-])${token.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?![\\w-])`);
