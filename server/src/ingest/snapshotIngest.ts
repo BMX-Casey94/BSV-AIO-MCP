@@ -126,6 +126,9 @@ function ingestEssays(root: string, fetchedAt: string, revision: string): Stored
   const dirs: Array<{ dir: string; era: string }> = [
     { dir: join(root, "summaries"), era: "substack" },
     { dir: join(root, "summaries-medium"), era: "medium" },
+    // craigwright.net research articles (2026). Same authority-4 essay band as the other eras;
+    // a separate era keeps them from being mislabelled as Substack posts.
+    { dir: join(root, "summaries-craigwright-net"), era: "craigwright-net" },
   ];
   const out: StoredDocument[] = [];
   for (const { dir, era } of dirs) {
@@ -313,6 +316,55 @@ function ingestCuratedCards(root: string, fetchedAt: string, revision: string): 
       // tiers inline. Essay-tier authority: one analyst's sourced interpretation, never
       // corpus-verified fact.
       authority: 4,
+      language: "prose",
+      fetchedAt,
+      revision,
+    }),
+    // Public broadcaster services (reference/web/). Operational service documentation read from
+    // the vendors' own pages: authority 3, the ops-card band. Never a spec source.
+    markdownDoc({
+      root,
+      rel: "reference/web/bsv-broadcaster.md",
+      id: "svc:bsv-broadcaster",
+      locator: "svc://bsv-broadcaster",
+      fallbackTitle: "BSV Broadcaster",
+      authority: 3,
+      language: "prose",
+      fetchedAt,
+      revision,
+    }),
+    markdownDoc({
+      root,
+      rel: "reference/web/gorillapool-broadcaster.md",
+      id: "svc:gorillapool-broadcaster",
+      locator: "svc://gorillapool-broadcaster",
+      fallbackTitle: "GorillaPool public broadcaster hosts",
+      authority: 3,
+      language: "prose",
+      fetchedAt,
+      revision,
+    }),
+    markdownDoc({
+      root,
+      rel: "reference/web/gorillapool-arc.md",
+      id: "svc:gorillapool-arc",
+      locator: "svc://gorillapool-arc",
+      fallbackTitle: "GorillaPool ARC",
+      authority: 3,
+      language: "prose",
+      fetchedAt,
+      revision,
+    }),
+    // Third-party app directory. Authority 5 and kind "web": searchable and citable as a
+    // pointer, but never able to lead a spec, implementation or design answer.
+    markdownDoc({
+      root,
+      rel: "reference/web/bsvradar.md",
+      id: "dir:bsvradar",
+      locator: "dir://bsvradar",
+      fallbackTitle: "BSV Radar",
+      authority: 5,
+      kind: "web",
       language: "prose",
       fetchedAt,
       revision,
@@ -515,6 +567,7 @@ function markdownDoc(args: {
   language: Language;
   fetchedAt: string;
   revision: string;
+  kind?: HitKind;
 }): StoredDocument | undefined {
   const abs = join(args.root, ...args.rel.split("/"));
   if (!existsSync(abs)) {
@@ -523,7 +576,7 @@ function markdownDoc(args: {
   const text = readFileSync(abs, "utf8");
   return document({
     id: args.id,
-    kind: "doc",
+    kind: args.kind ?? "doc",
     authority: args.authority,
     title: firstHeading(text) || args.fallbackTitle,
     locator: args.locator,

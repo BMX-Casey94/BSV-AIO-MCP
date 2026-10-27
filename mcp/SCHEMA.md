@@ -85,7 +85,7 @@ See `evidence-package.schema.json`. Return type of `investigate` / `design_revie
 | URI | Source |
 |---|---|
 | `csw://principles/{theme}` | `education/` + `data/education_index.json` |
-| `csw://essay/{era}/{slug}` | `summaries/` / `summaries-medium/` |
+| `csw://essay/{era}/{slug}` | `summaries/` / `summaries-medium/` / `summaries-craigwright-net/` (era `craigwright-net`) |
 | `csw://contradictions` | `substack-articles/contradictions.json` |
 | `brc://index` | `reference/brc_index.json` |
 | `brc://spec/{number}` | snapshotted BRC markdown |
@@ -103,6 +103,10 @@ See `evidence-package.schema.json`. Return type of `investigate` / `design_revie
 | `vector://{domain}/{case}` | `reference/tier0/vectors/` |
 | `fact://teranode-benchmarks` | `reference/teranode-benchmarks.md` |
 | `analysis://bitcoin-scaling-history` | `reference/bitcoin-scaling-history.md` |
+| `svc://bsv-broadcaster` | `reference/web/bsv-broadcaster.md` (authority 3; the BSV Association broadcaster, formerly Arcade) |
+| `svc://gorillapool-broadcaster` | `reference/web/gorillapool-broadcaster.md` (authority 3) |
+| `svc://gorillapool-arc` | `reference/web/gorillapool-arc.md` (authority 3) |
+| `dir://bsvradar` | `reference/web/bsvradar.md` (kind `web`, authority 5; third-party app directory, never a spec source) |
 | `patent://index` | `reference/patents/patent_index.json` |
 | `patent://concept-map` | `reference/patents/concept-map.md` (served from disk; not ingested) |
 | `patent://family/{KEY}` | `reference/patents/summaries/{KEY}.md` summary card (ingested, kind `patent`) |
