@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-30",
+  "generated": "2026-10-27",
   "policy": "Query path reads committed cards only. Refresh fetches the GitHub tarball at the pinned SHA when BSV_AIO_ALLOW_REFRESH=1.",
   "repos": [
     {
@@ -46,7 +46,7 @@
     },
     {
       "repo": "bsv-blockchain/BRCs",
-      "sha": "ac1fed0f3396ea0cb3a7d93f93169cf4be4b36b5",
+      "sha": "174e492b475c90aca048f2ecbe12cf77fc696d20",
       "package": null,
       "language": "spec",
       "role": "standards"

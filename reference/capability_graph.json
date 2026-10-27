@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-30",
+  "generated": "2026-10-27",
   "source": [
     "reference/brc_index.json",
     "data/education_index.json",
@@ -12,7 +12,7 @@
     "reference/tier1/docs/brc-mentions.json"
   ],
   "policy": "Titles plus confirmed Tier 0/1 cards. packages come from evidenced BRC mentions in each repo's own documentation, unioned with a word-boundary match of grouping tokens against exported symbols only on a symbol family's definitional row (BEEF→BRC-62, BUMP→BRC-74). api lists only exported names that exact-match a title token. Do not invent API names.",
-  "count": 184,
+  "count": 238,
   "capabilities": [
     {
       "id": "brc-1-transaction-creation",
@@ -596,7 +596,9 @@
       "id": "brc-52-identity-certificates",
       "name": "Identity Certificates",
       "brc": "BRC-52",
-      "also": [],
+      "also": [
+        "BRC-203"
+      ],
       "packages": [],
       "api": [],
       "education_themes": [
@@ -714,7 +716,8 @@
         "BRC-96",
         "BRC-148",
         "BRC-149",
-        "BRC-158"
+        "BRC-158",
+        "BRC-233"
       ],
       "packages": [
         "@bsv/sdk",
@@ -821,7 +824,8 @@
         "BRC-96",
         "BRC-148",
         "BRC-149",
-        "BRC-158"
+        "BRC-158",
+        "BRC-233"
       ],
       "packages": [],
       "api": [
@@ -1067,13 +1071,14 @@
       "authority_hint": 4
     },
     {
-      "id": "brc-92-mandala",
-      "name": "Mandala Token Protocol",
+      "id": "brc-92-withdrawn",
+      "name": "Mandala Token Protocol (Withdrawn)",
       "brc": "BRC-92",
       "also": [
         "BRC-90",
         "BRC-91",
-        "BRC-107"
+        "BRC-107",
+        "BRC-156"
       ],
       "packages": [],
       "api": [],
@@ -1114,7 +1119,8 @@
         "BRC-96",
         "BRC-148",
         "BRC-149",
-        "BRC-158"
+        "BRC-158",
+        "BRC-233"
       ],
       "packages": [
         "@bsv/sdk"
@@ -1136,7 +1142,8 @@
         "BRC-95",
         "BRC-148",
         "BRC-149",
-        "BRC-158"
+        "BRC-158",
+        "BRC-233"
       ],
       "packages": [],
       "api": [
@@ -1160,7 +1167,9 @@
       "id": "brc-98-p-protocols-allowing-future",
       "name": "P Protocols: Allowing future wallet protocol permission schemes",
       "brc": "BRC-98",
-      "also": [],
+      "also": [
+        "BRC-229"
+      ],
       "packages": [
         "@bsv/sdk"
       ],
@@ -1597,8 +1606,8 @@
       "authority_hint": 1
     },
     {
-      "id": "brc-135-multicast-block-header-format",
-      "name": "Multicast Block Header Format",
+      "id": "brc-135-multicast-block-header-frame",
+      "name": "Multicast Block Header Frame Format",
       "brc": "BRC-135",
       "also": [],
       "packages": [],
@@ -1723,7 +1732,9 @@
         "BRC-156",
         "BRC-159",
         "BRC-160",
-        "BRC-165"
+        "BRC-165",
+        "BRC-217",
+        "BRC-257"
       ],
       "packages": [],
       "api": [],
@@ -1740,7 +1751,8 @@
         "BRC-95",
         "BRC-96",
         "BRC-149",
-        "BRC-158"
+        "BRC-158",
+        "BRC-233"
       ],
       "packages": [],
       "api": [
@@ -1760,7 +1772,8 @@
         "BRC-95",
         "BRC-96",
         "BRC-148",
-        "BRC-158"
+        "BRC-158",
+        "BRC-233"
       ],
       "packages": [],
       "api": [
@@ -1779,7 +1792,9 @@
         "BRC-156",
         "BRC-159",
         "BRC-160",
-        "BRC-165"
+        "BRC-165",
+        "BRC-217",
+        "BRC-257"
       ],
       "packages": [],
       "api": [],
@@ -1853,11 +1868,14 @@
       "name": "Latched 1Sat Provenance for Basket `1sat` (Withdrawn)",
       "brc": "BRC-156",
       "also": [
+        "BRC-92",
         "BRC-147",
         "BRC-150",
         "BRC-159",
         "BRC-160",
-        "BRC-165"
+        "BRC-165",
+        "BRC-217",
+        "BRC-257"
       ],
       "packages": [],
       "api": [],
@@ -1884,7 +1902,8 @@
         "BRC-95",
         "BRC-96",
         "BRC-148",
-        "BRC-149"
+        "BRC-149",
+        "BRC-233"
       ],
       "packages": [],
       "api": [
@@ -1903,7 +1922,9 @@
         "BRC-150",
         "BRC-156",
         "BRC-160",
-        "BRC-165"
+        "BRC-165",
+        "BRC-217",
+        "BRC-257"
       ],
       "packages": [],
       "api": [],
@@ -1922,7 +1943,9 @@
         "BRC-150",
         "BRC-156",
         "BRC-159",
-        "BRC-165"
+        "BRC-165",
+        "BRC-217",
+        "BRC-257"
       ],
       "packages": [],
       "api": [],
@@ -1942,15 +1965,13 @@
       "authority_hint": 1
     },
     {
-      "id": "brc-162-binary",
-      "name": "BSV-21 Fungible Tokens (Binary)",
+      "id": "brc-162-1color",
+      "name": "1Color",
       "brc": "BRC-162",
       "also": [],
       "packages": [],
       "api": [],
-      "education_themes": [
-        "tokenisation"
-      ],
+      "education_themes": [],
       "authority_hint": 1
     },
     {
@@ -1990,7 +2011,9 @@
         "BRC-150",
         "BRC-156",
         "BRC-159",
-        "BRC-160"
+        "BRC-160",
+        "BRC-217",
+        "BRC-257"
       ],
       "packages": [],
       "api": [],
@@ -2031,7 +2054,9 @@
       "id": "brc-169-universal-handle-addressing-and",
       "name": "Universal Handle Addressing and Resolution for the Metanet",
       "brc": "BRC-169",
-      "also": [],
+      "also": [
+        "BRC-232"
+      ],
       "packages": [],
       "api": [],
       "education_themes": [],
@@ -2041,7 +2066,9 @@
       "id": "brc-170-lch",
       "name": "Locked Content Header (LCH) — Licensed, Micropayment-Enabled Content",
       "brc": "BRC-170",
-      "also": [],
+      "also": [
+        "BRC-198"
+      ],
       "packages": [],
       "api": [],
       "education_themes": [
@@ -2100,9 +2127,367 @@
       "authority_hint": 1
     },
     {
+      "id": "brc-175-1color-offline-peer-to",
+      "name": "1Color Offline Peer-to-Peer Payments",
+      "brc": "BRC-175",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-176-bsv-21-validity-proofs",
+      "name": "BSV-21 — Validity Proofs",
+      "brc": "BRC-176",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-177-wallet-enforced-expiry-for",
+      "name": "Wallet-Enforced Expiry for `noSend` Actions",
+      "brc": "BRC-177",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [
+        "wallets-keys"
+      ],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-178-race-settled-collection-markets",
+      "name": "Race-Settled Collection Markets for Overlay Lookups and Message Boxes",
+      "brc": "BRC-178",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-179-signed-capability-manifest-for",
+      "name": "Signed Capability Manifest for Wallet and Tool-Server Method Exposure",
+      "brc": "BRC-179",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [
+        "wallets-keys"
+      ],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-180-overlay-service-discovery-at",
+      "name": "Overlay Service Discovery at an Internet Domain",
+      "brc": "BRC-180",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-181-wallet-enforced-autonomous-agent",
+      "name": "Wallet-Enforced Autonomous-Agent Spend Policy",
+      "brc": "BRC-181",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [
+        "wallets-keys"
+      ],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-182-pairwise-authentication",
+      "name": "Pairwise Authentication",
+      "brc": "BRC-182",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-183-a-framework-for-strict",
+      "name": "A Framework for Strict and Federated Overlays",
+      "brc": "BRC-183",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-184-optional-metadata-registries-and",
+      "name": "Optional Metadata Registries and Their Stewardship",
+      "brc": "BRC-184",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-185-wallet-substrate-discovery-selection",
+      "name": "Wallet Substrate Discovery, Selection, and Encrypted Mobile Connections",
+      "brc": "BRC-185",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [
+        "wallets-keys"
+      ],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-186-thoughts-on-utxo-driven",
+      "name": "Thoughts on UTXO-Driven Applications and Private Overlays",
+      "brc": "BRC-186",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [],
+      "authority_hint": 4
+    },
+    {
+      "id": "brc-187-thoughts-on-declarative-stewardship",
+      "name": "Thoughts on Declarative Stewardship",
+      "brc": "BRC-187",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [],
+      "authority_hint": 4
+    },
+    {
+      "id": "brc-188-ump",
+      "name": "User Management Protocol (UMP)",
+      "brc": "BRC-188",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-189-identity-certificates-discovery-and",
+      "name": "Identity, Certificates, Discovery, and Personal Trust in Applications",
+      "brc": "BRC-189",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [
+        "identity"
+      ],
+      "authority_hint": 1
+    },
+    {
       "id": "brc-190-access-gates-for-metanet",
       "name": "Access Gates for Metanet Rooms",
       "brc": "BRC-190",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-191-thoughts-on-identity-privacy",
+      "name": "Thoughts on Identity, Privacy and Recovery on the Metanet",
+      "brc": "BRC-191",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [
+        "identity",
+        "privacy"
+      ],
+      "authority_hint": 4
+    },
+    {
+      "id": "brc-192-application-output-knowledge-and",
+      "name": "Application Output Knowledge and Source Adapters",
+      "brc": "BRC-192",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-193-incremental-lookup-and-resumable",
+      "name": "Incremental Lookup and Resumable Live Results",
+      "brc": "BRC-193",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-194-overlay-capabilities-and-non",
+      "name": "Overlay Capabilities and Non-Final Proposal Sessions",
+      "brc": "BRC-194",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-195-private-overlay-data-and",
+      "name": "Private Overlay Data and Recoverable Paid Lookup",
+      "brc": "BRC-195",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-196-steak",
+      "name": "STEAK with POTATOES",
+      "brc": "BRC-196",
+      "also": [],
+      "packages": [],
+      "api": [
+        "STEAK",
+        "Steak"
+      ],
+      "education_themes": [],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-197-accumulating-right-of-sale",
+      "name": "Accumulating Right-of-Sale Listings and Purchase Orders",
+      "brc": "BRC-197",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-198-lch",
+      "name": "LCH Acquisition through Private Overlays and Listing Covenants",
+      "brc": "BRC-198",
+      "also": [
+        "BRC-170"
+      ],
+      "packages": [],
+      "api": [],
+      "education_themes": [],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-199-ship-and-slap-root",
+      "name": "SHIP and SLAP Root-Host Output Eviction Coordination",
+      "brc": "BRC-199",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-200-operating-practices-for-identity",
+      "name": "Operating Practices for Identity Certifiers",
+      "brc": "BRC-200",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [
+        "identity"
+      ],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-201-social-account-certificate-types",
+      "name": "Social Account Certificate Types and Issuance Profile",
+      "brc": "BRC-201",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-202-identity-key-decentralized-identifiers",
+      "name": "Identity-Key Decentralized Identifiers",
+      "brc": "BRC-202",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [
+        "identity"
+      ],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-203-brc-52-encrypted-certificate",
+      "name": "BRC-52 Encrypted Certificate Profile for Verifiable Credential Interoperability",
+      "brc": "BRC-203",
+      "also": [
+        "BRC-52"
+      ],
+      "packages": [],
+      "api": [],
+      "education_themes": [],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-204-agent-allowances",
+      "name": "Agent Allowances",
+      "brc": "BRC-204",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-205-extensible-wallet-version-strings",
+      "name": "Extensible Wallet Version Strings and Account Labels",
+      "brc": "BRC-205",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [
+        "wallets-keys"
+      ],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-207-1color-wallet-module",
+      "name": "1Color Wallet Module",
+      "brc": "BRC-207",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [
+        "wallets-keys"
+      ],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-208-vault-sub-accounts",
+      "name": "Vault Sub-Accounts",
+      "brc": "BRC-208",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-209-1color-minimal-resource-profile",
+      "name": "1Color Minimal Resource Profile",
+      "brc": "BRC-209",
       "also": [],
       "packages": [],
       "api": [],
@@ -2114,6 +2499,54 @@
       "name": "Derived Collectibles",
       "brc": "BRC-210",
       "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-211-signed-on-chain-reachability",
+      "name": "Signed On-Chain Reachability Manifest",
+      "brc": "BRC-211",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-215-block-height-deadline-covenant",
+      "name": "Block-Height Deadline Covenant Templates (OP_PUSH_TX)",
+      "brc": "BRC-215",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-216-dead-man-timed-reveal",
+      "name": "Dead-Man Timed Reveal of a Sealed Secret",
+      "brc": "BRC-216",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-217-1sat",
+      "name": "Authenticated 1Sat Inscription",
+      "brc": "BRC-217",
+      "also": [
+        "BRC-147",
+        "BRC-150",
+        "BRC-156",
+        "BRC-159",
+        "BRC-160",
+        "BRC-165",
+        "BRC-257"
+      ],
       "packages": [],
       "api": [],
       "education_themes": [],
@@ -2152,6 +2585,29 @@
         "privacy",
         "spv-light-clients"
       ],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-221-deterministic-order-independent-coin",
+      "name": "Deterministic, Order-Independent Coin Selection for Privacy Wallets",
+      "brc": "BRC-221",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [
+        "privacy",
+        "wallets-keys"
+      ],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-222-consent-envelope-verifiable-multi",
+      "name": "Consent Envelope: Verifiable Multi-Party Document Signing with On-Chain Signing Order",
+      "brc": "BRC-222",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [],
       "authority_hint": 1
     },
     {
@@ -2207,6 +2663,206 @@
       "api": [],
       "education_themes": [
         "identity"
+      ],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-229-wallet-native-elliptic-curve",
+      "name": "Wallet-Native Elliptic Curve Point Multiplication as a BRC-98 Module",
+      "brc": "BRC-229",
+      "also": [
+        "BRC-98"
+      ],
+      "packages": [],
+      "api": [],
+      "education_themes": [
+        "wallets-keys"
+      ],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-231-binary-encoding-for-the",
+      "name": "Binary Encoding for the Message Relay Interface",
+      "brc": "BRC-231",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-232-unsolicited-transaction-delivery-to",
+      "name": "Unsolicited Transaction Delivery to a BRC-169 Mailbox",
+      "brc": "BRC-232",
+      "also": [
+        "BRC-169"
+      ],
+      "packages": [],
+      "api": [],
+      "education_themes": [],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-233-beef",
+      "name": "Subject BEEF",
+      "brc": "BRC-233",
+      "also": [
+        "BRC-62",
+        "BRC-70",
+        "BRC-95",
+        "BRC-96",
+        "BRC-148",
+        "BRC-149",
+        "BRC-158"
+      ],
+      "packages": [],
+      "api": [
+        "BEEF",
+        "Beef"
+      ],
+      "education_themes": [],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-234-a-shared-schedule-for",
+      "name": "A Shared Schedule for Reducing Free Blockchain Index Coverage",
+      "brc": "BRC-234",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [],
+      "authority_hint": 4
+    },
+    {
+      "id": "brc-248-offline-issuer-identity-packages",
+      "name": "Offline Issuer Identity Packages",
+      "brc": "BRC-248",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [
+        "identity"
+      ],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-251-bnt",
+      "name": "Bitcoin Native Tokens (BNT): Definition and Wallet Duties",
+      "brc": "BRC-251",
+      "also": [
+        "BRC-255"
+      ],
+      "packages": [],
+      "api": [],
+      "education_themes": [
+        "tokenisation",
+        "wallets-keys"
+      ],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-252-short-proofs-for-bitcoin",
+      "name": "Short Proofs for Bitcoin Native Tokens",
+      "brc": "BRC-252",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [
+        "tokenisation"
+      ],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-253-ipt",
+      "name": "Issuer-Permissioned Tokens (IPT): Countersigned Tokens and Items",
+      "brc": "BRC-253",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [
+        "tokenisation"
+      ],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-254-market-offers-and-direct",
+      "name": "Market Offers and Direct Swaps for Wallet Assets",
+      "brc": "BRC-254",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [
+        "wallets-keys"
+      ],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-255-bnt",
+      "name": "Bitcoin Native Tokens (BNT): Compact Format",
+      "brc": "BRC-255",
+      "also": [
+        "BRC-251"
+      ],
+      "packages": [],
+      "api": [],
+      "education_themes": [
+        "tokenisation"
+      ],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-256-cross-chain-atomic-swaps",
+      "name": "Cross-Chain Atomic Swaps Between Wallets",
+      "brc": "BRC-256",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [
+        "wallets-keys"
+      ],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-257-1sat",
+      "name": "Proving Service for Bitcoin Native Tokens, 1Sat Ordinals and BSV-21",
+      "brc": "BRC-257",
+      "also": [
+        "BRC-147",
+        "BRC-150",
+        "BRC-156",
+        "BRC-159",
+        "BRC-160",
+        "BRC-165",
+        "BRC-217"
+      ],
+      "packages": [],
+      "api": [],
+      "education_themes": [
+        "tokenisation"
+      ],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-325-user-initiated-browser-permission",
+      "name": "User-Initiated Browser Permission Requests for Wallet Discovery",
+      "brc": "BRC-325",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [
+        "wallets-keys"
+      ],
+      "authority_hint": 1
+    },
+    {
+      "id": "brc-326-wallet-failure-presentation",
+      "name": "Wallet Failure Presentation",
+      "brc": "BRC-326",
+      "also": [],
+      "packages": [],
+      "api": [],
+      "education_themes": [
+        "wallets-keys"
       ],
       "authority_hint": 1
     },
