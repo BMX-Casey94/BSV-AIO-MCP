@@ -100,9 +100,11 @@ facts (AWS 1M TPS trial, SSRN 79.09B TPS preprint — conditions and sources inl
 attributed analysis card on Bitcoin's 2014–2017 direction change (documented / disputed /
 unproven kept separate); a patent prior-art domain covering all 272 Craig-Wright-named-inventor
 patent families (96 full specification texts, 272 summary cards, a concept map, and per-family
-licensing advisories — no BSV licensing programme coverage was found for any family); and 476
-summarised Craig Wright essays
-(Medium 2018–2022 and Substack 2025–2026) with a curated contradiction map. See
+licensing advisories — no BSV licensing programme coverage was found for any family); pinned
+service cards for BSV Broadcaster and the GorillaPool broadcaster hosts, plus a BSV Radar
+directory card; and 498 summarised Craig Wright essays
+(Medium 2018–2022, Substack 2025–2026, and 22 October 2026 research articles from
+craigwright.net) with a curated contradiction map. See
 [CORPUS.md](CORPUS.md) for the full corpus documentation.
 
 The snapshot is the product: answers are reproducible and auditable against it. It does
@@ -127,7 +129,7 @@ diff, commit, bump the patch version, and `npm publish`.
 ```bash
 npm install          # install workspace deps
 npm run build        # bundle server/dist
-npm test             # 210 tests: goldens (A–D), tools, composition, ingest
+npm test             # 231 tests: goldens (A–D), tools, composition, ingest
 npm run typecheck    # tsc --noEmit
 node server/probe-full-battery.mjs   # adversarial smoke battery against the built server
 ```
